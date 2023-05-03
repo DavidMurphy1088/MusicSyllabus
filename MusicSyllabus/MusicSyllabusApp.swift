@@ -1,10 +1,3 @@
-//
-//  MusicSyllabusApp.swift
-//  MusicSyllabus
-//
-//  Created by David Murphy on 5/3/23.
-//
-
 import SwiftUI
 
 @main
