@@ -13,7 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct MusicSyllabusApp: App {
     let persistenceController = PersistenceController.shared
-    // register app delegate for Firebase setup
+    //register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {

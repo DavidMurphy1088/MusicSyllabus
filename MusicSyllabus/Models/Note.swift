@@ -15,7 +15,7 @@ class Note : Hashable, Comparable {
     var staff:Int
     var duration:Int = 1
     
-    static let MIDDLE_C = 60 //Midi pitch
+    static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
 

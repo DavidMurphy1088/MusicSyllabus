@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B55CEB62A03C312009F9B5D /* MusicSyllabusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEB52A03C312009F9B5D /* MusicSyllabusApp.swift */; };
 		7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7B55CEBD2A03C870009F9B5D /* GoogleService-Info.plist */; };
 		7B55CEC02A03D052009F9B5D /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEBF2A03D052009F9B5D /* TopicsView.swift */; };
 		7B55CEC22A03E41F009F9B5D /* StaffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC12A03E41F009F9B5D /* StaffView.swift */; };
 		7B55CEC42A03E480009F9B5D /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC32A03E480009F9B5D /* ScoreView.swift */; };
+		7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */; };
 		7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDDE2A0133000007FF7E /* MusicSyllabusApp.swift */; };
 		7B5EEDE12A0133000007FF7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE02A0133000007FF7E /* ContentView.swift */; };
 		7B5EEDE32A0133020007FF7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE22A0133020007FF7E /* Assets.xcassets */; };
@@ -41,11 +43,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B55CEB52A03C312009F9B5D /* MusicSyllabusApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicSyllabusApp.swift; sourceTree = "<group>"; };
 		7B55CEBD2A03C870009F9B5D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7B55CEBF2A03D052009F9B5D /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicsView.swift; sourceTree = "<group>"; };
 		7B55CEC12A03E41F009F9B5D /* StaffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffView.swift; sourceTree = "<group>"; };
 		7B55CEC32A03E480009F9B5D /* ScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreView.swift; sourceTree = "<group>"; };
+		7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
 		7B5EEDDB2A0133000007FF7E /* MusicSyllabus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicSyllabus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5EEDDE2A0133000007FF7E /* MusicSyllabusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSyllabusApp.swift; sourceTree = "<group>"; };
 		7B5EEDE02A0133000007FF7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 				7B55CEBF2A03D052009F9B5D /* TopicsView.swift */,
 				7B55CEC12A03E41F009F9B5D /* StaffView.swift */,
 				7B55CEC32A03E480009F9B5D /* ScoreView.swift */,
+				7B25F8372A04D57D00F9552E /* NoteView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 				7B5EEE002A025F160007FF7E /* Staff.swift */,
 				7BF9B9D02A03A6EB00121EBA /* Syllabus.swift */,
 				7B5EEE022A025F430007FF7E /* TimeSlice.swift */,
+				7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -245,6 +251,7 @@
 			files = (
 				7BF9B9CD2A026DDF00121EBA /* Logger.swift in Sources */,
 				7B5EEDFB2A025E870007FF7E /* KeySignature.swift in Sources */,
+				7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */,
 				7BF9B9C92A02618700121EBA /* SoundGenerator.swift in Sources */,
 				7B5EEDF92A025E440007FF7E /* Key.swift in Sources */,
 				7BF9B9D12A03A6EB00121EBA /* Syllabus.swift in Sources */,
@@ -264,6 +271,7 @@
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7B55CEC22A03E41F009F9B5D /* StaffView.swift in Sources */,
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
+				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -375,7 +383,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

@@ -9,22 +9,22 @@ enum StaffType {
     case bass
 }
 
-class StaffPlacement {
+class NoteStaffPlacement {
     var name:Character
-    var offset:Int
+    var offsetFromStaffMidline:Int
     var acc: Int?
-    init(name:Character, _ offset:Int, _ acc:Int?=nil) {
-        self.offset = offset
+    init(name:Character, offsetFroMidLine:Int, _ acc:Int?=nil) {
+        self.offsetFromStaffMidline = offsetFroMidLine
         self.acc = acc
         self.name = name
     }
 }
 
 class StaffPlacementsByKey {
-    var staffPlacement:[StaffPlacement] = []
+    var staffPlacement:[NoteStaffPlacement] = []
 }
 
-class OffsetsInStaffByKey {
+class NoteOffsetsInStaffByKey {
     var noteOffsetByKey:[String] = []
     init () {
         // offset, sign. sign = ' ' or 0=flat, 1=natural, 2=sharp
@@ -49,107 +49,109 @@ class Staff : ObservableObject {
     let score:Score
     var type:StaffType
     var staffNum:Int
-    var noteOffsets:[StaffPlacementsByKey] = []
     let linesInStaff = 5
     var lowestNoteValue:Int
     var highestNoteValue:Int
+    var middleNoteValue:Int
     var staffOffsets:[Int] = []
+    var noteStaffPlacement:[NoteStaffPlacement]=[]
     
     init(score:Score, type:StaffType, staffNum:Int) {
         self.score = score
         self.type = type
         self.staffNum = staffNum
-        lowestNoteValue = 0
-        highestNoteValue = 88
+        lowestNoteValue = 20 //MIDI C0
+        highestNoteValue = 107 //MIDI B7
+        middleNoteValue = type == StaffType.treble ? 71 /* MIDI B0*/ : 50 /* MIDI D3*/
 
-        if type == StaffType.treble {
-            if score.ledgerLineCount == 0 {
-                lowestNoteValue = 44
-            }
-            if score.ledgerLineCount == 1 {
-                lowestNoteValue = 40
-            }
-            if score.ledgerLineCount == 2 {
-                lowestNoteValue = 37
-            }
-            if score.ledgerLineCount == 3 {
-                lowestNoteValue = 33
-            }
-            if score.ledgerLineCount == 4 {
-                lowestNoteValue = 30
-            }
-        }
-        else {
-            if score.ledgerLineCount == 0 {
-                lowestNoteValue = 23
-            }
-            if score.ledgerLineCount == 1 {
-                lowestNoteValue = 20
-            }
-            if score.ledgerLineCount == 2 {
-                lowestNoteValue = 16
-            }
-            if score.ledgerLineCount == 3 {
-                lowestNoteValue = 13
-            }
-            if score.ledgerLineCount == 4 {
-                lowestNoteValue = 9
-            }
+        //Determine the staff placement for each note pitch
+        //var noteOffsetEntries:[String] = []
+        var noteOffsets:[Int] = []
+        for line in NoteOffsetsInStaffByKey().noteOffsetByKey {
+            let f = String(line.components(separatedBy: " ")[0])
+            //noteOffsetEntries.append(pairs) //Just C Major
+            let fx:String = String(f.first!)
+            var off = Int(fx)
+            noteOffsets.append((off == nil ? 0 : off)!)
         }
         
-        noteOffsets = [StaffPlacementsByKey](repeating: StaffPlacementsByKey(), count: highestNoteValue + 1)
-        var noteIdx = 4
-        let offsetsInStaffByKey = OffsetsInStaffByKey()
-        var allDone = false
-        var octaveCtr = 0
-        var nameCtr = 2
-        var lastOffset:Int? = nil
-
-        while !allDone {
-            for line in offsetsInStaffByKey.noteOffsetByKey {
-                let sp = StaffPlacementsByKey()
-                let pairs = line.components(separatedBy: " ")
-                let octave = ((octaveCtr) / 12) - (self.type == StaffType.treble ? 3 : 1)
-                octaveCtr += 1
-                var col = 0
-                
-                for pair in pairs {
-                    if pair.isEmpty {
-                        continue
-                    }
-                    let noteParts = pair.trimmingCharacters(in: .whitespaces).components(separatedBy: ",")
-                    let staffTypeOffset = type == StaffType.treble ? 0 : -2
-                    let staffOffset = Int(noteParts[0])! + (octave * 7) + ((score.ledgerLineCount - 1) * 2) + staffTypeOffset
-                    
-                    if col == 0 {
-                        if let lastOffset = lastOffset {
-                            if staffOffset != lastOffset {
-                                nameCtr += 1
-                            }
-                        }
-                        lastOffset = staffOffset
-                    }
-                    col += 1
-                    
-                    let noteName = Note.staffNoteName(idx: nameCtr)
-
-                    let note = StaffPlacement(name: noteName, staffOffset)
-                    if noteParts.count > 1 {
-                        note.acc = Int(noteParts[1])!
-                    }
-                    sp.staffPlacement.append(note)
-                }
-
-                if noteIdx < noteOffsets.count {
-                    noteOffsets[noteIdx] = sp
-                    noteIdx += 1
-                }
-                else {
-                    allDone = true
-                    break
-                }
+        for noteValue in 0...highestNoteValue {
+            var placement = NoteStaffPlacement(name: "X", offsetFroMidLine: 100)
+            noteStaffPlacement.append(placement)
+            if noteValue <= middleNoteValue - 12 || noteValue >= middleNoteValue + 12 {
+                continue
             }
+            if noteValue == 69 || noteValue == 72 || noteValue == 74 { //70 is A
+            }
+            var diff = noteValue - middleNoteValue
+            var noteOffsetInScale = 0
+            if diff > 0 {
+                noteOffsetInScale = noteOffsets[diff - 1]
+            }
+            else {
+                noteOffsetInScale = noteOffsets[noteOffsets.count + diff - 1]
+                noteOffsetInScale =  noteOffsetInScale - 7
+            }
+            
+            var name = ""
+            name = "X" //String(Note.noteNames[(noteOffsetInScale+2) % Note.noteNames.count])
+            let offset = noteOffsetInScale + 1
+            print("Midi note", noteValue, "offset", offset, "\t\tscale", noteOffsetInScale, "\tname", name)
+            placement = NoteStaffPlacement(name: "X", offsetFroMidLine: offset)
+            noteStaffPlacement[noteValue] = placement
         }
+        
+//        var noteIdx = 4
+//        var allDone = false
+//        var octaveCtr = 0
+//        var nameCtr = 2
+//        var lastOffset:Int? = nil
+
+//         while !allDone {
+//            for line in offsetsInStaffByKey.noteOffsetByKey {
+//                let sp = StaffPlacementsByKey()
+//                let pairs = line.components(separatedBy: " ")
+//                let octave = ((octaveCtr) / 12) - (self.type == StaffType.treble ? 3 : 1)
+//                octaveCtr += 1
+//                var col = 0
+//
+//                for pair in pairs {
+//                    if pair.isEmpty {
+//                        continue
+//                    }
+//                    let noteParts = pair.trimmingCharacters(in: .whitespaces).components(separatedBy: ",")
+//                    let staffTypeOffset = type == StaffType.treble ? 0 : -2
+//                    let staffOffset = Int(noteParts[0])! + (octave * 7) + ((score.ledgerLineCount - 1) * 2) + staffTypeOffset
+//
+//                    if col == 0 {
+//                        if let lastOffset = lastOffset {
+//                            if staffOffset != lastOffset {
+//                                nameCtr += 1
+//                            }
+//                        }
+//                        lastOffset = staffOffset
+//                    }
+//                    col += 1
+//
+//                    let noteName = Note.staffNoteName(idx: nameCtr)
+//
+//                    let note = NoteStaffPlacement(name: noteName, staffOffset)
+//                    if noteParts.count > 1 {
+//                        note.acc = Int(noteParts[1])!
+//                    }
+//                    sp.staffPlacement.append(note)
+//                }
+//
+//                if noteIdx < noteOffsets.count {
+//                    noteOffsets[noteIdx] = sp
+//                    noteIdx += 1
+//                }
+//                else {
+//                    allDone = true
+//                    break
+//                }
+//            }
+//        }
     }
     
     func keyDescription() -> String {
@@ -169,19 +171,19 @@ class Staff : ObservableObject {
         }
     }
 
-    func show(_ lbl:String) {
-        for n in stride(from: noteOffsets.count-1, to: 0, by: -1) {
-            let sp = noteOffsets[n]
-            if sp.staffPlacement.count > 0 {
-                var acc = ""
-                if sp.staffPlacement[0].acc == 0 {acc = Score.accFlat}
-                if sp.staffPlacement[0].acc == 1 {acc = Score.accNatural}
-                if sp.staffPlacement[0].acc == 2 {acc = Score.accSharp}
-                print("\(lbl) Note", n,
-                      "\(sp.staffPlacement[0].offset) \(sp.staffPlacement[0].name) \(acc)")
-            }
-        }
-    }
+//    func show(_ lbl:String) {
+//        for n in stride(from: noteOffsets.count-1, to: 0, by: -1) {
+//            let sp = noteOffsets[n]
+//            if sp.staffPlacement.count > 0 {
+//                var acc = ""
+//                if sp.staffPlacement[0].acc == 0 {acc = Score.accFlat}
+//                if sp.staffPlacement[0].acc == 1 {acc = Score.accNatural}
+//                if sp.staffPlacement[0].acc == 2 {acc = Score.accSharp}
+//                print("\(lbl) Note", n,
+//                      "\(sp.staffPlacement[0].offset) \(sp.staffPlacement[0].name) \(acc)")
+//            }
+//        }
+//    }
     
     func keyColumn() -> Int {
         //    Key   C    D♭   D    E♭   E    F    G♭   G    A♭   A    B♭   B
@@ -234,48 +236,55 @@ class Staff : ObservableObject {
      }
     
     //Tell a note how to display itself
-    func getNoteViewData(noteValue:Int) -> (Int?, String, [Int]) {
-        let staffPosition = self.noteOffsets[noteValue]
-        let keyCol = keyColumn()
-        let offsetFromBottom = staffPosition.staffPlacement[keyCol].offset
-        let offsetFromTop = (score.staffLineCount * 2) - offsetFromBottom - 2
-
+    func getNoteViewData(noteValue:Int) -> (Int, String, [Int]) {
+        //let x = StaffPlacementsByKey()
+        let offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
         var ledgerLines:[Int] = []
-        if abs(offsetFromBottom) <= score.ledgerLineCount*2 - 2 {
-            let onSpace = abs(offsetFromBottom) % 2 == 1
-            var lineOffset = 0
-            if onSpace {
-                lineOffset -= 1
-            }
-            for _ in 0..<(score.ledgerLineCount - offsetFromBottom/2) + lineOffset {
-                ledgerLines.append(lineOffset)
-                lineOffset -= 2
-            }
-        }
-        if abs(offsetFromTop) <= score.ledgerLineCount*2 - 2 {
-            let onSpace = abs(offsetFromTop) % 2 == 1
-            var lineOffset = 0
-            if onSpace {
-                lineOffset += 1
-            }
-            for _ in 0..<(score.ledgerLineCount - offsetFromTop/2) - lineOffset {
-                ledgerLines.append(lineOffset)
-                lineOffset += 2
-            }
-        }
-        var acc = ""
-        switch staffPosition.staffPlacement[keyCol].acc {
-            case 0:
-                acc=Score.accFlat
-            case 1:
-                acc=Score.accNatural
-            case 2:
-                acc=Score.accSharp
-            default:
-                acc=""
-        }
-        return (offsetFromTop, acc, ledgerLines)
+        return (offset, "X", ledgerLines)
     }
     
+//    func getNoteViewDataOld(noteValue:Int) -> (Int?, String, [Int]) {
+//        let staffPosition = self.noteOffsets[noteValue]
+//        let keyCol = keyColumn()
+//        let offsetFromBottom = staffPosition.staffPlacement[keyCol].offset
+//        let offsetFromTop = (score.staffLineCount * 2) - offsetFromBottom - 2
+//
+//        var ledgerLines:[Int] = []
+//        if abs(offsetFromBottom) <= score.ledgerLineCount*2 - 2 {
+//            let onSpace = abs(offsetFromBottom) % 2 == 1
+//            var lineOffset = 0
+//            if onSpace {
+//                lineOffset -= 1
+//            }
+//            for _ in 0..<(score.ledgerLineCount - offsetFromBottom/2) + lineOffset {
+//                ledgerLines.append(lineOffset)
+//                lineOffset -= 2
+//            }
+//        }
+//        if abs(offsetFromTop) <= score.ledgerLineCount*2 - 2 {
+//            let onSpace = abs(offsetFromTop) % 2 == 1
+//            var lineOffset = 0
+//            if onSpace {
+//                lineOffset += 1
+//            }
+//            for _ in 0..<(score.ledgerLineCount - offsetFromTop/2) - lineOffset {
+//                ledgerLines.append(lineOffset)
+//                lineOffset += 2
+//            }
+//        }
+//        var acc = ""
+//        switch staffPosition.staffPlacement[keyCol].acc {
+//            case 0:
+//                acc=Score.accFlat
+//            case 1:
+//                acc=Score.accNatural
+//            case 2:
+//                acc=Score.accSharp
+//            default:
+//                acc=""
+//        }
+//        return (offsetFromTop, acc, ledgerLines)
+//    }
+//
 }
  

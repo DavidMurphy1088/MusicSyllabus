@@ -10,16 +10,18 @@ struct ScoreView: View {
             HStack {
                 Text("\(score.keyDesc())").bold() //.font(.system(size: CGFloat(lineSpacing)))
                 Spacer()
-                Button(action: {
-                    score.toggleShowNotes()
-                }) {
-                    if score.showNotes {
-                        Image(systemName: "multiply.circle")
-                            .scaleEffect(2.0)
-                    }
-                    else {
-                        Image(systemName: "plus.circle")
-                            .scaleEffect(2.0)
+                if false {
+                    Button(action: {
+                        score.toggleShowNotes()
+                    }) {
+                        if score.showNotes {
+                            Image(systemName: "multiply.circle")
+                                .scaleEffect(2.0)
+                        }
+                        else {
+                            Image(systemName: "plus.circle")
+                                .scaleEffect(2.0)
+                        }
                     }
                 }
             }

@@ -12,10 +12,10 @@ struct ContentView: View {
             }
             
             //DegreeTriadsView()
-            TopicsView(title: "Musicianship", topics: TopicList().topics)
-            .tabItem {
-                Label("Topics", image: "triads")
-            }
+//            TopicsView(title: "Musicianship", topics: TopicList().topics)
+//            .tabItem {
+//                Label("Topics", image: "triads")
+//            }
 
 
 //            IntervalView()

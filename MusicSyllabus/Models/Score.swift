@@ -5,6 +5,7 @@ import AVFoundation
 class Score : ObservableObject {
     
     static var auStarted = false
+    var timeSignature:TimeSignature
     var pitchAdjust = 5
 
     let ledgerLineCount = 3//4 is required to represent low E
@@ -28,8 +29,9 @@ class Score : ObservableObject {
     static var accFlat = "\u{266d}"
     var timeSlices:[TimeSlice] = []
     
-    init() {
-        staffLineCount = 5 + (2*ledgerLineCount)
+    init(timeSignature:TimeSignature, lines:Int) {
+        self.timeSignature = timeSignature
+        staffLineCount = lines + (2*ledgerLineCount)
         //engine.attach(reverb)
         //reverb.loadFactoryPreset(.largeHall2)
         //reverb.loadFactoryPreset(
