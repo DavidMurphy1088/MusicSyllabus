@@ -49,17 +49,19 @@ class Staff : ObservableObject {
     let score:Score
     var type:StaffType
     var staffNum:Int
-    let linesInStaff = 5
+    //let linesInStaff = 5
     var lowestNoteValue:Int
     var highestNoteValue:Int
     var middleNoteValue:Int
     var staffOffsets:[Int] = []
     var noteStaffPlacement:[NoteStaffPlacement]=[]
+    var linesInStaff:Int
     
-    init(score:Score, type:StaffType, staffNum:Int) {
+    init(score:Score, type:StaffType, staffNum:Int, linesInStaff:Int) {
         self.score = score
         self.type = type
         self.staffNum = staffNum
+        self.linesInStaff = linesInStaff
         lowestNoteValue = 20 //MIDI C0
         highestNoteValue = 107 //MIDI B7
         middleNoteValue = type == StaffType.treble ? 71 /* MIDI B0*/ : 50 /* MIDI D3*/
@@ -96,7 +98,7 @@ class Staff : ObservableObject {
             var name = ""
             name = "X" //String(Note.noteNames[(noteOffsetInScale+2) % Note.noteNames.count])
             let offset = noteOffsetInScale + 1
-            print("Midi note", noteValue, "offset", offset, "\t\tscale", noteOffsetInScale, "\tname", name)
+            //print("Midi note", noteValue, "offset", offset, "\t\tscale", noteOffsetInScale, "\tname", name)
             placement = NoteStaffPlacement(name: "X", offsetFroMidLine: offset)
             noteStaffPlacement[noteValue] = placement
         }

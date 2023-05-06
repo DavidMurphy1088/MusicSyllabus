@@ -1,99 +1,71 @@
 import SwiftUI
 
-
-struct TopicsView: View {
-    let title:String
-    let topics:[Topic]
+struct TopicsViewNavigation: View {
+    let topic:Topic
     
     var body: some View {
         NavigationView {
-            
-            List(topics) { topic in
-                NavigationLink(destination: TopicsView(title: "Topics", topics: topic.subtopics)) {
-                    Text(topic.name)
+            VStack {
+                List(topic.subTopics) { subtopic in
+                    NavigationLink(destination: TopicsView(topic: subtopic)) {
+                        Text(subtopic.name)
+                    }
+                }
+                Spacer()
+            }
+            .navigationTitle(topic.name)
+            //.navigationBarBackButtonHidden(false)
+            //.navigationBarTitle(topic.name)
+            //.navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+struct TopicsView: View {
+    let topic:Topic
+    var contentType:Int?
+    
+    init(topic:Topic) {
+        self.topic = topic
+        var topic = topic
+        while contentType == nil {
+            if let t = topic.contentType {
+                contentType = t
+                break
+            }
+            if topic.parent == nil {
+                break
+            }
+            topic = topic.parent!
+        }
+    }
+    
+    var body: some View {
+        //NavigationView {
+            VStack {
+                if topic.subTopics.count > 0 {
+                    List(topic.subTopics) { subtopic in
+                        NavigationLink(destination: TopicsView(topic: subtopic)) {
+                            Text(subtopic.name)
+                        }
+                    }
+                    Spacer()
+                }
+                else {
+                    if contentType == 1 {
+                        IntervalsView(exampleNum: topic.number)
+                    }
+                    if contentType == 2 {
+                        ClappingView(exampleNum: topic.number)
+                    }
+                    //Text("No content")
                 }
             }
-            .navigationTitle(title)
-        }
-    }
-            
-//    var body1: some View {
-//        NavigationView {
-//            List(topics) { topic in
-//                if topic.subtopics.count == 0 {
-//                    NavigationLink(destination: TopicDetail(name: topic.name)) {
-//                        Text(topic.name)
-//                    }
-//                }
-//                else {
-//                    VStack {
-//                        Text(topic.name)
-//                        List(topic.subtopics, id: \.self) { item in
-//                            Text(item)
-//                        }
-//                    }
-//                }
-//            }
-//            .navigationTitle("Musicianship")
-//        }
-//    }
-
-}
-
-struct TopicDetail: View {
-    let name: String
-
-    var body: some View {
-        Text("You selected \(name)")
-            .navigationTitle(name)
+            .navigationTitle(topic.name)
+            //.navigationBarBackButtonHidden(false)
+            //.navigationBarTitle(topic.name)
+            //.navigationBarTitleDisplayMode(.inline)
+        //}
     }
 }
 
-//===========================================
-
-struct ListItem: Identifiable {
-    let id = UUID()
-    let name: String
-    var subItems: [String]
-}
-
-struct TopicsView1: View {
-    let items = [
-        ListItem(name: "Fruits", subItems: ["Apple", "Banana", "Orange"]),
-        ListItem(name: "Vegetables", subItems: ["Carrot", "Tomato", "Broccoli"]),
-        ListItem(name: "Meat", subItems: ["Chicken", "Beef", "Pork"])
-    ]
-    @State private var toggleStates = ToggleStates()
-    @State private var topExpanded: Bool = false
-
-    var body: some View {
-        List(items) { item in
-            DisclosureGroup(item.name) {
-                VStack {
-                    Text("Sub-item 1")
-                    NavigationLink(destination: TopicDetail(name: "XXX")) {
-                        Text("XXXXX")
-                    }
-                    List(item.subItems, id: \.self) { subItem in
-                        Text(subItem)
-                    }
-                    Text("x")
-                }
-            }
-        }
-    }
-    struct ToggleStates {
-        var oneIsOn: Bool = false
-        var twoIsOn: Bool = true
-    }
-
-    var body1: some View {
-        DisclosureGroup("Items", isExpanded: $topExpanded) {
-            Toggle("Toggle 1", isOn: $toggleStates.oneIsOn)
-            Toggle("Toggle 2", isOn: $toggleStates.twoIsOn)
-            DisclosureGroup("Sub-items") {
-                Text("Sub-item 1")
-            }
-        }
-    }
-}

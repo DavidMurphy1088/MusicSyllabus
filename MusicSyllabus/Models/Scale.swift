@@ -35,16 +35,16 @@ class Scale {
             }
         }
         if self.score.key.type == Key.KeyType.minor && self.score.minorScaleType == MinorType.harmonic {
-            notes[6].num += 1
+            notes[6].midiNumber += 1
         }
     }
     
     func noteInScale(note: Note) -> Bool {
         for octaveOffset in 0...4 {
-            if self.notes.contains(Note(num: note.num + octaveOffset*12)){
+            if self.notes.contains(Note(num: note.midiNumber + octaveOffset*12)){
                 return true
             }
-            if self.notes.contains(Note(num: note.num - octaveOffset*12)){
+            if self.notes.contains(Note(num: note.midiNumber - octaveOffset*12)){
                 return true
             }
         }

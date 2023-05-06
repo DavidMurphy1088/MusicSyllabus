@@ -2,6 +2,23 @@ import SwiftUI
 import CoreData
 import MessageUI
 
+struct BarLineView: View {
+    var staff:Staff
+    var lineSpacing:Int
+    
+    var body: some View {
+        GeometryReader { geometry in
+            //Text("b")
+            Path { path in
+                //let y = midPoint
+                path.move(to: CGPoint(x: Int(geometry.size.width)/2, y: Int(geometry.size.height)/2 + 2 * lineSpacing))
+                path.addLine(to: CGPoint(x: Int(geometry.size.width)/2, y: Int(geometry.size.height)/2 - 2 * lineSpacing))
+            }
+            .stroke(Color.black, lineWidth: 1)
+            .border(Color.green)
+        }
+    }
+}
 struct NoteView: View {
     var staff:Staff
     var note:Note
@@ -13,7 +30,6 @@ struct NoteView: View {
     var offsetFromStaffMiddle:Int
     var accidental:String
     var ledgerLines:[Int]
-    let ledgerLineWidth:Int
     
     init(staff:Staff, note:Note, stemDirection:Int, lineSpacing: Int, opacity:Int) {
         self.staff = staff
@@ -21,45 +37,50 @@ struct NoteView: View {
         self.color = Color.black //Color.blue
         self.lineSpacing = lineSpacing
         self.opacity = opacity
-        let pos = staff.getNoteViewData(noteValue: note.num)
+        let pos = staff.getNoteViewData(noteValue: note.midiNumber)
         self.stemDirection = stemDirection
         offsetFromStaffMiddle = pos.0
         accidental = pos.1
         ledgerLines = pos.2
         noteWidth = CGFloat(lineSpacing) * 1.2
-        ledgerLineWidth = Int(noteWidth * 0.8)
     }
             
     var body: some View {
         GeometryReader { geometry in
-            let y = Int(geometry.size.height)/2 - offsetFromStaffMiddle * lineSpacing/2
+            let noteEllipseMidpoint = Int(geometry.size.height)/2 - offsetFromStaffMiddle * lineSpacing/2
             ZStack {
 //                    Text(accidental)
 //                        .frame(width: CGFloat(ledgerLineWidth) * 3.5, alignment: .leading)
 //                        //.border(Color.green) //DEBUG ONLY - not pos of .border in properties matters - different if after .position
 //                        .position(x: geometry.size.width/2, y: CGFloat(offsetFromStaffMiddle! * lineSpacing/2))
-                Ellipse()
-                //Text("X")
-                    //.stroke(Color.black, lineWidth: 2) // minim or use foreground color for 1/4 note
-                    .foregroundColor(self.color)
-                    //the note ellipses line up in the center of the view
-                    .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
-                    //.border(self.staff.staffNum == 0 ? Color.red : Color.green)
-                    
-                    .position(x: geometry.size.width/2, y: CGFloat(y))
-                    .opacity(Double(opacity))
-                    
+                
+                //self.getNodeBody(geometry: geometry, noteEllipseMidpoint: noteEllipseMidpoint)
+                if note.value == 4 {
+                    Ellipse()
+                        //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
+                        .foregroundColor(self.color)
+                        .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0)) 
+                        .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
+                        .opacity(Double(opacity))
+                }
+                else {
+                    Ellipse()
+                        .stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
+                        //.foregroundColor(note.value == 4 ? self.color : .blue)
+                        .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
+                        .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
+                        .opacity(Double(opacity))
+                }
                 
                 Path { path in
-                    let h:CGFloat = 32
-                    let dlta:CGFloat = 5
-                    if stemDirection == 0 {
-                        path.move(to: CGPoint(x: geometry.size.width-dlta, y: CGFloat(y)-dlta/2))
-                        path.addLine(to: CGPoint(x: geometry.size.width-dlta, y: CGFloat(y)-h))
+                    let stemHeight:CGFloat = noteWidth * 2.5
+                    if stemDirection == 0 || staff.linesInStaff == 1 {
+                        path.move(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
+                        path.addLine(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)-stemHeight))
                     }
                     else {
-                        path.move(to: CGPoint(x: dlta, y: CGFloat(y) + dlta/2))
-                        path.addLine(to: CGPoint(x: dlta, y: CGFloat(y)+h))
+                        path.move(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
+                        path.addLine(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)+stemHeight))
                     }
                 }
                 .stroke(Color.black, lineWidth: 1)

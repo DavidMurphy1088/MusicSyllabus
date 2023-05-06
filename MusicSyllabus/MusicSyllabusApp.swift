@@ -18,7 +18,7 @@ struct MusicSyllabusApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TopView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

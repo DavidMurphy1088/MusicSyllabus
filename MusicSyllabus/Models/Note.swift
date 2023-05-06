@@ -11,33 +11,33 @@ enum HandType {
 }
 
 class Note : Hashable, Comparable {
-    var num:Int
+    var midiNumber:Int
     var staff:Int
-    var duration:Int = 1
+    var value:Int = 1
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
 
     static func == (lhs: Note, rhs: Note) -> Bool {
-        return lhs.num == rhs.num
+        return lhs.midiNumber == rhs.midiNumber
     }
     static func < (lhs: Note, rhs: Note) -> Bool {
-        return lhs.num < rhs.num
+        return lhs.midiNumber < rhs.midiNumber
     }
     
     static func isSameNote(note1:Int, note2:Int) -> Bool {
         return (note1 % 12) == (note2 % 12)
     }
     
-    init(num:Int, staff:Int = 0, duration:Int? = 0) {
-        self.num = num
+    init(num:Int, value:Int? = 0, staff:Int = 0) {
+        self.midiNumber = num
         self.staff = staff
-        self.duration = duration!
+        self.value = value!
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(num)
+        hasher.combine(midiNumber)
     }
     
     static func staffNoteName(idx:Int) -> Character {

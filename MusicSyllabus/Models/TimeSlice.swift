@@ -1,23 +1,24 @@
 import Foundation
 
-class TimeSlice : Hashable  { //}: ObservableObject,  {
+class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
     var score:Score
     var note:[Note]
     var footnote:String?
+    var barLine:Int = 0
     
     private static var idIndex = 0
-    private var id = 0
+    //private var id = 0
     
     init(score:Score) {
         self.score = score
         self.note = []
-        self.id = TimeSlice.idIndex
+        //self.id = TimeSlice.idIndex
         TimeSlice.idIndex += 1
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(note)
-    }
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(note)
+//    }
     
     func addNote(n:Note) {
         self.note.append(n)
@@ -30,7 +31,7 @@ class TimeSlice : Hashable  { //}: ObservableObject,  {
         }
         score.updateStaffs()
     }
-
+    
     static func == (lhs: TimeSlice, rhs: TimeSlice) -> Bool {
         return lhs.id == rhs.id
     }

@@ -1,31 +1,45 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseCore
-//import FirebaseAuth
 import FirebaseStorage
 import AVFoundation
 
 class Topic: Identifiable {
     let id = UUID()
-    let name: String
-    var subtopics:[Topic] = []
-    init(_ nm:String) {
-        name = nm
-    }
-}
-
-class TopicList {
-    var topics:[Topic] = []
-    init() {
-        for i in 0...7 {
-            let t = Topic("Grade \(i+1)")
-            topics.append(t)
-            t.subtopics = [Topic("Test 1 - Intervals Visual"),
-                           Topic("Test 2 - Clapping"),
-                           Topic("Test 3 - Playing"),
-                           Topic("Test 4 - Intervals Aural"),
-                           Topic("Test 5 - Echo Clap")
-            ]
+    var name: String = ""
+    var subTopics:[Topic] = []
+    var level:Int
+    var number:Int
+    var parent:Topic?
+    var contentType:Int?
+    
+    init(parent:Topic?, level: Int, number:Int, name:String, contentType:Int? = nil) {
+        self.parent = parent
+        self.name = name
+        self.level = level
+        self.number = number
+        self.contentType = contentType
+        
+        if level == 0 {
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name: "Pre Preliminary"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name: "Preliminary"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name: "Grade 1"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name: "Grade 2"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name: "Grade 3"))
+        }
+        if level == 1 {
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name:"Test 1 - Intervals Visual", contentType: 1))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Test 2 - Clapping", contentType: 2))
+            subTopics.append(Topic(parent: self, level: level+1, number: 2, name:"Test 3 - Playing"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 3, name:"Test 4 - Intervals Aural"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 4, name:"Test 5 - Echo Clap"))
+        }
+        if level == 2 {
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name:"Example 1"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Example 2"))
+        }
+        if level == 0 {
+            
         }
     }
 }
@@ -42,9 +56,9 @@ class SyllabusPersistance {
     
     func test() {
         let db = Firestore.firestore()
-        
         getSyllabus()
     }
+    
     func getSyllabus() {
         print("trying set data...")
         let db = Firestore.firestore()

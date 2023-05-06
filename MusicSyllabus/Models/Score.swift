@@ -2,6 +2,18 @@ import Foundation
 import AVKit
 import AVFoundation
 
+class ScoreEntry : Hashable {
+    let id = UUID()
+    static func == (lhs: ScoreEntry, rhs: ScoreEntry) -> Bool {
+        return lhs.id == rhs.id
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+class BarLine : ScoreEntry {
+    
+}
 class Score : ObservableObject {
     
     static var auStarted = false
@@ -9,7 +21,6 @@ class Score : ObservableObject {
     var pitchAdjust = 5
 
     let ledgerLineCount = 3//4 is required to represent low E
-    let lineSpacing = 10
 
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
@@ -27,8 +38,8 @@ class Score : ObservableObject {
     static var accSharp = "\u{266f}"
     static var accNatural = "\u{266e}"
     static var accFlat = "\u{266d}"
-    var timeSlices:[TimeSlice] = []
-    
+    var scoreEntries:[ScoreEntry] = []
+
     init(timeSignature:TimeSignature, lines:Int) {
         self.timeSignature = timeSignature
         staffLineCount = lines + (2*ledgerLineCount)
@@ -98,12 +109,16 @@ class Score : ObservableObject {
     
     func addTimeSlice() -> TimeSlice {
         let ts = TimeSlice(score: self)
-        self.timeSlices.append(ts)
+        self.scoreEntries.append(ts)
         return ts
     }
     
+    func addBarLine() {
+        self.scoreEntries.append(BarLine())
+    }
+
     func clear() {
-        self.timeSlices = []
+        self.scoreEntries = []
         for staff in staff  {
             staff.clear()
         }
@@ -134,15 +149,19 @@ class Score : ObservableObject {
     func playScore(select: [Int]? = nil, arpeggio: Bool? = nil, onDone: (()->Void)? = nil) {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             var index = 0
-            for ts in timeSlices {
+            for entry in scoreEntries {
                 if let selected = select {
                     if !selected.contains(index) {
                         index += 1
                         continue
                     }
                 }
+                if !(entry is Note) {
+                    continue
+                }
                 var index = 0
                 let playTempo = 60.0/self.tempo
+                let ts:TimeSlice = entry as! TimeSlice
                 for note in ts.note {
                     if let arp = arpeggio {
                         if arp && (index > 0) {

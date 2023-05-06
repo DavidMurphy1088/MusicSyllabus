@@ -32,7 +32,7 @@ class Chord : Identifiable {
     func makeSATBFourNote() -> Chord {
         let result = Chord()
         var desiredPitch = Note.MIDDLE_C - Note.OCTAVE
-        let baseNote = Note.getClosestOctave(note: self.notes[0].num, toPitch: desiredPitch)
+        let baseNote = Note.getClosestOctave(note: self.notes[0].midiNumber, toPitch: desiredPitch)
         result.notes.append(Note(num: baseNote, staff: 1))
         let voiceGap = Note.OCTAVE/2 // + 3
         
@@ -43,7 +43,7 @@ class Chord : Identifiable {
         var tenorChoiceIndex = 0
         var tenorNote = 0
         for c in tenorCandidates {
-            let closest = Note.getClosestOctave(note: self.notes[c].num, toPitch: desiredPitch, onlyHigher: true)
+            let closest = Note.getClosestOctave(note: self.notes[c].midiNumber, toPitch: desiredPitch, onlyHigher: true)
             let diff = abs(closest - desiredPitch)
             if diff < minDiff {
                 minDiff = diff
@@ -64,7 +64,7 @@ class Chord : Identifiable {
         var altoChoiceIndex = 0
         var altoNote = 0
         for c in altoCandidates {
-            let closest = Note.getClosestOctave(note: self.notes[c].num, toPitch: desiredPitch, onlyHigher: true)
+            let closest = Note.getClosestOctave(note: self.notes[c].midiNumber, toPitch: desiredPitch, onlyHigher: true)
             let diff = abs(closest - desiredPitch)
             if diff < minDiff {
                 minDiff = diff
@@ -84,7 +84,7 @@ class Chord : Identifiable {
         minDiff = Int.max
         var sopranoNote = 0
         for c in sopranoCandidates {
-            let closest = Note.getClosestOctave(note: self.notes[c].num, toPitch: desiredPitch, onlyHigher: true)
+            let closest = Note.getClosestOctave(note: self.notes[c].midiNumber, toPitch: desiredPitch, onlyHigher: true)
             let diff = abs(closest - desiredPitch)
             if diff < minDiff {
                 minDiff = diff
@@ -96,7 +96,7 @@ class Chord : Identifiable {
     }
 
     func addSeventh() {
-        let n = self.notes[0].num
+        let n = self.notes[0].midiNumber
         self.notes.append(Note(num: n+10))
     }
     
@@ -104,7 +104,7 @@ class Chord : Identifiable {
         let res = Chord()
         for i in 0...self.notes.count-1 {
             let j = (i + inv)
-            var n = self.notes[j % self.notes.count].num
+            var n = self.notes[j % self.notes.count].midiNumber
             if j >= self.notes.count {
                 n += 12
             }
@@ -118,20 +118,20 @@ class Chord : Identifiable {
     func makeCadenceWithVoiceLead(toChordTriad: Chord) -> Chord {
         var result:[Int] = []
         
-        let destinationRoot = toChordTriad.notes[0].num
-        let leadingRoot = notes[0].num
+        let destinationRoot = toChordTriad.notes[0].midiNumber
+        let leadingRoot = notes[0].midiNumber
         let closestRoot = Note.getClosestOctave(note: destinationRoot, toPitch: leadingRoot)
         result.append(closestRoot)
         
         for n in 1..<notes.count {
 
-            let fromNote = notes[n].num
+            let fromNote = notes[n].midiNumber
             
             var leastDiff = Int.max
             var bestNote = 0
 
             for m in toChordTriad.notes {
-                let toNoteOctaves = Note.getAllOctaves(note: m.num)
+                let toNoteOctaves = Note.getAllOctaves(note: m.midiNumber)
                 for toNoteOctave in toNoteOctaves {
                     if result.contains(toNoteOctave) {
                         continue
@@ -157,10 +157,10 @@ class Chord : Identifiable {
     }
     
     func moveClosestTo(pitch: Int, index: Int) {
-        let pitch = Note.getClosestOctave(note: self.notes[index].num, toPitch: pitch)
-        let offset = self.notes[index].num - pitch
+        let pitch = Note.getClosestOctave(note: self.notes[index].midiNumber, toPitch: pitch)
+        let offset = self.notes[index].midiNumber - pitch
         for i in 0...self.notes.count-1 {
-            self.notes[i].num -= offset
+            self.notes[i].midiNumber -= offset
         }
     }
     
@@ -168,7 +168,7 @@ class Chord : Identifiable {
         var s = ""
         for note in self.notes {
             //var n = (note.num % Note.noteNames.count)...
-            s += "\(note.num)  "
+            s += "\(note.midiNumber)  "
         }
         return s
     }
@@ -177,7 +177,7 @@ class Chord : Identifiable {
         let result = Chord()
         var unusedPitches:[Int] = []
         for t in to.notes {
-            unusedPitches.append(t.num)
+            unusedPitches.append(t.midiNumber)
         }
         var done:[Int] = []
         var log:[(Int, Int, Int)] = []
@@ -197,8 +197,8 @@ class Chord : Identifiable {
                 var minDiff = 1000
                 var mi = 0
                 for uindex in 0..<unusedPitches.count {
-                    let closest = Note.getClosestOctave(note:unusedPitches[uindex], toPitch:notes[fromIdx].num)
-                    let diff = abs(closest - notes[fromIdx].num)
+                    let closest = Note.getClosestOctave(note:unusedPitches[uindex], toPitch:notes[fromIdx].midiNumber)
+                    let diff = abs(closest - notes[fromIdx].midiNumber)
                     if diff < minDiff {
                         minDiff = diff
                         mi = uindex
@@ -209,8 +209,8 @@ class Chord : Identifiable {
             }
             else {
                 for t in to.notes {
-                    unusedPitches.append(t.num+12)
-                    unusedPitches.append(t.num-12)
+                    unusedPitches.append(t.midiNumber+12)
+                    unusedPitches.append(t.midiNumber-12)
                 }
                 continue
             }
@@ -220,7 +220,7 @@ class Chord : Identifiable {
                 result.notes.append(bestNote)
             }
             done.append(fromIdx)
-            log.append((self.notes[fromIdx].num, bestPitch, done.count))
+            log.append((self.notes[fromIdx].midiNumber, bestPitch, done.count))
         }
         let ls = log.sorted {
             $0.0 < $1.1
@@ -234,19 +234,19 @@ class Chord : Identifiable {
     
     func order() {
         notes.sort {
-            $0.num < $1.num
+            $0.midiNumber < $1.midiNumber
         }
     }
     
     //“SATB” refers to four-part chords scored for soprano (S), alto (A), tenor (T), and bass (B) voices. Three-part chords are often specified as SAB (soprano, alto, bass) but could be scored for any combination of the three voice types. SATB voice leading will also be referred to as “chorale-style” voice leading.
     func makeSATB() -> Chord {
         let result = Chord()
-        var nextPitch = abs(Note.getClosestOctave(note: self.notes[0].num, toPitch: Note.MIDDLE_C - 12 - 3))
+        var nextPitch = abs(Note.getClosestOctave(note: self.notes[0].midiNumber, toPitch: Note.MIDDLE_C - 12 - 3))
         for voice in 0..<4 {
             var bestPitch = 0
             var lowestDiff:Int? = nil
             for i in 0..<self.notes.count {
-                let closestPitch = abs(Note.getClosestOctave(note: self.notes[i].num, toPitch: nextPitch))
+                let closestPitch = abs(Note.getClosestOctave(note: self.notes[i].midiNumber, toPitch: nextPitch))
                 let diff = abs(closestPitch - nextPitch)
                 if lowestDiff == nil || diff < lowestDiff! {
                     lowestDiff = diff
