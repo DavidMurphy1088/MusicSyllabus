@@ -13,7 +13,7 @@ struct TopicsViewNavigation: View {
                 }
                 Spacer()
             }
-            .navigationTitle(topic.name)
+            .navigationTitle(topic.name).font(.title3)
             //.navigationBarBackButtonHidden(false)
             //.navigationBarTitle(topic.name)
             //.navigationBarTitleDisplayMode(.inline)
@@ -53,10 +53,10 @@ struct TopicsView: View {
                 }
                 else {
                     if contentType == 1 {
-                        IntervalsView(exampleNum: topic.number)
+                        IntervalsView(exampleNum: topic.number, questionData: topic.questionData)
                     }
                     if contentType == 2 {
-                        ClappingView(exampleNum: topic.number)
+                        RhythmsView(exampleNum: topic.number, questionData: topic.questionData)
                     }
                     //Text("No content")
                 }

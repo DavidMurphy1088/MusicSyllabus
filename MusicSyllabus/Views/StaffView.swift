@@ -35,6 +35,11 @@ struct StaffView: View {
             return n
         }
     }
+    
+    func barLineatScoreEnd(entry:ScoreEntry) -> Bool {
+        let barLine:BarLine = entry as! BarLine
+        return barLine.atScoreEnd
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -43,20 +48,6 @@ struct StaffView: View {
             let width = Int(geometry.size.width)
             
             ZStack (alignment: .leading) {
-                
-//                ForEach(0..<score.staffLineCount){ row in
-//                    Path { path in
-//                        path.move(to: CGPoint(x: 0, y: row * Int(geometry.size.height/CGFloat(score.staffLineCount))))
-//                        path.addLine(to: CGPoint(x: Int(geometry.size.width), y: row * Int(geometry.size.height/CGFloat(score.staffLineCount))))
-//                        path.addLine(to: CGPoint(x: Int(geometry.size.width), y: row * Int(geometry.size.height/CGFloat(score.staffLineCount))+StaffView.lineHeight))
-//                        path.addLine(to: CGPoint(x: 0, y: row * Int(geometry.size.height/CGFloat(score.staffLineCount))+StaffView.lineHeight))
-//                        path.closeSubpath()
-//                    }
-//                    .fill(colr(line: row))
-//                }
-                
-                // staff lines
-                
                 if staff.linesInStaff > 1 {
                     ForEach(-2..<3) { row in
                         Path { path in
@@ -78,7 +69,6 @@ struct StaffView: View {
                 }
                 
                 // end of staff bar lines
-                
                 Path { path in
                     let y = midPoint
                     path.move(to: CGPoint(x: Int(geometry.size.width)-2, y: Int(geometry.size.height)/2 + 2 * lineSpacing))
@@ -87,7 +77,7 @@ struct StaffView: View {
                 .stroke(Color.black, lineWidth: Double(lineSpacing) / 3)
 
                 HStack {
-                    if true { //enable to check alingment - the X should be right on the center line of the staff
+                    if false { //enable to check alingment - the X should be right on the center line of the staff
                         HStack {
                             Text("X")
                         }
@@ -128,7 +118,7 @@ struct StaffView: View {
                     }
                     .bold()
                     .frame(width: clefWidth())
-                    .border(Color.red)
+                    //.border(Color.red)
                     
 //                    HStack (spacing: 0) {
 //                        ForEach(0 ..< score.key.keySig.accidentalCount, id: \.self) { i in
@@ -153,18 +143,10 @@ struct StaffView: View {
                                                      stemDirection: note.midiNumber < staff.middleNoteValue ? 0 : 1,
                                                      lineSpacing: lineSpacing,
                                                      opacity: 1)
-                                            //                                        }
-                                            //                                        else {
-                                            //                                            NoteView(staff: staff,
-                                            //                                                     note: note,
-                                            //                                                     stemDirection: 0,
-                                            //                                                     lineSpacing: lineSpacing,
-                                            //                                                     opacity: 0)
-                                            //                                        }
                                         }
                                     }
                                     if entry is BarLine {
-                                        BarLineView(staff: staff, lineSpacing: lineSpacing)
+                                        BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
                                     }
                                 }
                                 if score.showFootnotes {

@@ -6,14 +6,20 @@ struct TopView: View {
     
     var body: some View {
         TabView {
-            IntervalsView(exampleNum: 0)
+            RhythmsView(exampleNum: 0, questionData: "72,67")
             .tabItem {
-                Label("Clapping", systemImage: "music.note")
+                Label("Rhythm", systemImage: "music.note")
             }
 
-            ClappingView(exampleNum: 0)
+            ClapTestView()
             .tabItem {
-                Label("Clapping", systemImage: "music.note")
+                Label("ClapTest", systemImage: "music.note")
+            }
+
+
+            IntervalsView(exampleNum: 0, questionData: "72,67")
+            .tabItem {
+                Label("Intervals", systemImage: "music.note")
             }
             
             TopicsViewNavigation(topic: Topic(parent: nil, level: 0, number: 0, name: "Grades"))

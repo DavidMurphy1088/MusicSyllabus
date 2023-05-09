@@ -12,13 +12,15 @@ class Topic: Identifiable {
     var number:Int
     var parent:Topic?
     var contentType:Int?
+    var questionData:String?
     
-    init(parent:Topic?, level: Int, number:Int, name:String, contentType:Int? = nil) {
+    init(parent:Topic?, level: Int, number:Int, name:String, contentType:Int? = nil, questionData:String? = nil) {
         self.parent = parent
         self.name = name
         self.level = level
         self.number = number
         self.contentType = contentType
+        self.questionData = questionData
         
         if level == 0 {
             subTopics.append(Topic(parent: self, level: level+1, number: 0, name: "Pre Preliminary"))
@@ -35,8 +37,10 @@ class Topic: Identifiable {
             subTopics.append(Topic(parent: self, level: level+1, number: 4, name:"Test 5 - Echo Clap"))
         }
         if level == 2 {
-            subTopics.append(Topic(parent: self, level: level+1, number: 0, name:"Example 1"))
-            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Example 2"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 0, name:"Example 1", questionData: "72,74")) //
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Example 2", questionData: "74,71"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Example 3", questionData: "69,67"))
+            subTopics.append(Topic(parent: self, level: level+1, number: 1, name:"Example 4", questionData: "67,64"))
         }
         if level == 0 {
             
@@ -44,32 +48,40 @@ class Topic: Identifiable {
     }
 }
 
-class SyllabusPersistance {
-    static public let shared = SyllabusPersistance()
+class FirestorePersistance {
+    static public let shared = FirestorePersistance()
     
     init() {
-        //super.init()
-//        if let dev = UserDefaults.standard.string(forKey: "GPSDeviceName") {
-//            self.deviceName = dev
-//        }
     }
     
     func test() {
-        let db = Firestore.firestore()
         getSyllabus()
     }
     
+//    func saveClaps(data: [ClapRecorder.DecibelBufferRow]) {
+//        let db = Firestore.firestore()
+//        
+//        db.collection("claps").document("claps").setData([
+//            "data": data
+//        ]) { err in
+//            if let err = err {
+//                Logger.logger.reportError("Error writing document", err as NSError)
+//            } else {
+//                print("Document successfully written!")
+//            }
+//        }
+//    }
+    
     func getSyllabus() {
         print("trying set data...")
+        let collection = "Clapping"
         let db = Firestore.firestore()
         
-        db.collection("1syllabus").document("LA").setData([
-            "name": "Los Angeles",
-            "state": "CA",
-            "country": "USA"
+        db.collection(collection).document("LA").setData([
+            "sample": "USA"
         ]) { err in
             if let err = err {
-                print("Error writing document: \(err)")
+                Logger.logger.reportError("Error writing document", err as NSError)
             } else {
                 print("Document successfully written!")
             }
@@ -77,7 +89,7 @@ class SyllabusPersistance {
         
         print("trying read data...")
 
-        db.collection("syllabus").getDocuments() { (querySnapshot, err) in
+        db.collection(collection).getDocuments() { (querySnapshot, err) in
             if let q = querySnapshot {
                 print(q.count)
                 for document in q.documents {
@@ -88,60 +100,6 @@ class SyllabusPersistance {
                 print("No documents")
             }
 
-//                for document in querySnapshot!.documents {
-//                    if let locationName = document.get("locationName") {
-//                        let visits = document.get("visits") as! NSDictionary
-//                        var location:LocationRecord?
-//                        for (key, _) in visits {
-//                            let visitNum = visits[key] as! NSDictionary
-//                            let datetime = visitNum["datetime"] as! Double
-//                            let lat = visitNum["lat"] as! Double
-//                            let lng = visitNum["lng"] as! Double
-//                            let pictureSet = PictureSet(pictures: [])
-//                            if let location = location {
-//                                let visit = LocationVisitRecord(deviceName: visitNum["device"] as! String, datetime: datetime, lat: lat, lng: lng)
-//                                location.visits.append(visit)
-//                            }
-//                            else {
-//                                location = LocationRecord(id:document.documentID, locationName: locationName as! String, datetime: datetime, lat: lat, lng: lng, pictureSet: pictureSet)
-//                            }
-//                            visitCnt += 1
-//                        }
-//
-//                        if let location = location {
-//                            LocationRecords.shared.addLocation(location: location)
-//                            let pictureURL = document.get("pictureURL")
-//                            if let url = pictureURL {
-//                                location.pictureURL = url as? String
-//                                pictureLocations.append(location)
-//                            }
-//                        }
-//                        locationCnt += 1
-//                    }
-//                    MessageHandler.shared.setStatus("Loaded \(locationCnt) locations, \(visitCnt) visits")
-//                }
-//            }
-//
-//            // load pictures
-//            //https://firebase.google.com/docs/storage/ios/download-files
-//
-//            DispatchQueue.main.async {
-//                for location in pictureLocations {
-//                    if let url = location.pictureURL {
-//                        let storage = Storage.storage()
-//                        let httpsReference = storage.reference(forURL: url)
-//                        httpsReference.getData(maxSize: 32 * 1024 * 1024) { data, error in
-//                            if let error = error {
-//                                MessageHandler.shared.reportError(context: "Load pictures", error.localizedDescription)
-//                            } else {
-//                                if let data = data {
-//                                    location.pictureSet.pictures.append(data)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 

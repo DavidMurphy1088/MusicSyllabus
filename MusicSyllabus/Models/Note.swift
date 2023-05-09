@@ -14,10 +14,14 @@ class Note : Hashable, Comparable {
     var midiNumber:Int
     var staff:Int
     var value:Int = 1
+    var isOnlyRhythmNote = false
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
+    static let VALUE_QUARTER = 4
+    static let VALUE_HALF = 2
+    static let VALUE_WHOLE = 1
 
     static func == (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber == rhs.midiNumber

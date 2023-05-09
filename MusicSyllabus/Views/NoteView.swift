@@ -3,22 +3,28 @@ import CoreData
 import MessageUI
 
 struct BarLineView: View {
+    var entry:ScoreEntry
     var staff:Staff
     var lineSpacing:Int
     
+    func xPos(geo: GeometryProxy) -> Int {
+        let barLine = entry as! BarLine
+        return Int(barLine.atScoreEnd ? geo.size.width - 8 : geo.size.width/2)
+    }
+    
     var body: some View {
         GeometryReader { geometry in
-            //Text("b")
             Path { path in
                 //let y = midPoint
-                path.move(to: CGPoint(x: Int(geometry.size.width)/2, y: Int(geometry.size.height)/2 + 2 * lineSpacing))
-                path.addLine(to: CGPoint(x: Int(geometry.size.width)/2, y: Int(geometry.size.height)/2 - 2 * lineSpacing))
+                path.move(to: CGPoint(x: xPos(geo: geometry), y: Int(geometry.size.height)/2 + 2 * lineSpacing))
+                path.addLine(to: CGPoint(x: xPos(geo: geometry), y: Int(geometry.size.height)/2 - 2 * lineSpacing))
             }
             .stroke(Color.black, lineWidth: 1)
-            .border(Color.green)
+            //.border(Color.green)
         }
     }
 }
+
 struct NoteView: View {
     var staff:Staff
     var note:Note
@@ -55,7 +61,7 @@ struct NoteView: View {
 //                        .position(x: geometry.size.width/2, y: CGFloat(offsetFromStaffMiddle! * lineSpacing/2))
                 
                 //self.getNodeBody(geometry: geometry, noteEllipseMidpoint: noteEllipseMidpoint)
-                if note.value == 4 {
+                if note.value == Note.VALUE_QUARTER {
                     Ellipse()
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
                         .foregroundColor(self.color)
@@ -63,7 +69,7 @@ struct NoteView: View {
                         .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
                         .opacity(Double(opacity))
                 }
-                else {
+                if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
                     Ellipse()
                         .stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
                         //.foregroundColor(note.value == 4 ? self.color : .blue)
@@ -72,18 +78,20 @@ struct NoteView: View {
                         .opacity(Double(opacity))
                 }
                 
-                Path { path in
-                    let stemHeight:CGFloat = noteWidth * 2.5
-                    if stemDirection == 0 || staff.linesInStaff == 1 {
-                        path.move(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
-                        path.addLine(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)-stemHeight))
+                if note.value != Note.VALUE_WHOLE {
+                    Path { path in
+                        let stemHeight:CGFloat = noteWidth * 2.5
+                        if stemDirection == 0 || staff.linesInStaff == 1 {
+                            path.move(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
+                            path.addLine(to: CGPoint(x: (geometry.size.width + noteWidth)/2, y: CGFloat(noteEllipseMidpoint)-stemHeight))
+                        }
+                        else {
+                            path.move(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
+                            path.addLine(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)+stemHeight))
+                        }
                     }
-                    else {
-                        path.move(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)))
-                        path.addLine(to: CGPoint(x: (geometry.size.width - noteWidth)/2, y: CGFloat(noteEllipseMidpoint)+stemHeight))
-                    }
+                    .stroke(Color.black, lineWidth: 1)
                 }
-                .stroke(Color.black, lineWidth: 1)
 
 //                    if ledgerLines.count > 0 {
 //                        ForEach(0..<ledgerLines.count) { row in

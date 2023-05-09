@@ -35,7 +35,7 @@ struct ScoreView: View {
             }.padding()
         }
         .overlay(
-            RoundedRectangle(cornerRadius: 30).stroke(.blue, lineWidth: 2)
+            RoundedRectangle(cornerRadius: 30).stroke(.blue, lineWidth: 1)
         )
         .background(Color.blue.opacity(0.04))
         //.border(Color.pink)
