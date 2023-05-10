@@ -2,6 +2,7 @@ import SwiftUI
 import CoreData
 
 struct IntervalsAnswerView:View {
+    @State var metronome = Metronome.shared
     var score:Score
     var correct:Bool
     var correctAnswer:String
@@ -26,7 +27,7 @@ struct IntervalsAnswerView:View {
             Text("The interval is a \(correctAnswer)").padding()
             Text(explanation).italic().padding()
             Button(action: {
-                score.playScore()
+                metronome.playScore(score: score)
             }) {
                 Text("Hear Interval")
             }
@@ -47,6 +48,7 @@ struct IntervalsAnswerView:View {
 }
 
 struct IntervalsView:View {
+    @State var metronome = Metronome.shared
     @State var exampleNum:Int
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 5)
     @State private var selectedAnswer: String? = nil
@@ -72,6 +74,8 @@ struct IntervalsView:View {
             ts.addNote(n: Note(num: n1!, value: Note.VALUE_HALF))
 
             let n2 = Int(notes[1])
+            ts = score.addTimeSlice()
+            ts.addNote(n: Note(num: n2!, value: Note.VALUE_HALF))
             ts = score.addTimeSlice()
             ts.addNote(n: Note(num: n2!, value: Note.VALUE_HALF))
             ts.score.addBarLine(atScoreEnd: true)
@@ -116,7 +120,7 @@ struct IntervalsView:View {
             }
             
             if answerState == .submittedAnswer {
-                IntervalsAnswerView(score: score, correct: selectedOption == 0, correctAnswer: options[0], answered: $answerState)
+                IntervalsAnswerView(metronome: metronome, score: score, correct: selectedOption == 0, correctAnswer: options[0], answered: $answerState)
             }
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)

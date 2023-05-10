@@ -4,7 +4,7 @@ import AVFoundation
 
 struct RhythmsAnswerView:View {
     @State var score:Score
-    //var correctAnswer:String
+    @State var metronome = Metronome.shared
     let imageSize = Double(32)
     @Binding var answered:RhythmsView.AnswerState
     var audioPlayer:AudioFilePlayer = AudioFilePlayer()
@@ -23,7 +23,7 @@ struct RhythmsAnswerView:View {
             }
             Spacer()
             Button(action: {
-                score.playScore()
+                metronome.playScore(score: score)
             }) {
                 Text("Hear The Test Rhythm")
             }
@@ -48,6 +48,7 @@ struct RhythmsAnswerView:View {
 
 
 struct RhythmsView:View {
+    @State var metronome = Metronome.shared
     @State var exampleNum:Int
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 1)
     @State var answerState:AnswerState = .notRecorded
@@ -66,6 +67,7 @@ struct RhythmsView:View {
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 1)
         score.setStaff(num: 0, staff: staff)
         let vx = [2,2,0,4,4,2,0,4,4,2,0,1]
+        //let vx = [2]
         var n = Note.MIDDLE_C + Note.OCTAVE - 1
         for v in vx {
             if v > 0 {
@@ -89,6 +91,7 @@ struct RhythmsView:View {
                 HStack {
                     ScoreView(score: score).padding()
                 }
+                MetronomeView(metronome: metronome)
                 
                 HStack {
                     Spacer()
@@ -143,7 +146,7 @@ struct RhythmsView:View {
 
             
             if answerState == AnswerState.submittedAnswer {
-                RhythmsAnswerView(score: score, answered: $answerState)
+                RhythmsAnswerView(score: score, metronome: metronome, answered: $answerState)
             }
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)

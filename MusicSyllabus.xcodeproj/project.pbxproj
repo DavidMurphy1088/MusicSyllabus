@@ -39,6 +39,7 @@
 		7B5EEE032A025F430007FF7E /* TimeSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEE022A025F430007FF7E /* TimeSlice.swift */; };
 		7B5EEE052A025F760007FF7E /* Scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEE042A025F760007FF7E /* Scale.swift */; };
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
+		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF9B9C92A02618700121EBA /* SoundGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9B9C82A02618700121EBA /* SoundGenerator.swift */; };
 		7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 7BF9B9CA2A02654100121EBA /* Nice-Steinway-v3.8.sf2 */; };
 		7BF9B9CD2A026DDF00121EBA /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9B9CC2A026DDF00121EBA /* Logger.swift */; };
@@ -86,6 +87,7 @@
 		7B5EEE022A025F430007FF7E /* TimeSlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSlice.swift; sourceTree = "<group>"; };
 		7B5EEE042A025F760007FF7E /* Scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scale.swift; sourceTree = "<group>"; };
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
+		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF9B9C82A02618700121EBA /* SoundGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundGenerator.swift; sourceTree = "<group>"; };
 		7BF9B9CA2A02654100121EBA /* Nice-Steinway-v3.8.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nice-Steinway-v3.8.sf2"; sourceTree = "<group>"; };
 		7BF9B9CC2A026DDF00121EBA /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -174,14 +176,15 @@
 		7B5EEDF22A0134530007FF7E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7B25F8392A0657CC00F9552E /* Syllabus */,
+				7B3BA4502A070A3D000246C6 /* ClapTestView.swift */,
+				7BF902522A0B696F002E977A /* MetronomeView.swift */,
 				7B25F8372A04D57D00F9552E /* NoteView.swift */,
 				7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */,
 				7B55CEC32A03E480009F9B5D /* ScoreView.swift */,
 				7B55CEC12A03E41F009F9B5D /* StaffView.swift */,
+				7B25F8392A0657CC00F9552E /* Syllabus */,
 				7B55CEBF2A03D052009F9B5D /* TopicsView.swift */,
 				7B5EEDE02A0133000007FF7E /* TopView.swift */,
-				7B3BA4502A070A3D000246C6 /* ClapTestView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -189,6 +192,9 @@
 		7B5EEDF32A01345D0007FF7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyser.swift */,
+				7B51F0E32A0A6DD900A7ABFA /* AudioFilePlayer.swift */,
+				7B51F0E12A0A5CB200A7ABFA /* AudioRecorder.swift */,
 				7B5EEDFE2A025EE60007FF7E /* Chord.swift */,
 				7B5EEDF82A025E440007FF7E /* Key.swift */,
 				7B5EEDFA2A025E870007FF7E /* KeySignature.swift */,
@@ -203,9 +209,6 @@
 				7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */,
 				7B5EEE022A025F430007FF7E /* TimeSlice.swift */,
 				7BF9B9D02A03A6EB00121EBA /* Topic.swift */,
-				7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyser.swift */,
-				7B51F0E12A0A5CB200A7ABFA /* AudioRecorder.swift */,
-				7B51F0E32A0A6DD900A7ABFA /* AudioFilePlayer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				7B5EEDF52A0134AB0007FF7E /* IntervalsView.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7B51F0E02A0A5B6100A7ABFA /* AudioAnalyser.swift in Sources */,
+				7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */,
 				7B55CEC22A03E41F009F9B5D /* StaffView.swift in Sources */,
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,

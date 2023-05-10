@@ -54,7 +54,6 @@ class Score : ObservableObject {
     
     static var auStarted = false
     var timeSignature:TimeSignature
-    var pitchAdjust = 0
     
     let ledgerLineCount = 3//4 is required to represent low E
 
@@ -159,9 +158,6 @@ class Score : ObservableObject {
 
     func setTempo(temp: Int, pitch: Int? = nil) {
         self.tempo = Float(temp)
-        if let setPitch = pitch {
-            self.pitchAdjust = setPitch
-        }
     }
     
     func addTimeSlice() -> TimeSlice {
@@ -208,32 +204,5 @@ class Score : ObservableObject {
         }
     }
     
-    func playScore(select: [Int]? = nil, arpeggio: Bool? = nil, onDone: (()->Void)? = nil) {
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            var index = 0
-            for entry in scoreEntries {
-                if let selected = select {
-                    if !selected.contains(index) {
-                        index += 1
-                        continue
-                    }
-                }
-                if !(entry is TimeSlice) {
-                    continue
-                }
-                //var index = 0
-                let tempo = 2.0
-                let ts:TimeSlice = entry as! TimeSlice
-                for note in ts.note {
-                    let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
-                    Score.midiSampler.startNote(UInt8(pitch + self.pitchAdjust), withVelocity:48, onChannel:0)
-                    let duration =  tempo * Double((1000000 / note.value))
-                    usleep(useconds_t(duration))
-                    index += 1
-                }
-                index += 1
-            }
-        }
-    }
 
 }

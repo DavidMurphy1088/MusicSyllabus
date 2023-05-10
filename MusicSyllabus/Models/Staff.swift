@@ -163,7 +163,6 @@ class Staff : ObservableObject {
     func update() {
         DispatchQueue.main.async {
             self.publishUpdate += 1
-
         }
     }
     

@@ -3,68 +3,21 @@ import CoreData
 import AVFoundation
 
 class Metronome: ObservableObject {
-
-    //var sampler:Sampler = Sampler(sf2File: "Metronom")
-    
-    //var sampler:Sampler = Sampler(sf2File: "gm")
-    //var sampler:Sampler = Sampler(sf2File: "PNS Drum Kit")
-    //var sampler:Sampler = Sampler(sf2File: "Nice-Steinway-v3.8")
-    //var sampler:Sampler = Sampler(sf2File: "Nice-Bass-Plus-Drums-v5.3")
-    var tempo: Double = 1000
-    
-    //var captureSession:AVCaptureSession = AVCaptureSession()
-    //var captureCtr = 0
-    
-    //static let requiredDecibelChangeInitial = 5 //16
-    //static let requiredBufSizeInitial = 32
-    
-    //private var requiredDecibelChange = ClapRecorder.requiredDecibelChangeInitial
-    //private var requiredBufSize = ClapRecorder.requiredBufSizeInitial
-
-    var audioPlayers:[AVAudioPlayer] = []
+    static public var shared:Metronome = Metronome()
+    var tempo: Double = 60.0
     var clapCnt = 0
     @Published var clapCounter = 0
-    var tickIsOn = false
-    //private var timer: DispatchSourceTimer?
+    var isRunning = false
+    var isTicking = false
+    private var score:Score?
+    var scoreIndex = 0 
+    private static var audioPlayers:[AVAudioPlayer] = []
+    private static let numberOfAudioPlayers = 10
     
-    func setTempo(tempo: Double) {
-        self.tempo = tempo
-    }
-    
-    func endTickNotify() {
-        print("end of tick")
-        AudioServicesDisposeSystemSoundID(1105);
-    }
-    
-    func playTickSound() {
-        //print("===== start Score.sampler.startNote....")
-        self.tickIsOn = true
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            let st = Date().timeIntervalSince1970
-            var index = 0
-            var playerIdx = 0
-            let beats = [0, -1, 2, -1, 4, -1, 6, -1]
-            while self.tickIsOn {
-                let playNote = true //beats.contains(index % beats.count)
-                if playNote {
-                    let player = playerIdx % self.audioPlayers.count
-                    playerIdx += 1
-                    self.audioPlayers[player].play()
-                    //sampler.sampler.startNote(UInt8(60+ctr), withVelocity:48, onChannel:0)
-                }
-                let t = Date().timeIntervalSince1970 - st
-                print("  startNote", index, "time:", String(format: "%.2f", t), "note", playNote)
-                Thread.sleep(forTimeInterval: self.tempo/1000.0)
-                index += 1
-            }
-        }
-    }
-    
-    func startMetronome() {
+    static func initialize() {
         let wav = false
         var url:URL?
         let sf2 = ""
-        
         if wav {
             guard let tickSoundPath = Bundle.main.path(forResource: "clap-single-17", ofType: "wav") else {
                 Logger.logger.reportError("Cannot load WAV file")
@@ -82,20 +35,99 @@ class Metronome: ObservableObject {
             return
         }
         
-        do {
-            for _ in 0..<20 {
-                let audioPlayer = try AVAudioPlayer(contentsOf: url)
-                audioPlayer.prepareToPlay()
-                audioPlayer.volume = 1.0 // Set the volume to full
-                audioPlayer.prepareToPlay()
-                self.audioPlayers.append(audioPlayer)
+        for _ in 0..<numberOfAudioPlayers {
+            do {
+                for _ in 0..<numberOfAudioPlayers {
+                    let audioPlayer = try AVAudioPlayer(contentsOf: url)
+                    audioPlayer.prepareToPlay()
+                    audioPlayer.volume = 1.0 // Set the volume to full
+                    //audioPlayer.prepareToPlay()
+                    self.audioPlayers.append(audioPlayer)
+                }
             }
-
-            self.playTickSound()
-        } catch let error {
-            Logger.logger.reportError("Start tick", error)
-            return
+            catch let error {
+                Logger.logger.reportError("Cant create audio player", error)
+            }
         }
+    }
+    
+    func setTempo(tempo: Double) {
+        self.tempo = tempo
+    }
+    
+    func endTickNotify() {
+        print("end of tick")
+        AudioServicesDisposeSystemSoundID(1105);
+    }
+    
+    func playScore(score:Score, onDone: (()->Void)? = nil) {
+        self.score = score
+        scoreIndex = 0
+        if !self.isRunning {
+            startRunning()
+        }
+    }
+
+    private func startRunning() {
+        self.isRunning = true
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            let st = Date().timeIntervalSince1970
+            var audioPlayerIdx = 0
+            var loopCtr = 0
+            var keepRunning = true
+            
+            while keepRunning {
+
+                if self.isTicking {
+                    let player = audioPlayerIdx % Metronome.audioPlayers.count
+                    audioPlayerIdx += 1
+                    Metronome.audioPlayers[player].play()
+                }
+                
+                if let score = score {
+                    if scoreIndex < score.scoreEntries.count {
+                        let entry = score.scoreEntries[scoreIndex]
+                        scoreIndex += 1
+                        if entry is TimeSlice {
+                            let ts:TimeSlice = entry as! TimeSlice
+                            for note in ts.note {
+                                note.setHilite()
+
+                                let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
+                                Score.midiSampler.startNote(UInt8(pitch), withVelocity:48, onChannel:0)
+                             }
+                        }
+                        if scoreIndex >= score.scoreEntries.count {
+                            keepRunning = false
+                        }
+                        else {
+                            //next time tick needs to have a time slice, e.g. throw away bar line entries
+                            let entry = score.scoreEntries[scoreIndex]
+                            if !(entry is TimeSlice) {
+                                scoreIndex += 1
+                            }
+                        }
+                    }
+                }
+                let t = Date().timeIntervalSince1970 - st
+                print("  Metronome loop", "time:", String(format: "%.2f", t), "scoreIdx", scoreIndex)
+
+                Thread.sleep(forTimeInterval: 60.0/self.tempo)
+                loopCtr += 1
+            }
+            self.isRunning = false
+        }
+    }
+    
+    func startTicking() {
+        if !self.isRunning {
+            self.startRunning()
+        }
+        self.isTicking = true
+    }
+    
+    func stopTicking() {
+        self.isTicking = false
     }
 }
 
@@ -135,3 +167,10 @@ class Metronome: ObservableObject {
 //            self.timer!.resume()
 //        }
 //    }
+
+
+//var sampler:Sampler = Sampler(sf2File: "Metronom")
+//var sampler:Sampler = Sampler(sf2File: "gm")
+//var sampler:Sampler = Sampler(sf2File: "PNS Drum Kit")
+//var sampler:Sampler = Sampler(sf2File: "Nice-Steinway-v3.8")
+//var sampler:Sampler = Sampler(sf2File: "Nice-Bass-Plus-Drums-v5.3")

@@ -12,7 +12,7 @@ struct ClapTestView: View {
     
     @State private var isRecording = false
     @ObservedObject var clapRecorder:AudioAnalyser = AudioAnalyser()
-    @ObservedObject var metronome:Metronome = Metronome()
+    @ObservedObject var metronome:Metronome = Metronome.shared
 
     private class CompletionHandler: NSObject, AVSpeechSynthesizerDelegate {
         let completion: (() -> Void)?
@@ -56,13 +56,13 @@ struct ClapTestView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    metronome.startMetronome()
+                    metronome.startTicking()
                 }) {
                     Text("Start Metronome")
                 }
                 Spacer()
                 Button(action: {
-                    metronome.tickIsOn = false
+                    //metronome.tickIsOn = false
                 }) {
                     Text("Stop Metronome")
                 }

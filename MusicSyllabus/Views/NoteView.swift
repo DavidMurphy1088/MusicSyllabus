@@ -27,7 +27,7 @@ struct BarLineView: View {
 
 struct NoteView: View {
     var staff:Staff
-    var note:Note
+    @ObservedObject var note:Note
     var color: Color
     var opacity: Int
     var lineSpacing:Int
@@ -55,12 +55,6 @@ struct NoteView: View {
         GeometryReader { geometry in
             let noteEllipseMidpoint = Int(geometry.size.height)/2 - offsetFromStaffMiddle * lineSpacing/2
             ZStack {
-//                    Text(accidental)
-//                        .frame(width: CGFloat(ledgerLineWidth) * 3.5, alignment: .leading)
-//                        //.border(Color.green) //DEBUG ONLY - not pos of .border in properties matters - different if after .position
-//                        .position(x: geometry.size.width/2, y: CGFloat(offsetFromStaffMiddle! * lineSpacing/2))
-                
-                //self.getNodeBody(geometry: geometry, noteEllipseMidpoint: noteEllipseMidpoint)
                 if note.value == Note.VALUE_QUARTER {
                     Ellipse()
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
@@ -92,20 +86,9 @@ struct NoteView: View {
                     }
                     .stroke(Color.black, lineWidth: 1)
                 }
-
-//                    if ledgerLines.count > 0 {
-//                        ForEach(0..<ledgerLines.count) { row in
-//                            Path { path in
-//                                path.move(to: CGPoint(x: Int(geometry.size.width)/2 - ledgerLineWidth, y: (offsetFromStaffTop! + ledgerLines[row]) * lineSpacing/2))
-//                                path.addLine(to: CGPoint(x: Int(geometry.size.width)/2 + ledgerLineWidth+1, y: (offsetFromStaffTop! + ledgerLines[row]) * lineSpacing/2))
-//                                path.addLine(to: CGPoint(x: Int(geometry.size.width)/2 + ledgerLineWidth+1, y: (offsetFromStaffTop! + ledgerLines[row]) * lineSpacing/2 + StaffView.lineHeight))
-//                                path.addLine(to: CGPoint(x: Int(geometry.size.width)/2 - ledgerLineWidth, y: (offsetFromStaffTop! + ledgerLines[row]) * lineSpacing/2 + StaffView.lineHeight))
-//                                path.closeSubpath()
-//                            }
-//                            .fill(self.color)
-//                            //.opacity(Double(opacity))
-//                        }
-//                    }
+                if note.hilite {
+                    Text("...")
+                }
             }
             //.border(Color.green)
         }

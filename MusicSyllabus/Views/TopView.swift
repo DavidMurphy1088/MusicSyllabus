@@ -11,11 +11,10 @@ struct TopView: View {
                 Label("Rhythm", systemImage: "music.note")
             }
 
-            ClapTestView()
-            .tabItem {
-                Label("ClapTest", systemImage: "music.note")
-            }
-
+//            ClapTestView()
+//            .tabItem {
+//                Label("ClapTest", systemImage: "music.note")
+//            }
 
             IntervalsView(exampleNum: 0, questionData: "72,67")
             .tabItem {
@@ -24,7 +23,15 @@ struct TopView: View {
             
             TopicsViewNavigation(topic: Topic(parent: nil, level: 0, number: 0, name: "Grades"))
             .tabItem {
-                Label("Topics", image: "triads")
+                Label("Book1", image: "music.note")
+            }
+            TopicsViewNavigation(topic: Topic(parent: nil, level: 0, number: 0, name: "Grades"))
+            .tabItem {
+                Label("Book2", image: "music.note")
+            }
+            TopicsViewNavigation(topic: Topic(parent: nil, level: 0, number: 0, name: "Grades"))
+            .tabItem {
+                Label("Book3", image: "music.note")
             }
 
         }

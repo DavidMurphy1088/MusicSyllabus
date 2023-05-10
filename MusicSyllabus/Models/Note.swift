@@ -10,11 +10,12 @@ enum HandType {
     case right
 }
 
-class Note : Hashable, Comparable {
+class Note : Hashable, Comparable, ObservableObject {
     var midiNumber:Int
     var staff:Int
     var value:Int = 1
     var isOnlyRhythmNote = false
+    @Published var hilite = false
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
@@ -38,6 +39,12 @@ class Note : Hashable, Comparable {
         self.midiNumber = num
         self.staff = staff
         self.value = value!
+    }
+    
+    func setHilite() {
+        DispatchQueue.main.async {
+            self.hilite = true
+        }
     }
     
     func hash(into hasher: inout Hasher) {
