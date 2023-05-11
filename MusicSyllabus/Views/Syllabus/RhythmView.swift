@@ -48,13 +48,15 @@ struct RhythmsAnswerView:View {
 
 
 struct RhythmsView:View {
+    @State var exampleName:String = ""
     @State var metronome = Metronome.shared
-    @State var exampleNum:Int
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 1)
     @State var answerState:AnswerState = .notRecorded
-    @State var audioRecorder = AudioRecorder()
     @State private var isAnimating = false
-    
+
+    var audioRecorder = AudioRecorder()
+    let exampleData = ExampleData.shared
+
     enum AnswerState {
         case notRecorded
         case recording
@@ -62,21 +64,25 @@ struct RhythmsView:View {
         case submittedAnswer
     }
     
-    init(exampleNum:Int, questionData:String?) {
-        self.exampleNum = exampleNum
+    init(contentSection:ContentSection) {
+        //let exampleNum = Int(exampleNum)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 1)
         score.setStaff(num: 0, staff: staff)
-        let vx = [2,2,0,4,4,2,0,4,4,2,0,1]
-        //let vx = [2]
-        var n = Note.MIDDLE_C + Note.OCTAVE - 1
-        for v in vx {
-            if v > 0 {
-                let note = Note(num: n, value: v)
-                note.isOnlyRhythmNote = true
-                score.addTimeSlice().addNote(n: note)
-            }
-            else {
-                score.addBarLine()
+        //let vx = [2,2,0,1,1,2,0,1,1,2,0,4]
+        let questionData = exampleData.get(contentSection.name)
+        if let questionData = questionData {
+            let questionData = questionData.split(separator: ",")
+            var n = Note.MIDDLE_C + Note.OCTAVE - 1
+            for v in questionData {
+                let vn = Int(v)
+                if vn! > 0 {
+                    let note = Note(num: n, value: vn)
+                    note.isOnlyRhythmNote = true
+                    score.addTimeSlice().addNote(n: note)
+                }
+                else {
+                    score.addBarLine()
+                }
             }
         }
         score.addBarLine()

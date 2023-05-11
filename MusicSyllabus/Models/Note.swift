@@ -13,16 +13,16 @@ enum HandType {
 class Note : Hashable, Comparable, ObservableObject {
     var midiNumber:Int
     var staff:Int
-    var value:Int = 1
+    var value:Int = Note.VALUE_QUARTER
     var isOnlyRhythmNote = false
-    @Published var hilite = false
+    @Published var hilite = false 
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
-    static let VALUE_QUARTER = 4
+    static let VALUE_QUARTER = 1
     static let VALUE_HALF = 2
-    static let VALUE_WHOLE = 1
+    static let VALUE_WHOLE = 4
 
     static func == (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber == rhs.midiNumber
@@ -41,9 +41,9 @@ class Note : Hashable, Comparable, ObservableObject {
         self.value = value!
     }
     
-    func setHilite() {
+    func setHilite(way: Bool) {
         DispatchQueue.main.async {
-            self.hilite = true
+            self.hilite = way
         }
     }
     

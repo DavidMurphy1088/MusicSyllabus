@@ -48,13 +48,13 @@ struct IntervalsAnswerView:View {
 }
 
 struct IntervalsView:View {
+    var contentSection:ContentSection
     @State var metronome = Metronome.shared
-    @State var exampleNum:Int
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 5)
-    @State private var selectedAnswer: String? = nil
     @State private var answerState:AnswerState = .notAnswered
-    
     @State private var selectedOption = 0
+    let exampleData = ExampleData.shared
+    private var selectedAnswer: String? = nil
     let options = ["Second", "Third"]
     
     enum AnswerState {
@@ -63,23 +63,21 @@ struct IntervalsView:View {
         case submittedAnswer
     }
     
-    init(exampleNum:Int, questionData:String?) {
-        self.exampleNum = exampleNum
+    init(contentSection:ContentSection) {
+        self.contentSection = contentSection
+        let questionData = exampleData.get(contentSection.name)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         score.setStaff(num: 0, staff: staff)
+        
         if let questionData = questionData {
             let notes = questionData.split(separator: ",")
-            let n1 = Int(notes[0])
-            var ts = score.addTimeSlice()
-            ts.addNote(n: Note(num: n1!, value: Note.VALUE_HALF))
-
-            let n2 = Int(notes[1])
-            ts = score.addTimeSlice()
-            ts.addNote(n: Note(num: n2!, value: Note.VALUE_HALF))
-            ts = score.addTimeSlice()
-            ts.addNote(n: Note(num: n2!, value: Note.VALUE_HALF))
-            ts.score.addBarLine(atScoreEnd: true)
+            for n in notes {
+                let n = Int(n)
+                var ts = score.addTimeSlice()
+                ts.addNote(n: Note(num: n!, value: Note.VALUE_HALF))
+            }
         }
+        score.addBarLine(atScoreEnd: true)
     }
     
     var body: some View {

@@ -65,13 +65,13 @@ struct NoteView: View {
                 }
                 if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
                     Ellipse()
-                        .stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
+                        .stroke(Color.black, lineWidth: 2) 
                         //.foregroundColor(note.value == 4 ? self.color : .blue)
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
                         .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
                         .opacity(Double(opacity))
                 }
-                
+                // stem
                 if note.value != Note.VALUE_WHOLE {
                     Path { path in
                         let stemHeight:CGFloat = noteWidth * 2.5
@@ -87,7 +87,11 @@ struct NoteView: View {
                     .stroke(Color.black, lineWidth: 1)
                 }
                 if note.hilite {
-                    Text("...")
+                    Ellipse()
+                        .stroke(Color.blue, lineWidth: 3) // minim or use foreground color for 1/4 note
+                        .frame(width: noteWidth * 1.8, height: CGFloat(Double(lineSpacing) * 1.8))
+                        .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
+                        .opacity(Double(opacity))
                 }
             }
             //.border(Color.green)
