@@ -3,7 +3,7 @@ import CoreData
 
 struct TopView: View {
     @Environment(\.scenePhase) var scenePhase
-    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "")
+    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "root")
     let devMode = true
     
     init () {
@@ -15,12 +15,17 @@ struct TopView: View {
     var body: some View {
         TabView {
             if devMode {
-                IntervalsView(contentSection: ContentSection(parent: nil, type: ContentSection.SectionType.example, name: "test"))
+                IntervalsView(contentSection:
+                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
+                    type: ContentSection.SectionType.example, name: "test"))
                     .tabItem {Label("Intervals", systemImage: "music.note")
                 }
-                RhythmsView(contentSection: ContentSection(parent: nil, type: ContentSection.SectionType.example, name: "TestClap"))
+                RhythmsView(contentSection:
+                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
+                    type: ContentSection.SectionType.example, name: "test"))
                     .tabItem {Label("Clapping", systemImage: "music.note")
                 }
+
                 TopicsViewNavigation(topic: root)
                     .tabItem {Label("Book1", image: "music.note")
                 }

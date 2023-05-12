@@ -12,7 +12,7 @@ struct MetronomeView: View {
                 Image("metronome")
                     .resizable()
                     .frame(width: 60, height: 60)
-                    //.padding()
+                    .padding()
             }
             HStack {
                 VStack {
@@ -26,20 +26,19 @@ struct MetronomeView: View {
                     }
                 }
             }
-            HStack {
-                Button(action: {
-                    metronomeIsOn.toggle()
-                    if metronomeIsOn {
-                        metronome.setTempo(tempo: tempo)
-                        metronome.startTicking()
-                    }
-                    else {
-                        metronome.stopTicking()
-                    }
-                }) {
-                    Text(metronomeIsOn ? "Stop" : "Start")
+            Button(action: {
+                metronomeIsOn.toggle()
+                if metronomeIsOn {
+                    metronome.setTempo(tempo: tempo)
+                    metronome.startTicking()
                 }
+                else {
+                    metronome.stopTicking()
+                }
+            }) {
+                Text(metronomeIsOn ? "Stop" : "Start")
             }
+            .padding()
         }
         .overlay(
             RoundedRectangle(cornerRadius: 16)

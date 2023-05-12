@@ -37,11 +37,11 @@ class ContentSection: Identifiable {
             subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade 3"))
         }
         if level == 1 {
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Test 1 - Intervals Visual"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Test 2 - Clapping"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Test 3 - Playing"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Test 4 - Intervals Aural"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Test 5 - Echo Clap"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Echo Clap"))
         }
         if level == 2 {
             subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 1"))

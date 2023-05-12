@@ -22,7 +22,6 @@ class Metronome: ObservableObject {
     static func initialize() {
         let wav = false
         var url:URL?
-        let sf2 = ""
         if wav {
             guard let tickSoundPath = Bundle.main.path(forResource: "clap-single-17", ofType: "wav") else {
                 Logger.logger.reportError("Cannot load WAV file")
@@ -130,7 +129,6 @@ class Metronome: ObservableObject {
     private func startThreadRunning() {
         self.isThreadRunning = true
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            let st = Date().timeIntervalSince1970
             var audioPlayerIdx = 0
             var loopCtr = 0
             var keepRunning = true
@@ -146,7 +144,6 @@ class Metronome: ObservableObject {
                 
                 //sound the next note
                 if let score = score {
-                    let currentTimeSlice = score.scoreEntries[nextScoreIndex]
                     if let timeSlice = nextTimeSlice {
                             for note in timeSlice.note {
                                 if currentNoteDuration < note.value {

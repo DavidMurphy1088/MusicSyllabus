@@ -89,15 +89,18 @@ struct StaffView: View {
                         //Huge TODO - dont show treble for one line staff
                         //if the font size number is too big causing the staff view goes below the score view all the alingmnet of everything is screwed up
                         HStack {
-                            if staff.type == StaffType.treble {
-                                Text("\u{1d11e}")
-                                    .font(.system(size: CGFloat(lineSpacing * 9)))
-                                //.offset(y:CGFloat(0 - lineSpacing))
-                            }
-                            else {
-                                Text("\u{1d122}")
-                                    .font(.system(size: CGFloat(lineSpacing * 6)))
-                                //.offset(y:CGFloat(0 - lineSpacing))
+                            VStack {
+                                if staff.type == StaffType.treble {
+                                    Text("\u{1d11e}")
+                                        .font(.system(size: CGFloat(lineSpacing * 10)))
+                                        .frame(height: 50)
+                                        .padding(.bottom, CGFloat(Double(lineSpacing) * 1.5))
+                                }
+                                else {
+                                    Text("\u{1d122}")
+                                        .font(.system(size: CGFloat(lineSpacing * 6)))
+                                    //.offset(y:CGFloat(0 - lineSpacing))
+                                }
                             }
                         }
                         .frame(width: clefWidth())

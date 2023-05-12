@@ -65,27 +65,25 @@ struct RhythmsView:View {
     }
     
     init(contentSection:ContentSection) {
-        //let exampleNum = Int(exampleNum)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 1)
         score.setStaff(num: 0, staff: staff)
-        //let vx = [2,2,0,1,1,2,0,1,1,2,0,4]
-        let questionData = exampleData.get(contentSection.name)
-        if let questionData = questionData {
-            let questionData = questionData.split(separator: ",")
-            var n = Note.MIDDLE_C + Note.OCTAVE - 1
-            for v in questionData {
-                let vn = Int(v)
-                if vn! > 0 {
-                    let note = Note(num: n, value: vn)
-                    note.isOnlyRhythmNote = true
-                    score.addTimeSlice().addNote(n: note)
+        let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
+        score.setStaff(num: 0, staff: staff)
+        
+        if let entries = exampleData {
+            for entry in entries {
+                if entry is Note {
+                    let timeSlice = score.addTimeSlice()
+                    let note = entry as! Note
+                    note.setIsOnlyRhythm(way: true)
+                    timeSlice.addNote(n: note)
                 }
-                else {
+                if entry is BarLine {
                     score.addBarLine()
                 }
             }
         }
-        score.addBarLine()
+        score.addBarLine(atScoreEnd: true)
     }
     
     var body: some View {

@@ -2,30 +2,43 @@ import SwiftUI
 import CoreData
 
 struct IntervalsAnswerView:View {
+    @Binding var answered:IntervalsView.AnswerState
     @State var metronome = Metronome.shared
     var score:Score
-    var correct:Bool
-    var correctAnswer:String
-    let imageSize = Double(32)
-    @Binding var answered:IntervalsView.AnswerState
+    var answerCorrect:Bool
+    var correctInterval:Int
     
-    var explanation = "A line to a space is a step (second interval), a space to line is a step (second interval), a line to a line is a skip (third interval) and a space to space is skip (third interval)."
+    private let imageSize = Double(32)
+    private var intervals:[IntervalsView.IntervalName]
+    private var noteIsSpace:Bool
+    private var correctIntervalName:IntervalsView.IntervalName
+    
+    init(answered:Binding<IntervalsView.AnswerState>, metronome:Metronome, score:Score, answerCorrect:Bool, correctInterval: Int, intervals:[IntervalsView.IntervalName], intervalNotes:[Note]) {
+        correctIntervalName = intervals.first(where: { $0.interval == correctInterval})!
+        _answered = answered
+        self.score = score
+        self.answerCorrect = answerCorrect
+        self.correctInterval = correctInterval
+        self.intervals = intervals
+        self.noteIsSpace = [Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12,
+                            Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
+    }
     
     var body: some View {
         VStack {
             HStack {
-                if correct {
+                if answerCorrect {
                     Image(systemName: "checkmark.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.green)
-                    Text("Correct")
+                    Text("Good job, correct")
                 }
                 else {
                     Image(systemName: "staroflife.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.red)
-                    Text("Not correct")
+                    Text("Sorry, not correct")
                 }
             }
             .padding()
-            Text("The interval is a \(correctAnswer)").padding()
-            Text(explanation).italic().padding()
+            Text("The interval is a \(correctIntervalName.name)").padding()
+            Text(correctIntervalName.explanation[self.noteIsSpace ? 1 : 0]).italic().padding()
             Button(action: {
                 metronome.playScore(score: score)
             }) {
@@ -52,10 +65,33 @@ struct IntervalsView:View {
     @State var metronome = Metronome.shared
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 5)
     @State private var answerState:AnswerState = .notAnswered
-    @State private var selectedOption = 0
+    @State private var selectedInterval:Int? = nil
     let exampleData = ExampleData.shared
     private var selectedAnswer: String? = nil
-    let options = ["Second", "Third"]
+    
+    class IntervalName : Hashable {
+        var interval: Int
+        var name:String
+        var explanation:[String]
+        init(interval:Int, name:String, explanation:[String]) {
+            self.interval = interval
+            self.name = name
+            self.explanation = explanation
+        }
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(interval)
+        }
+        static func == (lhs: IntervalsView.IntervalName, rhs: IntervalsView.IntervalName) -> Bool {
+            return lhs.interval == rhs.interval
+        }
+    }
+    let options = [IntervalName(interval:2, name: "Second",
+                                explanation: ["A line to a space is a step which is a second interval",
+                                              "A space to line is a step which is a second interval"]),
+                   IntervalName(interval:3, name: "Third",
+                                explanation: ["A line to a line is a skip which is a third interval",
+                                              "A space to space is a skip which is a third interval"])]
+    var intervalNotes:[Note] = []
     
     enum AnswerState {
         case notAnswered
@@ -65,16 +101,18 @@ struct IntervalsView:View {
     
     init(contentSection:ContentSection) {
         self.contentSection = contentSection
-        let questionData = exampleData.get(contentSection.name)
+        let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         score.setStaff(num: 0, staff: staff)
         
-        if let questionData = questionData {
-            let notes = questionData.split(separator: ",")
-            for n in notes {
-                let n = Int(n)
-                var ts = score.addTimeSlice()
-                ts.addNote(n: Note(num: n!, value: Note.VALUE_HALF))
+        if let entries = exampleData {
+            for entry in entries {
+                if entry is Note {
+                    let timeSlice = score.addTimeSlice()
+                    let note = entry as! Note
+                    timeSlice.addNote(n: note)
+                    intervalNotes.append(note)
+                }
             }
         }
         score.addBarLine(atScoreEnd: true)
@@ -87,16 +125,17 @@ struct IntervalsView:View {
                     ScoreView(score: score).padding()
                 }
                 
-                HStack {
+                VStack {
                     Text("Please choose the correct interval type").padding()
-                    Picker("Select an option", selection: $selectedOption) {
-                        ForEach(options.indices, id: \.self) { index in
-                            Text(options[index]).tag(index)
+                    Picker("Select an option", selection: $selectedInterval) {
+                        ForEach(options, id: \.self) { option in
+                            Text(option.name).tag(option.interval as Int?)
                         }
                     }
-                    .pickerStyle(MenuPickerStyle())
-                    .onChange(of: selectedOption) { newValue in
-                        print("Selection changed to index \(newValue)")
+                    .pickerStyle(.segmented)
+                    //.pickerStyle(MenuPickerStyle())
+                    .onChange(of: selectedInterval) { newValue in
+                        //print("Selection changed to index \(newValue)")
                         answerState = .selectedAnAnswer
                     }
                     .padding()
@@ -118,7 +157,9 @@ struct IntervalsView:View {
             }
             
             if answerState == .submittedAnswer {
-                IntervalsAnswerView(metronome: metronome, score: score, correct: selectedOption == 0, correctAnswer: options[0], answered: $answerState)
+                let interval = abs((intervalNotes[1].midiNumber - intervalNotes[0].midiNumber))
+                let correct = selectedInterval == interval
+                IntervalsAnswerView(answered: $answerState, metronome: metronome, score: score, answerCorrect: correct, correctInterval: interval, intervals: self.options, intervalNotes: intervalNotes)
             }
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)

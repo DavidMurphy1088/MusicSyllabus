@@ -46,7 +46,13 @@ class Note : Hashable, Comparable, ObservableObject {
             self.hilite = way
         }
     }
-    
+    func setIsOnlyRhythm(way: Bool) {
+        self.isOnlyRhythmNote = way
+        if self.isOnlyRhythmNote {
+            self.midiNumber = Note.MIDDLE_C + Note.OCTAVE - 1
+        }
+        
+    }
     func hash(into hasher: inout Hasher) {
         hasher.combine(midiNumber)
     }
