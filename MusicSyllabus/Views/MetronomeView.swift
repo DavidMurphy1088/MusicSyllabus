@@ -13,17 +13,11 @@ struct MetronomeView: View {
                     .resizable()
                     .frame(width: 60, height: 60)
                     .padding()
-            }
-            HStack {
                 VStack {
-                    Text(metronome.tempoName)
                     HStack {
                         Text("Tempo \(Int(self.tempo))").padding()
-                        Slider(value: $tempo, in: 40...200, onEditingChanged: { value in
-                            metronome.setTempo(tempo: tempo)
-                        })
-                        .padding()
                     }
+                    Text(metronome.tempoName)
                 }
             }
             Button(action: {
@@ -36,9 +30,15 @@ struct MetronomeView: View {
                     metronome.stopTicking()
                 }
             }) {
-                Text(metronomeIsOn ? "Stop" : "Start")
+                Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
             }
             .padding()
+            
+            Slider(value: $tempo, in: 40...220, onEditingChanged: { value in
+                metronome.setTempo(tempo: tempo)
+            })
+            .padding()
+
         }
         .overlay(
             RoundedRectangle(cornerRadius: 16)

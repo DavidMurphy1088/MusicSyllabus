@@ -16,29 +16,29 @@ class Sampler {
     var sampler:AVAudioUnitSampler = AVAudioUnitSampler()
     var inited = false
     
-    init(sf2File:String) {
-        guard inited==false else {
-            return
-        }
-        inited = true
-        Score.engine.attach(sampler)
-        Score.engine.connect(sampler, to:Score.engine.mainMixerNode, format:Score.engine.mainMixerNode.outputFormat(forBus: 0))
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-                if let url = Bundle.main.url(forResource:sf2File, withExtension:"sf2") {
-                    try self.sampler.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-                    Logger.logger.log("loaded SF2 for sampler \(sf2File)")
-                }
-                else {
-                    Logger.logger.reportError("Cant load SF2 for sampler \(sf2File)")
-                }
-                
-            } catch let error {
-                Logger.logger.reportError("Sampler cant load sound bank for sampler \(sf2File)", error)
-            }
-        }
-    }
+//    init(sf2File:String) {
+//        guard inited==false else {
+//            return
+//        }
+//        inited = true
+//        engine.attach(sampler)
+//        engine.connect(sampler, to:Score.engine.mainMixerNode, format:Score.engine.mainMixerNode.outputFormat(forBus: 0))
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            do {
+//                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
+//                if let url = Bundle.main.url(forResource:sf2File, withExtension:"sf2") {
+//                    try self.sampler.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+//                    Logger.logger.log("loaded SF2 for sampler \(sf2File)")
+//                }
+//                else {
+//                    Logger.logger.reportError("Cant load SF2 for sampler \(sf2File)")
+//                }
+//                
+//            } catch let error {
+//                Logger.logger.reportError("Sampler cant load sound bank for sampler \(sf2File)", error)
+//            }
+//        }
+//    }
 }
 
 class BarLine : ScoreEntry {
@@ -49,19 +49,14 @@ class BarLine : ScoreEntry {
 }
 
 class Score : ObservableObject {
-    static let engine = AVAudioEngine()
-    static let midiSampler = AVAudioUnitSampler()
-    
-    static var auStarted = false
     var timeSignature:TimeSignature
-    
     let ledgerLineCount = 3//4 is required to represent low E
 
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
     @Published var showFootnotes = false
 
-    private var staff:[Staff] = []
+    var staff:[Staff] = []
     var minorScaleType = Scale.MinorType.natural
     var tempo:Float = 75 //BPM, 75 = andante
     static let maxTempo:Float = 200
@@ -69,29 +64,11 @@ class Score : ObservableObject {
     static let midTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 2.0
     static let slowTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 4.0
 
-    var staffLineCount = 0
+    var staffLineCount:Int = 0
     static var accSharp = "\u{266f}"
     static var accNatural = "\u{266e}"
     static var accFlat = "\u{266d}"
     var scoreEntries:[ScoreEntry] = []
-
-    static func startAu()  {
-        engine.attach(midiSampler)
-        engine.connect(midiSampler, to:engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
-        Score.auStarted = true
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-                if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
-                    try Score.midiSampler.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-                }
-                try Score.engine.start()
-            } catch {
-                print("Couldn't start engine")
-            }
-        }
-        Logger.logger.log("Score::Initialised engine, connected sampler, started engine")
-    }
     
     init(timeSignature:TimeSignature, lines:Int) {
         self.timeSignature = timeSignature
@@ -104,9 +81,6 @@ class Score : ObservableObject {
         // Connect the nodes.
         //engine.connect(sampler, to: reverb, format: nil)
         //engine.connect(reverb, to: engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
-        if !Score.auStarted {
-            Score.startAu()
-        }
     }
     
     func setShowFootnotes(_ on:Bool) {
@@ -181,7 +155,21 @@ class Score : ObservableObject {
             staff.clear()
         }
     }
-
+    
+    func addQuaverStems() {
+        var c = 0
+        for entry in self.scoreEntries {
+            if entry is TimeSlice {
+                let note = (entry as! TimeSlice).note[0]
+                note.beamType = .none
+                if note.value == Note.VALUE_QUAVER {
+                    note.beamType = c==0 ? .start : .end
+                    c += 1
+                }
+            }
+        }
+    }
+    
     func playChord(chord: Chord, arpeggio: Bool? = nil) {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             //let t = Score.maxTempo - tempo

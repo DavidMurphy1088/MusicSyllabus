@@ -1,21 +1,34 @@
 import Foundation
 
-class Logger {
+class Logger : ObservableObject {
     static var logger = Logger()
-    var ctr = 0
-    
-    func reportError(_ context:String, _ err:Error? = nil) {
-        var msg = "ERROR ======== \(context)"
+    @Published var status:String? = nil
+    @Published var isError:Bool = false
+
+    func reportError(_ reporter:AnyObject, _ context:String, _ err:Error? = nil) {
+        var msg = String("*ERROR* :" + String(describing: type(of: reporter))) + " " + context
+        if let err = err {
+            msg += String()
+        }
         if let err = err {
             print(msg, err.localizedDescription)
         }
         else {
             print(msg)
         }
+        publish(msg, true)
     }
     
-    func log(_ msg:String) {
-        ctr += 1
-        print(ctr, "=>", msg)
+    func log(_ reporter:AnyObject, _ msg:String) {
+        let msg = String(describing: type(of: reporter)) + ":" + msg
+        publish(msg, false)
+    }
+    
+    func publish(_ msg:String, _ isErr:Bool) {
+        print(msg)
+        DispatchQueue.global(qos: .background).async {
+            self.status = msg
+            self.isError = isErr
+        }
     }
 }

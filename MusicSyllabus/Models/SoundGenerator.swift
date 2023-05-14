@@ -19,12 +19,12 @@ class SoundGenerator {
                         try SoundGenerator.sampler.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
                     }
                     catch let error as NSError {
-                        Logger.logger.reportError("Failed to load sound bank instrument", error)
+                        Logger.logger.reportError(self, "Failed to load sound bank instrument", error)
                     }
                 }
                 try SoundGenerator.engine.start()
             } catch let error as NSError {
-                Logger.logger.reportError("Couldn't start engine", error)
+                Logger.logger.reportError(self, "Couldn't start engine", error)
             }
         }
     }

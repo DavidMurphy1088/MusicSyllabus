@@ -5,8 +5,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
       FirebaseApp.configure()
-      Logger.logger.log("Firebase Configured")
-      Metronome.initialize()
+      Logger.logger.log(self, "Firebase Configured")
+      //Metronome.initialize()
       return true
   }
 }

@@ -10,19 +10,31 @@ enum HandType {
     case right
 }
 
+enum BeamType {
+    case none
+    case start
+    case middle
+    case end
+}
+
 class Note : Hashable, Comparable, ObservableObject {
     var midiNumber:Int
     var staff:Int
-    var value:Int = Note.VALUE_QUARTER
+    var value:Double = Note.VALUE_QUARTER
     var isOnlyRhythmNote = false
+    var stemUp:Bool
+    var beamType:BeamType = .none
+    
     @Published var hilite = false 
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
-    static let VALUE_QUARTER = 1
-    static let VALUE_HALF = 2
-    static let VALUE_WHOLE = 4
+    
+    static let VALUE_QUAVER = 0.5
+    static let VALUE_QUARTER = 1.0
+    static let VALUE_HALF = 2.0
+    static let VALUE_WHOLE = 4.0
 
     static func == (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber == rhs.midiNumber
@@ -35,10 +47,11 @@ class Note : Hashable, Comparable, ObservableObject {
         return (note1 % 12) == (note2 % 12)
     }
     
-    init(num:Int, value:Int? = 0, staff:Int = 0) {
+    init(num:Int, value:Double? = 0, staff:Int = 0) {
         self.midiNumber = num
         self.staff = staff
         self.value = value!
+        stemUp = num < Note.MIDDLE_C + Note.OCTAVE - 1 ? true : false
     }
     
     func setHilite(way: Bool) {

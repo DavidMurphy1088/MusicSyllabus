@@ -64,7 +64,7 @@ class Staff : ObservableObject {
         self.linesInStaff = linesInStaff
         lowestNoteValue = 20 //MIDI C0
         highestNoteValue = 107 //MIDI B7
-        middleNoteValue = type == StaffType.treble ? 71 /* MIDI B0*/ : 50 /* MIDI D3*/
+        middleNoteValue = type == StaffType.treble ? 71 : 50
 
         //Determine the staff placement for each note pitch
         //var noteOffsetEntries:[String] = []

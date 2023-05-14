@@ -3,11 +3,11 @@ import CoreData
 import AVFoundation
 
 struct RhythmsAnswerView:View {
+    var audioRecorder:AudioRecorder
     @State var score:Score
     @State var metronome = Metronome.shared
     let imageSize = Double(32)
     @Binding var answered:RhythmsView.AnswerState
-    var audioPlayer:AudioFilePlayer = AudioFilePlayer()
     
     var explanation = ""
     
@@ -17,32 +17,31 @@ struct RhythmsAnswerView:View {
     var body: some View {
         VStack {
             Button(action: {
-                audioPlayer.playFile()
+                audioRecorder.playRecording()
             }) {
                 Text("Hear Your Rhythm")
             }
-            Spacer()
+            .padding()
             Button(action: {
                 metronome.playScore(score: score)
             }) {
                 Text("Hear The Test Rhythm")
             }
-            Spacer()
+            .padding()
 
             Button(action: {
                 answered = RhythmsView.AnswerState.notRecorded
             }) {
                 Text("Next Questioon")
             }
-            Spacer()
+            .padding()
         }
         .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 16)
             .stroke(Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 2)
         )
-        .padding()
-        Spacer()
+        .padding()        
     }
 }
 
@@ -53,10 +52,10 @@ struct RhythmsView:View {
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 1)
     @State var answerState:AnswerState = .notRecorded
     @State private var isAnimating = false
-
-    var audioRecorder = AudioRecorder()
+    @State private var logger = Logger.logger
     let exampleData = ExampleData.shared
-
+    let audioRecorder = AudioRecorder()
+    
     enum AnswerState {
         case notRecorded
         case recording
@@ -89,16 +88,27 @@ struct RhythmsView:View {
     var body: some View {
         VStack {
             VStack {
-                if answerState == AnswerState.submittedAnswer {
-                    Spacer()
-                }
+                MetronomeView(metronome: metronome)
                 HStack {
                     ScoreView(score: score).padding()
                 }
-                MetronomeView(metronome: metronome)
-                
+//                Button(action: {
+//                    rec.startRecording()
+//                }) {
+//                    Text("TEST Start Recording")
+//                }.padding()
+//                Button(action: {
+//                    rec.stopRecording()
+//                }) {
+//                    Text("TEST Stop Recording")
+//                }.padding()
+//                Button(action: {
+//                    rec.playRecording()
+//                }) {
+//                    Text("TEST Play Recording")
+//                }.padding()
+
                 HStack {
-                    Spacer()
                     if answerState == AnswerState.notRecorded || answerState == AnswerState.recorded {
                         Button(action: {
                             answerState = .recording
@@ -125,7 +135,6 @@ struct RhythmsView:View {
                                 audioRecorder.stopRecording()
                                 isAnimating = false
                             }) {
-                                
                                 Text("Stop Recording")
                             }.padding()
                         }
@@ -139,7 +148,6 @@ struct RhythmsView:View {
                         .padding()
                     }
 
-                    Spacer()
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
@@ -150,8 +158,12 @@ struct RhythmsView:View {
 
             
             if answerState == AnswerState.submittedAnswer {
-                RhythmsAnswerView(score: score, metronome: metronome, answered: $answerState)
+                RhythmsAnswerView(audioRecorder: audioRecorder, score: score, metronome: metronome, answered: $answerState)
             }
+            if logger.status != nil {
+                Text(logger.status!).foregroundColor(logger.isError ? .red : .gray)
+            }
+
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
     }

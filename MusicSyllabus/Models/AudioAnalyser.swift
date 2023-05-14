@@ -126,14 +126,14 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
             audioInput = try AVCaptureDeviceInput(device: captureDevice!)
             captureDevice?.unlockForConfiguration()
         } catch let error {
-            Logger.logger.reportError("ClapRecorder:capture", error as NSError)
+            Logger.logger.reportError(self, "ClapRecorder:capture", error as NSError)
         }
 
         // Add audio input
         if captureSession.canAddInput(audioInput!) {
             captureSession.addInput(audioInput!)
         } else {
-            Logger.logger.reportError("ClapRecorder:add Input")
+            Logger.logger.reportError(self, "ClapRecorder:add Input")
         }
         
         //audioOutput = AVCaptureAudioFileOutput()
@@ -143,7 +143,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
         if captureSession.canAddOutput(audioOutput) {
             captureSession.addOutput(audioOutput)
         } else {
-            Logger.logger.reportError("ClapRecorder:add output")
+            Logger.logger.reportError(self, "ClapRecorder:add output")
         }
         captureCtr = 0
         logBuffer = []

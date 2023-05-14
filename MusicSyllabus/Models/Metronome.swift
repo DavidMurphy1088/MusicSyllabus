@@ -4,27 +4,34 @@ import AVFoundation
 
 class Metronome: ObservableObject {
     static public var shared:Metronome = Metronome()
+    let engine = AVAudioEngine()
+    
     @Published var clapCounter = 0
     @Published var tempoName:String = ""
-
-    var tempo: Double = 60.0
+    var midiSampler:AVAudioUnitSampler?
+    
+    var tempo: Double
     var clapCnt = 0
 
     var isThreadRunning = false
     var isTicking = false
     private var score:Score?
     var nextScoreIndex = 0 
-    private static var audioPlayers:[AVAudioPlayer] = []
-    private static let numberOfAudioPlayers = 10
+    private var audioPlayers:[AVAudioPlayer] = []
+    private let numberOfAudioPlayers = 10
     private var nextTimeSlice:TimeSlice?
-    private var currentNoteDuration = 0
+    private var currentNoteDuration = 0.0
+    //the shortest note value which is used to set the metronome's thread firing frequency
+    private let shortestNoteValue = Note.VALUE_QUAVER
     
-    static func initialize() {
+    init() {
+        self.tempo = 60.0
+
         let wav = false
         var url:URL?
         if wav {
             guard let tickSoundPath = Bundle.main.path(forResource: "clap-single-17", ofType: "wav") else {
-                Logger.logger.reportError("Cannot load WAV file")
+                Logger.logger.reportError(self, "Cannot load WAV file")
                 return
             }
             url = URL(fileURLWithPath: tickSoundPath)
@@ -35,7 +42,7 @@ class Metronome: ObservableObject {
             url = Bundle.main.url(forResource: "Mechanical metronome - High", withExtension: "aif")
         }
         guard let url = url else {
-            Logger.logger.reportError("URL is nil")
+            Logger.logger.reportError(self, "URL is nil")
             return
         }
         
@@ -45,23 +52,36 @@ class Metronome: ObservableObject {
                     let audioPlayer = try AVAudioPlayer(contentsOf: url)
                     audioPlayer.prepareToPlay()
                     audioPlayer.volume = 1.0 // Set the volume to full
-                    //audioPlayer.prepareToPlay()
-                    self.audioPlayers.append(audioPlayer)
+                    audioPlayers.append(audioPlayer)
                 }
             }
             catch let error {
-                Logger.logger.reportError("Cant create audio player", error)
+                Logger.logger.reportError(self, "Cant create audio player", error)
             }
         }
-    }
-    
-    init() {
-        setTempo(tempo: self.tempo)
+        
+        // ========= set up audio ============
+        
+        midiSampler = AVAudioUnitSampler()
+        engine.attach(midiSampler!)
+        engine.connect(midiSampler!, to:engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
+        
+        //DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
+                if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
+                    try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+                }
+                try self.engine.start()
+            } catch let error {
+                Logger.logger.reportError(self, "loading sampler", error)
+            }
+        //}
+        Logger.logger.log(self, "Score::Initialised engine, connected sampler, started engine")
     }
     
     func setTempo(tempo: Double) {
         //https://theonlinemetronome.com/blogs/12/tempo-markings-defined
-        print("Metronome tempo set to", tempo)
         self.tempo = tempo
         var name = ""
         if tempo <= 20 {
@@ -99,17 +119,15 @@ class Metronome: ObservableObject {
         }
         DispatchQueue.main.async {
             self.tempoName = name
+            Logger.logger.log(self, "set tempo \(self.tempo)")
         }
-    }
-    
-    func endTickNotify() {
-        //print("end of tick")
-        AudioServicesDisposeSystemSoundID(1105);
     }
     
     func playScore(score:Score, onDone: (()->Void)? = nil) {
         self.score = score
         nextScoreIndex = 0
+        
+        //find the first note to play
         if score.scoreEntries.count > 0 {
             if score.scoreEntries[0] is TimeSlice {
                 let next = score.scoreEntries[0] as! TimeSlice
@@ -120,7 +138,6 @@ class Metronome: ObservableObject {
             }
         }
         nextScoreIndex = 1
-
         if !self.isThreadRunning {
             startThreadRunning()
         }
@@ -128,6 +145,15 @@ class Metronome: ObservableObject {
 
     private func startThreadRunning() {
         self.isThreadRunning = true
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+        }
+        catch let error {
+            Logger.logger.reportError(self, "Set Category", error)
+        }
+        
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             var audioPlayerIdx = 0
             var loopCtr = 0
@@ -137,9 +163,9 @@ class Metronome: ObservableObject {
                 
                 // sound the metronome tick
                 if self.isTicking {
-                    let player = audioPlayerIdx % Metronome.audioPlayers.count
+                    let player = audioPlayerIdx % audioPlayers.count
                     audioPlayerIdx += 1
-                    Metronome.audioPlayers[player].play()
+                    audioPlayers[player].play()
                 }
                 
                 //sound the next note
@@ -156,12 +182,13 @@ class Metronome: ObservableObject {
                                     note.setHilite(way: false)
                                 }
                                 let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
-                                Score.midiSampler.startNote(UInt8(pitch), withVelocity:48, onChannel:0)
+                                midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:0)
+                                print("METRONOME::payed midi", pitch)
                             }
                         
                         //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick
                         //next time tick needs to have a time slice, e.g. throw away bar line entries
-                        currentNoteDuration -= 1
+                        currentNoteDuration -= self.shortestNoteValue //1
                         if currentNoteDuration > 0 {
                             
                         }
@@ -190,7 +217,7 @@ class Metronome: ObservableObject {
                 if !self.isThreadRunning && nextTimeSlice == nil {
                     keepRunning = false
                 }
-                Thread.sleep(forTimeInterval: 60.0/self.tempo)
+                Thread.sleep(forTimeInterval: (60.0/self.tempo) * shortestNoteValue)
                 loopCtr += 1
             }
             //print ("===> metronome thread stopped")

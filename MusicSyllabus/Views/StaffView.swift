@@ -1,7 +1,85 @@
 import SwiftUI
 import CoreData
 import MessageUI
- 
+
+struct QuaverBeamView: View {
+    var note:Note
+    var body: some View {
+        VStack {
+            Spacer()
+            Text(note.value == Note.VALUE_QUAVER ? "Q" : "")
+        }
+    }
+}
+
+struct StaffLinesView: View {
+    @ObservedObject var staff:Staff
+    var parentGeometry: GeometryProxy
+    var lineSpacing:Int
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                if staff.linesInStaff > 1 {
+                    ForEach(-2..<3) { row in
+                        Path { path in
+                            let y:Double = (geometry.size.height / 2.0) + Double(row * lineSpacing)
+                            path.move(to: CGPoint(x: 0, y: y))
+                            path.addLine(to: CGPoint(x: geometry.size.width, y: y))
+                        }
+                        //.fill(Color(.black))
+                        .stroke(Color.black, lineWidth: 1)
+                    }
+                }
+                else {
+                    Path { path in
+                        let y:Double = geometry.size.height/2.0
+                        path.move(to: CGPoint(x: 0, y: y))
+                        path.addLine(to: CGPoint(x: geometry.size.width, y: y))
+                    }
+                    .stroke(Color.black, lineWidth: 1)
+                }
+                // end of staff bar lines
+                Path { path in
+                    //let y:Double = Double(geometry.size.height) / 2.0
+                    let x:Double = geometry.size.width - 2.0
+                    let top:Double = (geometry.size.height/2.0) + Double(2 * lineSpacing)
+                    let bottom:Double = (geometry.size.height/2.0) - Double(2 * lineSpacing)
+                    path.move(to: CGPoint(x: x, y: top))
+                    path.addLine(to: CGPoint(x: x, y: bottom))
+                }
+                .stroke(Color.black, lineWidth: Double(lineSpacing) / 3)
+            }
+        }
+    }
+}
+
+struct TimeSignatureView: View {
+    @ObservedObject var staff:Staff
+    var parentGeometry: GeometryProxy
+    var lineSpacing:Int
+    var clefWidth:Double
+    
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                //Need to squash numerator and denominator of time sig together to overidde default spacing of the text fields
+                //TODO same as above - too large of a font size screws al algnemnt of everythgn
+                let timeSignatureFontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.5)
+                let squash:CGFloat = CGFloat(lineSpacing)/2.5
+                Spacer()
+                Text("4").padding(.all, 0).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: squash)
+                //padding required since these text fields down line up on the staff center line. So padding her to push entire time sig up
+                //Text("4").padding(.bottom, 1 * CGFloat(lineSpacing)).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: -squash)
+                Text("4").padding(.all, 0).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: -squash)
+                Spacer()
+            }
+            .bold()
+            .frame(width: clefWidth)
+        }
+    }
+}
+
 struct StaffView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
@@ -13,16 +91,9 @@ struct StaffView: View {
         self.staff = staff
         self.lineSpacing = lineSpacing
     }
-            
-    func colr(line: Int) -> Color {
-        if line < score.ledgerLineCount || line >= score.ledgerLineCount + 5 {
-            return Color.yellow
-        }
-        return Color.black
-    }
     
-    func clefWidth() -> CGFloat {
-        return CGFloat(Double(lineSpacing) * 3.5)
+    func clefWidth() -> Double {
+        return Double(lineSpacing) * 3.5
     }
     
     func getNotes(entry:ScoreEntry) -> [Note] {
@@ -35,138 +106,49 @@ struct StaffView: View {
             return n
         }
     }
-    
-    func barLineatScoreEnd(entry:ScoreEntry) -> Bool {
-        let barLine:BarLine = entry as! BarLine
-        return barLine.atScoreEnd
-    }
 
     var body: some View {
         GeometryReader { geometry in
-            let height = geometry.size.height
-            let midPoint = Int(geometry.size.height/2)
-            let width = Int(geometry.size.width)
-            
             ZStack (alignment: .leading) {
-                if staff.linesInStaff > 1 {
-                    ForEach(-2..<3) { row in
-                        Path { path in
-                            let y = midPoint + (row * lineSpacing)
-                            path.move(to: CGPoint(x: 0, y: y))
-                            path.addLine(to: CGPoint(x: width, y: y))
-                        }
-                        //.fill(Color(.black))
-                        .stroke(Color.black, lineWidth: 1)
-                    }
-                }
-                else {
-                    Path { path in
-                        let y = midPoint
-                        path.move(to: CGPoint(x: 0, y: y))
-                        path.addLine(to: CGPoint(x: width, y: y))
-                    }
-                    .stroke(Color.black, lineWidth: 1)
-                }
-                
-                // end of staff bar lines
-                Path { path in
-                    let y = midPoint
-                    path.move(to: CGPoint(x: Int(geometry.size.width)-2, y: Int(geometry.size.height)/2 + 2 * lineSpacing))
-                    path.addLine(to: CGPoint(x: Int(geometry.size.width)-2, y: Int(geometry.size.height)/2 - 2 * lineSpacing))
-                }
-                .stroke(Color.black, lineWidth: Double(lineSpacing) / 3)
-
+                StaffLinesView(staff: staff, parentGeometry: geometry, lineSpacing: lineSpacing)
                 HStack {
-                    if false { //enable to check alingment - the X should be right on the center line of the staff
-                        HStack {
-                            Text("X")
+                    HStack {
+                        if staff.type == StaffType.treble {
+                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 9)))
                         }
-                        .border(Color.blue)
-                        .padding(.horizontal, 8)
-                    }
-                    
-                    if staff.linesInStaff > 1 {
-                        //Huge TODO - dont show treble for one line staff
-                        //if the font size number is too big causing the staff view goes below the score view all the alingmnet of everything is screwed up
-                        HStack {
-                            VStack {
-                                if staff.type == StaffType.treble {
-                                    Text("\u{1d11e}")
-                                        .font(.system(size: CGFloat(lineSpacing * 10)))
-                                        .frame(height: 50)
-                                        .padding(.bottom, CGFloat(Double(lineSpacing) * 1.5))
-                                }
-                                else {
-                                    Text("\u{1d122}")
-                                        .font(.system(size: CGFloat(lineSpacing * 6)))
-                                    //.offset(y:CGFloat(0 - lineSpacing))
-                                }
-                            }
+                        else {
+                            Text("\u{1d122}").font(.system(size: CGFloat(lineSpacing * 6)))
                         }
-                        .frame(width: clefWidth())
-                        //.border(Color.green)
                     }
-                    
-                    VStack(spacing: 0) {
-                        //Need to squash numerator and denominator of time sig together to overidde default spacing of the text fields
-                        //TODO same as above - too large of a font size screws al algnemnt of everythgn
-                        let timeSignatureFontSize = CGFloat(Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.5))
-                        let squash:CGFloat = CGFloat(lineSpacing)/2.5
-                        Spacer()
-                        Text("4").padding(.all, 0).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: squash)
-                        //padding required since these text fields down line up on the staff center line. So padding her to push entire time sig up
-                        //Text("4").padding(.bottom, 1 * CGFloat(lineSpacing)).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: -squash)
-                        Text("4").padding(.all, 0).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: -squash)
-                        Spacer()
-                    }
-                    .bold()
                     .frame(width: clefWidth())
-                    //.border(Color.red)
-                    
-//                    HStack (spacing: 0) {
-//                        ForEach(0 ..< score.key.keySig.accidentalCount, id: \.self) { i in
-//                            //KeySignatureAccidentalView(staff: staff, key:score.key.keySig, noteIdx: i, lineSpacing: score.lineSpacing)
-//                        }
-//                    }
-//                    .border(Color.green)
-//                    .frame(width: CGFloat(score.staffLineCount/2 * lineSpacing))
-                    
-                    if score.showNotes {
-                        ForEach(score.scoreEntries, id: \.self) { entry in
-                            VStack {
-                                ZStack {
-                                    if entry is TimeSlice {
-                                        ForEach(getNotes(entry: entry), id: \.self) { note in
-                                            //if the note isn't shown on both staff's the alignment between staffs is wrong when >1 chord on the staff
-                                            //so make a space on the staff where a time slice has notes only in one staff
-                                            NoteView(staff: staff,
-                                                     note: note,
-                                                     stemDirection: note.midiNumber < staff.middleNoteValue ? 0 : 1,
-                                                     lineSpacing: lineSpacing,
-                                                     opacity: 1)
-                                        }
-                                    }
-                                    if entry is BarLine {
-                                        BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+                    //.border(Color.green)
+                    TimeSignatureView(staff: staff, parentGeometry: geometry, lineSpacing: lineSpacing, clefWidth: clefWidth())
+                    ForEach(score.scoreEntries, id: \.self) { entry in
+                        ZStack {
+                            if entry is TimeSlice {
+                                ForEach(getNotes(entry: entry), id: \.self) { note in
+                                    VStack {
+                                        //if the note isn't shown on both staff's the alignment between staffs is wrong when >1 chord on the staff
+                                        //so make a space on the staff where a time slice has notes only in one staff
+                                        NoteView(staff: staff,
+                                                 note: note,
+                                                 stemDirection: note.midiNumber < staff.middleNoteValue ? 0 : 1,
+                                                 lineSpacing: lineSpacing,
+                                                 opacity: 1.0)
                                     }
                                 }
-                                if score.showFootnotes {
-                                    if staff.staffNum == 1 {
-                                        //if let footNote = timeSlice.footnote {
-                                            //Spacer()
-                                            //UIHiliteText(text: footNote, answerMode: 1).padding(.top, 50)
-                                            //Spacer()
-                                        //}
-                                    }
-                                }
+                                QuaverBeamView(note: getNotes(entry: entry)[0])
+
                             }
-                            //.border(Color.green)
+                            if entry is BarLine {
+                                BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+                            }
                         }
                     }
+                    //.border(Color.green)
                 }
             }
-            //.border(Color.red)
+            
         }
     }
-    
 }

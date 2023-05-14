@@ -88,7 +88,7 @@ class FirestorePersistance {
             "sample": "USA"
         ]) { err in
             if let err = err {
-                Logger.logger.reportError("Error writing document", err as NSError)
+                Logger.logger.reportError(self, "Error writing document", err as NSError)
             } else {
                 print("Document successfully written!")
             }

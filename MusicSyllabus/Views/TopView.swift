@@ -8,7 +8,7 @@ struct TopView: View {
     
     init () {
         if devMode {
-            Metronome.shared.setTempo(tempo: 120)
+           // Metronome.shared.setTempo(tempo: 120)
         }
         
     }
@@ -29,10 +29,9 @@ struct TopView: View {
                 TopicsViewNavigation(topic: root)
                     .tabItem {Label("Book1", image: "music.note")
                 }
-                //            ClapTestView()
-                //            .tabItem {
-                //                Label("ClapTest", systemImage: "music.note")
-                //            }
+                ClapTestView()
+                    .tabItem {Label("ClapTest", systemImage: "music.note")
+                }
             }
             else {
                 TopicsViewNavigation(topic: root)

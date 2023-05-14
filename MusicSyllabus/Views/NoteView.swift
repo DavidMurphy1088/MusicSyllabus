@@ -29,7 +29,7 @@ struct NoteView: View {
     var staff:Staff
     @ObservedObject var note:Note
     var color: Color
-    var opacity: Int
+    var opacity: Double
     var lineSpacing:Int
     var noteWidth:CGFloat
     var stemDirection: Int
@@ -37,7 +37,7 @@ struct NoteView: View {
     var accidental:String
     var ledgerLines:[Int]
     
-    init(staff:Staff, note:Note, stemDirection:Int, lineSpacing: Int, opacity:Int) {
+    init(staff:Staff, note:Note, stemDirection:Int, lineSpacing: Int, opacity:Double) {
         self.staff = staff
         self.note = note
         self.color = Color.black //Color.blue
@@ -55,17 +55,19 @@ struct NoteView: View {
         GeometryReader { geometry in
             let noteEllipseMidpoint = Int(geometry.size.height)/2 - offsetFromStaffMiddle * lineSpacing/2
             ZStack {
-                if note.value == Note.VALUE_QUARTER {
+                if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(note.value)  {
                     Ellipse()
+                        //Closed ellipse
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
                         .foregroundColor(self.color)
-                        .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0)) 
+                        .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
                         .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
                         .opacity(Double(opacity))
                 }
                 if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
                     Ellipse()
-                        .stroke(Color.black, lineWidth: 2) 
+                        //Open ellipse
+                        .stroke(Color.black, lineWidth: 2)
                         //.foregroundColor(note.value == 4 ? self.color : .blue)
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
                         .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
@@ -98,4 +100,3 @@ struct NoteView: View {
         }
     }
 }
-

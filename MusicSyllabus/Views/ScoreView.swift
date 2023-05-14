@@ -4,7 +4,7 @@ import MessageUI
  
 struct ScoreView: View {
     @ObservedObject var score:Score
-    let lineSpacing = 10 //was 10 , TODO dont hard code
+    let lineSpacing:Int = 10 //was 10 , TODO dont hard code
 
     var body: some View {
         VStack {
@@ -30,8 +30,11 @@ struct ScoreView: View {
             HStack {
                 ForEach(score.getStaff(), id: \.self.type) { staff in
                     StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
-                        .frame(height: CGFloat(score.staffLineCount * lineSpacing)) //fixed size of height for all staff lines + ledger lines
+                        .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))  //fixed size of height for all staff lines + ledger lines
                 }
+//                StaffView(score: score, staff: score.staff[0], lineSpacing: lineSpacing)
+//                    .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))
+
             }.padding()
         }
         .overlay(
