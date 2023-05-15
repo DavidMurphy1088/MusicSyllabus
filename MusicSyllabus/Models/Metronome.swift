@@ -176,10 +176,10 @@ class Metronome: ObservableObject {
                                     //note only plays once even though it might spans > 1 tick
                                     continue
                                 }
-                                note.setHilite(way: true)
+                                note.setHilite(hilite: true)
                                 DispatchQueue.global(qos: .background).async {
                                     Thread.sleep(forTimeInterval: 0.5)
-                                    note.setHilite(way: false)
+                                    note.setHilite(hilite: false)
                                 }
                                 let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
                                 midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:0)

@@ -6,7 +6,8 @@ class ExampleData {
     var data = [String: String]()
     
     init() {
-        data["Intervals Visual.test"] = "(72,.5) (74,.5) (71,2) (69,2)"
+        //data["Intervals Visual.test"] = "(72,.5) (74,.5) (71,2) (66,.5) (64,.5) (69,2)"
+        data["Intervals Visual.test"] = "(72,.5) (74,.5) (71,2)"
         //data["Intervals Visual"] = ["a"]
         data["Intervals Visual.Example 1"] = "(72,2) (74,2)"
         data["Intervals Visual.Example 2"] = "(74.2),(71.2)"

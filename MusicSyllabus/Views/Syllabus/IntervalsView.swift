@@ -119,7 +119,19 @@ struct IntervalsView:View {
         }
         score.addBarLine(atScoreEnd: true)
     }
-    
+//    var body: some View {
+//        VStack {
+//            GeometryReader { geo in
+//                Text("Hello, World!")
+//                    .frame(width: geo.size.width * 0.9, height: 40)
+//                    .background(.red)
+//            }
+//            //border(.green)
+//            Text("More text")
+//                .background(.blue)
+//        }
+//    }
+
     var body: some View {
         VStack {
             VStack {

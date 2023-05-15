@@ -35,8 +35,11 @@ struct ScoreView: View {
 //                StaffView(score: score, staff: score.staff[0], lineSpacing: lineSpacing)
 //                    .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))
 
-            }.padding()
+            }
+            .padding()
+            //.coordinateSpace(name: "Score1")
         }
+        //.coordinateSpace(name: "Score2")
         .overlay(
             RoundedRectangle(cornerRadius: 30).stroke(.blue, lineWidth: 1)
         )

@@ -18,14 +18,16 @@ enum BeamType {
 }
 
 class Note : Hashable, Comparable, ObservableObject {
+    let id = UUID()
     var midiNumber:Int
     var staff:Int
     var value:Double = Note.VALUE_QUARTER
     var isOnlyRhythmNote = false
     var stemUp:Bool
     var beamType:BeamType = .none
-    
-    @Published var hilite = false 
+    var stemLength:Double = 0 //measured in number of staff lines
+
+    @Published var hilite = false
     
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
@@ -51,14 +53,15 @@ class Note : Hashable, Comparable, ObservableObject {
         self.midiNumber = num
         self.staff = staff
         self.value = value!
-        stemUp = num < Note.MIDDLE_C + Note.OCTAVE - 1 ? true : false
+        self.stemUp = true
     }
     
-    func setHilite(way: Bool) {
+    func setHilite(hilite: Bool) {
         DispatchQueue.main.async {
-            self.hilite = way
+            self.hilite = hilite
         }
     }
+    
     func setIsOnlyRhythm(way: Bool) {
         self.isOnlyRhythmNote = way
         if self.isOnlyRhythmNote {

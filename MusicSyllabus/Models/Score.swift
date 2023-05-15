@@ -156,15 +156,26 @@ class Score : ObservableObject {
         }
     }
     
-    func addQuaverStems() {
+    func addStemCharaceteristics() {
         var c = 0
         for entry in self.scoreEntries {
             if entry is TimeSlice {
                 let note = (entry as! TimeSlice).note[0]
                 note.beamType = .none
+                note.stemLength = 5
                 if note.value == Note.VALUE_QUAVER {
                     note.beamType = c==0 ? .start : .end
+//                    note.beamAngle = 0
+//                    if note.beamType == .start {
+//                        note.beamAngle = 0
+//                    }
+//                    else {
+//                        note.beamAngle = Double.pi / 2.0
+//                    }
                     c += 1
+                }
+                else {
+                    
                 }
             }
         }

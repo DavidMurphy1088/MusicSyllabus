@@ -18,7 +18,7 @@ class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
         self.note.append(n)
         if let score = score {
             score.updateStaffs()
-            score.addQuaverStems()
+            score.addStemCharaceteristics()
         }
     }
     
