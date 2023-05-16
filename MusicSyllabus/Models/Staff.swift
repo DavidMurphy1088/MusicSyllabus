@@ -49,7 +49,6 @@ class Staff : ObservableObject {
     let score:Score
     var type:StaffType
     var staffNum:Int
-    //let linesInStaff = 5
     var lowestNoteValue:Int
     var highestNoteValue:Int
     var middleNoteValue:Int

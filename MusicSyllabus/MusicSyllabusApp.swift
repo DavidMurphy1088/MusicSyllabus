@@ -11,16 +11,42 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   }
 }
 
+//@main
+//struct MusicSyllabusApp: App {
+//    let persistenceController = PersistenceController.shared
+//    //register app delegate for Firebase setup
+//    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+//
+//    @StateObject var launchScreenState = LaunchScreenStateManager()
+//
+//    var body: some Scene {
+//        WindowGroup {
+//            ZStack {
+//                TopView().environment(\.managedObjectContext, persistenceController.container.viewContext)
+//                if launchScreenState.state != .finished {
+//                    LaunchScreenView()
+//                }
+//            }
+//            .environmentObject(launchScreenState)
+//        }
+//    }
+//}
+
+
 @main
 struct MusicSyllabusApp: App {
-    let persistenceController = PersistenceController.shared
-    //register app delegate for Firebase setup
+
+    @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-            TopView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            ZStack {
+                ContentView()
+                if launchScreenState.state != .finished {
+                    LaunchScreenView()
+                }
+            }.environmentObject(launchScreenState)
         }
     }
 }

@@ -3,7 +3,7 @@ import CoreData
 import MessageUI
 
 class BeamCounter : ObservableObject  {
-    static let shared = BeamCounter()
+    //static let shared = BeamCounter()
     var notes:[(Note, CGRect)] = []
     @Published var updated:Int = 0
     
@@ -12,100 +12,65 @@ class BeamCounter : ObservableObject  {
     
     func add(p: (Note, CGRect)) {
         self.notes.append(p)
-        print("======== BeamCtr ADD ", "type:", type(of: p.1), "midi", p.0.midiNumber, "\tOrigin:", p.1.origin)
+        //print("======== BeamCtr ADD ", "type:", type(of: p.1), "midi", p.0.midiNumber, "\tseq:", p.0.sequence, "\tBeam:", p.0.beamType) //+ "\tOrigin:", p.1.origin)
         DispatchQueue.main.async {
             self.updated += 1
         }
     }
+    
     func getNotes() -> [(Note, Note, CGRect, CGRect)] {
         var result:[(Note, Note, CGRect, CGRect)] = []
+        self.notes = notes.sorted(by: { $0.0.sequence < $1.0.sequence })
         if notes.count > 1 {
             for i in 0..<notes.count-1 {
-                print("==== BeamCtr GET notes\t", notes[i].0.beamType, notes[i].0.midiNumber, "\tX:", notes[i].1.origin.x)
+                //print("==== BeamCtr GET notes\t", notes[i].0.beamType, notes[i].0.midiNumber, "\tX:", notes[i].1.origin.x)
                 result.append((notes[i].0, notes[i+1].0, notes[i].1, notes[i+1].1))
             }
         }
+        //result = result.sorted(by: { $0.0.sequence < $1.0.sequence })
         return result
     }
 }
 
 struct QuaverBeamView: View {
     @ObservedObject var beamCounter:BeamCounter
-    init(beamCounter:BeamCounter) {
+    var staff:Staff
+    var lineSpacing:Int
+    var noteWidth:Double
+    
+    init(beamCounter:BeamCounter, staff:Staff, lineSpacing:Int, noteWidth:Double) {
         self.beamCounter = beamCounter
-        //print ("======== BeamCtr View init", beamCounter.notes.count)
+        self.staff = staff
+        self.lineSpacing = lineSpacing
+        self.noteWidth = noteWidth
+        //print ("======== QuaverBeamView init", beamCounter.notes.count)
     }
+    
     var body: some View {
         VStack {
+            //ForEach<Array<(Note, Note, CGRect, CGRect)>, UUID, Optional<_ShapeView<_StrokedShape<Path>, Color>>>: the ID 21A7FFA1-4961-453A-9C85-F7322053BFF8 occurs multiple times within the collection, this will give undefined results!
             GeometryReader { geo in
-//                Path { path in
-//                    path.move(to: CGPoint(x: 0, y: 0))
-//                    path.addLine(to: CGPoint(x: geo.size.width, y: geo.size.height))
-//                    //print("+++++++++++", rect)
-//                }
-//                //.stroke(Color.black, lineWidth: 1)
                 ForEach(beamCounter.getNotes(), id: \.0.id) { note1, note2, rect1, rect2 in
-                    Path { path in
-                        //path.move(to: CGPoint(x: 0, y: 0))
-                        path.move(to: CGPoint(x: rect1.midX, y: rect1.midY))
-                        path.addLine(to: CGPoint(x: rect2.midX, y: rect2.midY))
-                        //print("      +++++++++++", rect.origin, rect.minX)
-                    }
-                    .stroke(Color.red, lineWidth: 3 )
-                }
-            }
-        }
-    }
-}
+                    if note1.beamType == .start && note2.beamType == .end {
+                        let stemDirection:Double = (note1.midiNumber < 71 || note1.isOnlyRhythmNote)  ? -1 : 1
+                        
+                        let offsetFromStaffMiddle1:Double = Double(staff.getNoteViewData(noteValue: note1.midiNumber).0)
+                        let offsetFromStaffMiddle2:Double = Double(staff.getNoteViewData(noteValue: note2.midiNumber).0) 
+                        
+                        let y1:Double = rect1.midY - (offsetFromStaffMiddle1 * Double(lineSpacing)) / 2.0 + (note1.stemLength * Double(lineSpacing)) * stemDirection
+                        let y2:Double = rect2.midY - (offsetFromStaffMiddle2 * Double(lineSpacing)) / 2.0 + (note2.stemLength * Double(lineSpacing)) * stemDirection
+                        
+                        let x1:Double = rect1.midX - noteWidth / 2.0 * stemDirection
+                        let x2:Double = rect2.midX - noteWidth / 2.0 * stemDirection
 
-struct QuaverBeamView1: View {
-    var staff:Staff
-    var note:Note
-    var noteWidth: Double
-    var stemDirection: Int
-    var stemHeight:Double
-    var offsetFromStaffMiddle:Double
-    var lineSpacing:Double
-    let beamCounter:BeamCounter = BeamCounter.shared
-    
-    init(staff:Staff, noteWidth:Double, stemDirection:Int, stemHeight:Double, lineSpacing: Double) {
-        self.note = Note(num: 72)
-        self.staff = staff
-        //self.note = note
-        self.noteWidth = noteWidth
-        self.stemDirection = stemDirection
-        self.stemHeight = stemHeight
-        let pos = staff.getNoteViewData(noteValue: note.midiNumber)
-        self.stemDirection = stemDirection
-        self.stemHeight = stemHeight
-        self.lineSpacing = lineSpacing
-        offsetFromStaffMiddle = Double(pos.0)
-        offsetFromStaffMiddle = (offsetFromStaffMiddle * lineSpacing/2.0)// + self.stemHeight
-        //beamCounter.addNote(note: self.note)
-    }
-    
-//    init(beamNotes: [Int: (Note, CGRect)]) {
-//        ForEach(beamNotes.keys.sorted(), id: \.self) { key in
-//        }
-//
-//    }
-    
-    var body: some View {
-        GeometryReader { geometry in
-            if note.value == Note.VALUE_QUAVER {
-                if note.beamType == .end {
-                    let ellipseYMidpoint = geometry.size.height/2.0 - offsetFromStaffMiddle + stemHeight - lineSpacing
-                    VStack {
-                        Text("\(note.midiNumber)")
-                        Text(note.value == Note.VALUE_QUAVER ? "Q" : "")
-//                        Path { path in
-//                            let mid = geometry.size.width/2.0 - noteWidth / 2.0
-//                            let y = ellipseYMidpoint
-//                            path.move(to: CGPoint(x: mid, y:y))
-//                            path.addLine(to: CGPoint(x: mid + 20.0, y:y - 20.0))
-//                        }
-//                        .stroke(Color.black, lineWidth: 1)
+                        Path { path in
+                            path.move(to: CGPoint(x: x1, y: y1))
+                            path.addLine(to: CGPoint(x: x2, y: y2))
+                        }
+                        //print("  ==>QuaverBeamView  \tmidis", note1.midiNumber, note2.midiNumber, "\tBeam", note1.beamType, note2.beamType) //, rect1.origin, rect1.minX)
+                        .stroke(Color.black, lineWidth: 3)
                     }
+                    
                 }
             }
         }
@@ -139,6 +104,7 @@ struct StaffLinesView: View {
                     }
                     .stroke(Color.black, lineWidth: 1)
                 }
+                
                 // end of staff bar lines
                 Path { path in
                     //let y:Double = Double(geometry.size.height) / 2.0
@@ -160,12 +126,24 @@ struct TimeSignatureView: View {
     var lineSpacing:Int
     var clefWidth:Double
     
+    func calculateFontSize(for size: CGSize) -> CGFloat {
+        let width = size.width
+        let height = size.height
+        
+        // Calculate font size based on your desired logic
+        let fontSize = min(width, height) * 0.2 // Adjust the multiplier to fit your needs
+        
+        return fontSize
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 //Need to squash numerator and denominator of time sig together to overidde default spacing of the text fields
                 //TODO same as above - too large of a font size screws al algnemnt of everythgn
                 let timeSignatureFontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.5)
+                //let timeSignatureFontSize:Double = calculateFontSize(for: geometry.size)
+
                 let squash:CGFloat = CGFloat(lineSpacing)/2.5
                 Spacer()
                 Text("4").padding(.all, 0).font(.system(size: timeSignatureFontSize)).offset(x: 0, y: squash)
@@ -183,10 +161,9 @@ struct TimeSignatureView: View {
 struct StaffView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
-    //@State private var beamNotes: [Int: (Note, CGRect)] = [:]
 
     var lineSpacing:Int
-    var beamCounter:BeamCounter = BeamCounter.shared
+    var beamCounter:BeamCounter = BeamCounter()
 
     init (score:Score, staff:Staff, lineSpacing:Int) {
         self.score = score
@@ -195,7 +172,7 @@ struct StaffView: View {
     }
     
     func clefWidth() -> Double {
-        return Double(lineSpacing) * 3.5
+        return Double(lineSpacing) * 3.0
     }
     
     func getNotes(entry:ScoreEntry) -> [Note] {
@@ -212,42 +189,46 @@ struct StaffView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack (alignment: .leading) {
-                //let stemHeight = Double(lineSpacing) * 1.2 * 2.5
+                
                 StaffLinesView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing)
+                
                 HStack { //GeometryReader { geo11 in
-                    HStack {
-                        if staff.type == StaffType.treble {
-                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 9)))
+                    
+                    if staff.linesInStaff != 1 {
+                        HStack {
+                            if staff.type == StaffType.treble {
+                                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+                            }
+                            else {
+                                Text("\u{1d122}").font(.system(size: CGFloat(lineSpacing * 6)))
+                            }
                         }
-                        else {
-                            Text("\u{1d122}").font(.system(size: CGFloat(lineSpacing * 6)))
-                        }
+                        .padding(.bottom, Double(lineSpacing) * 1.3)
+                        .frame(width: clefWidth())
+                        //.border(Color.green)
                     }
-                    .frame(width: clefWidth())
-                    //.border(Color.green)
-                    TimeSignatureView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing, clefWidth: clefWidth())
+                    
+                    TimeSignatureView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0).padding(.leading, -10)
+                    
                     ForEach(score.scoreEntries, id: \.self) { entry in
                         ZStack {
                             if entry is TimeSlice {
-                                //let note = getNotes(entry: entry)[0]
                                 ForEach(getNotes(entry: entry), id: \.self) { note in
                                     VStack {
                                         GeometryReader { geo in
-                                        NoteView(staff: staff,
+                                            NoteView(staff: staff,
                                                  note: note,
                                                  noteWidth: Double(lineSpacing) * 1.2,
                                                  lineSpacing: lineSpacing)
-                                        .onAppear {
-                                            let position = geo.frame(in: .named("Staff1"))
-                                            //let position = geo.frame(in: .global)//
-                                            //print("-->Text position in parent: \(ctr)    \(position.origin)", score.scoreEntries.count)
-                                            beamCounter.add(p: (note, position))
+                                            .onAppear {
+                                                let position = geo.frame(in: .named("Staff1"))
+                                                beamCounter.add(p: (note, position))
+                                            }
+                                            //.border(Color.blue)
                                         }
-                                        //.border(Color.blue)
                                     }
                                 }
                             }
-                        }
                         }
 
                         if entry is BarLine {
@@ -257,16 +238,11 @@ struct StaffView: View {
                     .coordinateSpace(name: "Staff0")
                 }
                 .coordinateSpace(name: "Staff1")
-                QuaverBeamView(beamCounter: self.beamCounter) //at left edge
-
-                }
-            .coordinateSpace(name: "Staff2")
+                QuaverBeamView(beamCounter: self.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
             }
+            .coordinateSpace(name: "Staff2")
+        }
         .coordinateSpace(name: "Staff3")
-
-        //.border(.red)
-        
-
     }
 }
 

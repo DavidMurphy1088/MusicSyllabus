@@ -26,6 +26,7 @@ class Note : Hashable, Comparable, ObservableObject {
     var stemUp:Bool
     var beamType:BeamType = .none
     var stemLength:Double = 0 //measured in number of staff lines
+    var sequence:Int = 0 //the note's sequence position 
 
     @Published var hilite = false
     

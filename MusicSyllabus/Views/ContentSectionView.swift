@@ -13,7 +13,8 @@ struct TopicsViewNavigation: View {
                 }
                 Spacer()
             }
-            .navigationTitle(topic.name).font(.title3)
+            //the font that shows on the scrolling list of links
+            .navigationTitle(topic.name)//.font(.caption)
             //.navigationBarBackButtonHidden(false)
             //.navigationBarTitle(topic.name)
             //.navigationBarTitleDisplayMode(.inline)
@@ -37,8 +38,6 @@ struct ContentSectionView: View {
             }
             parentType = parentType!.parent
         }
-//        print("Init ", contentSection.name, contentSection.sectionType, "subs", contentSection.subSections.count,
-//              "parentType", parentSection.sectionType, parentSection.name)
     }
     
     var body: some View {
@@ -47,6 +46,8 @@ struct ContentSectionView: View {
                 List(contentSection.subSections) { subtopic in
                     NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
                         Text(subtopic.name)
+                            //.navigationBarTitle("Title").font(.largeTitle)
+                            //.navigationBarTitleDisplayMode(.inline)
                     }
                 }
                 Spacer()
@@ -57,12 +58,16 @@ struct ContentSectionView: View {
                         IntervalsView(contentSection: contentSection)
                     }
                     if parentSection.name.contains("Clapping") {
-                        RhythmsView(contentSection: contentSection)
+                        ClapOrPlay(mode: .clap, contentSection: contentSection)
+                    }
+                    if parentSection.name.contains("Playing") {
+                        ClapOrPlay(mode: .play, contentSection: contentSection)
                     }
                 }
              }
         }
-        .navigationTitle(contentSection.name)
+        //.navigationTitle("XX").foregroundColor(.red)
+        .navigationBarTitle(contentSection.name, displayMode: .inline)//.font(.title)
     }
 }
 

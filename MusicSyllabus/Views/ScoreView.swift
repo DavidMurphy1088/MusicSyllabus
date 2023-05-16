@@ -8,25 +8,6 @@ struct ScoreView: View {
 
     var body: some View {
         VStack {
-//            HStack {
-//                Text("\(score.keyDesc())").bold() //.font(.system(size: CGFloat(lineSpacing)))
-//                Spacer()
-//                if false {
-//                    Button(action: {
-//                        score.toggleShowNotes()
-//                    }) {
-//                        if score.showNotes {
-//                            Image(systemName: "multiply.circle")
-//                                .scaleEffect(2.0)
-//                        }
-//                        else {
-//                            Image(systemName: "plus.circle")
-//                                .scaleEffect(2.0)
-//                        }
-//                    }
-//                }
-//            }
-//            .padding()
             HStack {
                 ForEach(score.getStaff(), id: \.self.type) { staff in
                     StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
@@ -36,14 +17,15 @@ struct ScoreView: View {
 //                    .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))
 
             }
-            .padding()
+            .padding(.horizontal, score.scoreEntries.count > 10 ? 0 : 12)
+            Spacer()
             //.coordinateSpace(name: "Score1")
         }
         //.coordinateSpace(name: "Score2")
         .overlay(
-            RoundedRectangle(cornerRadius: 30).stroke(.blue, lineWidth: 1)
+            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
-        .background(Color.blue.opacity(0.04))
+        .background(UIGlobals.backgroundColor)
         //.border(Color.pink)
     }
 }

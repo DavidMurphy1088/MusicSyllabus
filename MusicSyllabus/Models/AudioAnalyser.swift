@@ -155,7 +155,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
     
     func displayLogBuffer() {
         var c = 0
-        print("=========== Size", decibelBuffer.count)
+        //print("=========== Size", decibelBuffer.count)
         for row in logBuffer {
             print(row.getRow())
             c += 1

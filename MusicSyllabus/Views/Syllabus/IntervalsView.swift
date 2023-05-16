@@ -53,9 +53,9 @@ struct IntervalsAnswerView:View {
 //            .padding()
         }
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-            .stroke(Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 2)
+            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
+        .background(UIGlobals.backgroundColor)
         .padding()
     }
 }
@@ -155,9 +155,9 @@ struct IntervalsView:View {
                     .padding()
                 }
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 2)
+                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
                 )
+                .background(UIGlobals.backgroundColor)
                 .padding()
             }
 

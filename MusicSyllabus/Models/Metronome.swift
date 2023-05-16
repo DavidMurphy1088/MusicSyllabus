@@ -58,6 +58,7 @@ class Metronome: ObservableObject {
             catch let error {
                 Logger.logger.reportError(self, "Cant create audio player", error)
             }
+            setTempo(tempo: self.tempo)
         }
         
         // ========= set up audio ============
@@ -66,17 +67,15 @@ class Metronome: ObservableObject {
         engine.attach(midiSampler!)
         engine.connect(midiSampler!, to:engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
         
-        //DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-                if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
-                    try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-                }
-                try self.engine.start()
-            } catch let error {
-                Logger.logger.reportError(self, "loading sampler", error)
+        do {
+            //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
+            if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
+                try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
             }
-        //}
+            try self.engine.start()
+        } catch let error {
+            Logger.logger.reportError(self, "loading sampler", error)
+        }
         Logger.logger.log(self, "Score::Initialised engine, connected sampler, started engine")
     }
     
@@ -90,13 +89,13 @@ class Metronome: ObservableObject {
         if tempo > 20 && tempo <= 40 {
             name = "Solenne/Grave"
         }
-        if tempo > 40 && tempo <= 60 {
+        if tempo > 40 && tempo <= 59 {
             name = "Lento"
         }
-        if tempo > 60 && tempo <= 66 {
-            name = "Larghetto"
-        }
-        if tempo > 66 && tempo <= 72 {
+//        if tempo > 60 && tempo <= 66 {
+//            name = "Larghetto"
+//        }
+        if tempo > 59 && tempo <= 72 {
             name = "Adagio"
         }
         if tempo > 72 && tempo <= 76 {
@@ -119,7 +118,7 @@ class Metronome: ObservableObject {
         }
         DispatchQueue.main.async {
             self.tempoName = name
-            Logger.logger.log(self, "set tempo \(self.tempo)")
+            //Logger.logger.log(self, "set tempo \(self.tempo)")
         }
     }
     
@@ -139,11 +138,27 @@ class Metronome: ObservableObject {
         }
         nextScoreIndex = 1
         if !self.isThreadRunning {
-            startThreadRunning()
+            startThreadRunning(onDone: onDone)
         }
     }
-
-    private func startThreadRunning() {
+    
+    func stopPlayingScore() {
+        self.score = nil
+    }
+    
+    func startTicking() {
+        //self.score = nil
+        if !self.isThreadRunning {
+            self.startThreadRunning()
+        }
+        self.isTicking = true
+    }
+    
+    func stopTicking() {
+        self.isTicking = false
+    }
+    
+    private func startThreadRunning(onDone: (()->Void)? = nil) {
         self.isThreadRunning = true
         
         do {
@@ -158,19 +173,29 @@ class Metronome: ObservableObject {
             var audioPlayerIdx = 0
             var loopCtr = 0
             var keepRunning = true
+            var playSynched = false
             
             while keepRunning {
                 
                 // sound the metronome tick
-                if self.isTicking {
-                    let player = audioPlayerIdx % audioPlayers.count
-                    audioPlayerIdx += 1
-                    audioPlayers[player].play()
+                if loopCtr % 2 == 0 {
+                    if self.isTicking {
+                        let player = audioPlayerIdx % audioPlayers.count
+                        audioPlayerIdx += 1
+                        audioPlayers[player].play()
+                        if score != nil {
+                            playSynched = true
+                        }
+                    }
+                    else {
+                        playSynched = true
+                    }
                 }
                 
                 //sound the next note
-                if let score = score {
-                    if let timeSlice = nextTimeSlice {
+                if playSynched {
+                    if let score = score {
+                        if let timeSlice = nextTimeSlice {
                             for note in timeSlice.note {
                                 if currentNoteDuration < note.value {
                                     //note only plays once even though it might spans > 1 tick
@@ -183,39 +208,42 @@ class Metronome: ObservableObject {
                                 }
                                 let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
                                 midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:0)
-                                print("METRONOME::payed midi", pitch)
+                                //print("METRONOME::payed midi", pitch)
                             }
-                        
-                        //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick
-                        //next time tick needs to have a time slice, e.g. throw away bar line entries
-                        currentNoteDuration -= self.shortestNoteValue //1
-                        if currentNoteDuration > 0 {
                             
-                        }
-                        else {
-                            nextTimeSlice = nil
-                            while nextScoreIndex < score.scoreEntries.count {
-                                let entry = score.scoreEntries[nextScoreIndex]
-                                //print("==", type(of: entry))
-                                if entry is TimeSlice {
-                                    nextTimeSlice = entry as! TimeSlice
-                                    if nextTimeSlice!.note.count > 0 {
-                                        nextScoreIndex += 1
-                                        currentNoteDuration = nextTimeSlice!.note[0].value
-                                        break
+                            //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick
+                            //next time tick needs to have a time slice, e.g. throw away bar line entries
+                            currentNoteDuration -= self.shortestNoteValue //1
+                            if currentNoteDuration <= 0 {
+                                nextTimeSlice = nil
+                                while nextScoreIndex < score.scoreEntries.count {
+                                    let entry = score.scoreEntries[nextScoreIndex]
+                                    //print("==", type(of: entry))
+                                    if entry is TimeSlice {
+                                        nextTimeSlice = entry as! TimeSlice
+                                        if nextTimeSlice!.note.count > 0 {
+                                            nextScoreIndex += 1
+                                            currentNoteDuration = nextTimeSlice!.note[0].value
+                                            break
+                                        }
                                     }
+                                    nextScoreIndex += 1
                                 }
-                                nextScoreIndex += 1
+                            }
+                            //keepRunning = nextTimeSlice != nil
+                            if nextTimeSlice == nil {
+                                if let onDone = onDone {
+                                    onDone()
+                                }
                             }
                         }
-                        keepRunning = nextTimeSlice != nil
                     }
                 }
                 //let t = Date().timeIntervalSince1970 - st
                 //print("  Metronome loop", "time:", String(format: "%.2f", t), "scoreIdx", nextScoreIndex)
 
-                if !self.isThreadRunning && nextTimeSlice == nil {
-                    keepRunning = false
+                if !self.isTicking {
+                   keepRunning = nextTimeSlice != nil
                 }
                 Thread.sleep(forTimeInterval: (60.0/self.tempo) * shortestNoteValue)
                 loopCtr += 1
@@ -226,59 +254,5 @@ class Metronome: ObservableObject {
         }
     }
     
-    func startTicking() {
-        self.score = nil
-        if !self.isThreadRunning {
-            self.startThreadRunning()
-        }
-        self.isTicking = true
-    }
-    
-    func stopTicking() {
-        self.isTicking = false
-    }
 }
 
-
-//      Time a metronome using a notify from a time - not as accurate as needed
-//    func playScheduledTimerTick() {
-//        print("===== start timer....")
-//        var ctr = 0
-//        let st = Date().timeIntervalSince1970
-//        self.timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global())
-//        //var sid = 1105 //1000 //1105
-//        if self.timer != nil {
-//            self.tickIsOn = true
-//            self.timer!.schedule(deadline: .now(), repeating: .milliseconds(Int(tempo)), leeway: .milliseconds(1))
-//            self.timer!.setEventHandler {
-//                let t = Date().timeIntervalSince1970 - st
-//                let play = true //[0, 2, 4, 6].contains(cx)
-//                //print("....", ctr, String(format: "%.2f", t), play, sid)
-//                //1009 1052
-//                if play {
-//                    //tickSoundPlayer.play()
-//                    DispatchQueue.global(qos: .background).async {
-//                        //https://github.com/TUNER88/iOSSystemSoundsLibrary
-//                        //AudioServicesDisposeSystemSoundID(SystemSoundID(sid));
-//                        //AudioServicesPlaySystemSoundWithCompletion(SystemSoundID(sid), self.endTickNotify)
-//                        let n = ctr % self.audioPlayers.count
-//                        self.audioPlayers[n].play()
-//                        print("  played tick", n)
-//                        //sid += 1
-//                    }
-//                }
-//                if self.tickIsOn == false {
-//                    self.timer?.cancel()
-//                }
-//                ctr += 1
-//            }
-//            self.timer!.resume()
-//        }
-//    }
-
-
-//var sampler:Sampler = Sampler(sf2File: "Metronom")
-//var sampler:Sampler = Sampler(sf2File: "gm")
-//var sampler:Sampler = Sampler(sf2File: "PNS Drum Kit")
-//var sampler:Sampler = Sampler(sf2File: "Nice-Steinway-v3.8")
-//var sampler:Sampler = Sampler(sf2File: "Nice-Bass-Plus-Drums-v5.3")

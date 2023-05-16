@@ -9,7 +9,8 @@ struct BarLineView: View {
     
     func xPos(geo: GeometryProxy) -> Int {
         let barLine = entry as! BarLine
-        return Int(barLine.atScoreEnd ? geo.size.width - 8 : geo.size.width/2)
+        //return Int(barLine.atScoreEnd ? geo.size.width - 8 : geo.size.width/2)
+        return Int(geo.size.width / 1.0)
     }
     
     var body: some View {
@@ -50,7 +51,7 @@ struct NoteView: View {
     var body: some View {
         GeometryReader { geometry in
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle * lineSpacing) / 2.0
-            let stemDirection:Double = note.midiNumber <= 71 ? -1 : 1
+            let stemDirection:Double = (note.midiNumber < 71 || note.isOnlyRhythmNote) ? -1 : 1
 
             ZStack {
                 if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(note.value)  {

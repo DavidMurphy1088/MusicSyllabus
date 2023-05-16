@@ -3,35 +3,46 @@ import CoreData
 
 struct TopView: View {
     @Environment(\.scenePhase) var scenePhase
-    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "root")
-    let devMode = true
+    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "NZMEB Musicianship")
+    static let devMode = true
     
     init () {
-        if devMode {
-           // Metronome.shared.setTempo(tempo: 120)
-        }
-        
+//        if devMode {
+//           // Metronome.shared.setTempo(tempo: 120)
+//        }
     }
+        
     var body: some View {
         TabView {
-            if devMode {
-                IntervalsView(contentSection:
-                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
-                    type: ContentSection.SectionType.example, name: "test"))
-                    .tabItem {Label("Intervals", systemImage: "music.note")
-                }
-                RhythmsView(contentSection:
-                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
-                    type: ContentSection.SectionType.example, name: "test"))
-                    .tabItem {Label("Clapping", systemImage: "music.note")
-                }
-
+            if TopView.devMode {
+                
                 TopicsViewNavigation(topic: root)
                     .tabItem {Label("Book1", image: "music.note")
                 }
-                ClapTestView()
-                    .tabItem {Label("ClapTest", systemImage: "music.note")
+                
+                ClapOrPlay(mode: .play, contentSection:
+                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Playing"),
+                    type: ContentSection.SectionType.example, name: "test"))
+                    .tabItem {Label("Playing", systemImage: "music.quarternote.3")
                 }
+
+
+                ClapOrPlay(mode: .clap, contentSection:
+                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
+                    type: ContentSection.SectionType.example, name: "test"))
+                    .tabItem {Label("Clapping", systemImage: "hands.clap")
+                }
+
+                IntervalsView(contentSection:
+                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
+                    type: ContentSection.SectionType.example, name: "test"))
+                    .tabItem {Label("Intervals", systemImage: "music.note.list")
+                }
+
+//                
+//                ClapTestView()
+//                    .tabItem {Label("ClapTest", systemImage: "music.note")
+//                }
             }
             else {
                 TopicsViewNavigation(topic: root)
@@ -45,7 +56,9 @@ struct TopView: View {
                 }
             }
             //.navigationViewStyle(StackNavigationViewStyle())
+            
         }
+        .accentColor(.blue)
     }
     
 }

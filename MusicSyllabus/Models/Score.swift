@@ -157,25 +157,44 @@ class Score : ObservableObject {
     }
     
     func addStemCharaceteristics() {
-        var c = 0
+        var ctr = 0
+        var underBeam = false
+        var previousNote:Note? = nil
+
         for entry in self.scoreEntries {
             if entry is TimeSlice {
                 let note = (entry as! TimeSlice).note[0]
                 note.beamType = .none
-                note.stemLength = 5
+                note.sequence = ctr
+                note.stemLength = 3.5
                 if note.value == Note.VALUE_QUAVER {
-                    note.beamType = c==0 ? .start : .end
-//                    note.beamAngle = 0
-//                    if note.beamType == .start {
-//                        note.beamAngle = 0
-//                    }
-//                    else {
-//                        note.beamAngle = Double.pi / 2.0
-//                    }
-                    c += 1
+                    if !underBeam {
+                        note.beamType = .start
+                        underBeam = true
+                    }
+                    else {
+                        note.beamType = .middle
+                    }
                 }
                 else {
-                    
+                    if underBeam {
+                        if let previous = previousNote {
+                            if previous.value == Note.VALUE_QUAVER {
+                                previous.beamType = .end
+                            }
+                        }
+                        underBeam = false
+                    }
+                }
+                previousNote = note
+                ctr += 1
+                //print("  ===Score", note.sequence, note.midiNumber, note.beamType)
+            }
+        }
+        if underBeam {
+            if let previous = previousNote {
+                if previous.value == Note.VALUE_QUAVER {
+                    previous.beamType = .end
                 }
             }
         }

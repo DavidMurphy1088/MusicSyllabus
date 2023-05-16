@@ -7,18 +7,21 @@ class ExampleData {
     
     init() {
         //data["Intervals Visual.test"] = "(72,.5) (74,.5) (71,2) (66,.5) (64,.5) (69,2)"
-        data["Intervals Visual.test"] = "(72,.5) (74,.5) (71,2)"
-        //data["Intervals Visual"] = ["a"]
+        //data["Intervals Visual.test"] = "(69,2) (72,.5) (76,.5) (71,2) (76,.5) (74,.5)"
+        data["Intervals Visual.test"] = "(72,1) (74,1) "
+        //data["Intervals Visual.test"] = "(60,.5) (62,.5) (64,1)"
+        
         data["Intervals Visual.Example 1"] = "(72,2) (74,2)"
         data["Intervals Visual.Example 2"] = "(74.2),(71.2)"
         data["Intervals Visual.Example 3"] = "(69.2),(67.2)"
         data["Intervals Visual.Example 4"] = "(67.2),(64.2)"
 
-        data["Clapping.test"] = "(64,1) (62,2) (60,.5) (62,.5) (64,1)"
-        //data["Clapping.Example 1"] = "(0.2),(0.2),(),(0.1),(0.1),(0.2),(),(0.1),(0.1),(0.2),(),(0.4)"
-        data["Clapping.Example 1"] = "(64,1) (62,1) (60,1) (62,1) (64,1)"
+        //data["Clapping.test"] = "(60,.5) (62,.5) (64,1)"
+        //data["Clapping.test"] = "(64,1) (62,1) (60,.5) (62,.5) (64,1)"
 
-        data["Playing.test"] = "(0.2),(0.2),(),(0.1),(0.1),(0.2),(),(0.1),(0.1),(0.2),(),(0.4)"
+        data["Playing.test"] = "(64,1) (62,1) (60,.5) (62,.5) (64,1) (B) (67,2) (67,2) (B) (65,1) (67,1) (64,1) (62,1) (B) (60,4) "
+        data["Clapping.test"] = data["Playing.test"]
+        data["Clapping.Example 1"] = data["Playing.test"]
     }
     
     func get(_ testType:String, _ exampleKey: String) -> [Any]! {

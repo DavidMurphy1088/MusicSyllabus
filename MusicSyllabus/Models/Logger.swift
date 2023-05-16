@@ -21,7 +21,9 @@ class Logger : ObservableObject {
     
     func log(_ reporter:AnyObject, _ msg:String) {
         let msg = String(describing: type(of: reporter)) + ":" + msg
-        publish(msg, false)
+        if TopView.devMode {
+            publish(msg, false)
+        }
     }
     
     func publish(_ msg:String, _ isErr:Bool) {

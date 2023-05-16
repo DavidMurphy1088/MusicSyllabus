@@ -3,11 +3,13 @@ import CoreData
 import AVFoundation
 
 struct RhythmsAnswerView:View {
+    var mode:ClapOrPlay.Mode
     var audioRecorder:AudioRecorder
     @State var score:Score
     @State var metronome = Metronome.shared
+    @State var playingCorrect = false
     let imageSize = Double(32)
-    @Binding var answered:RhythmsView.AnswerState
+    @Binding var answered:ClapOrPlay.AnswerState
     
     var explanation = ""
     
@@ -19,34 +21,59 @@ struct RhythmsAnswerView:View {
             Button(action: {
                 audioRecorder.playRecording()
             }) {
-                Text("Hear Your Rhythm")
+                Text("Hear Your \(self.mode == .clap ? "Rhythm" : "Playing")")
             }
             .padding()
-            Button(action: {
-                metronome.playScore(score: score)
-            }) {
-                Text("Hear The Test Rhythm")
+            
+            HStack {
+                Button(action: {
+                    metronome.playScore(score: score, onDone: {
+                        playingCorrect = false
+                    })
+                    playingCorrect = true
+
+                }) {
+                    if playingCorrect {
+                        
+                        Button(action: {
+                            playingCorrect = false
+                            metronome.stopPlayingScore()
+                        }) {
+                            Text("Stop Playing")
+                            Image(systemName: "stop.circle")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.red)
+                        }
+                    }
+                    else {
+                        Text("Hear The Correct \(self.mode == .clap ? "Rhythm" : "Playing")")
+                    }
+                }
+
             }
             .padding()
 
-            Button(action: {
-                answered = RhythmsView.AnswerState.notRecorded
-            }) {
-                Text("Next Questioon")
-            }
-            .padding()
+//            Button(action: {
+//                answered = ClapOrPlay.AnswerState.notRecorded
+//            }) {
+//                Text("Next Questioon")
+//            }
+//            .padding()
         }
         .padding()
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-            .stroke(Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 2)
+            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
+        .background(UIGlobals.backgroundColor)
+        
+        .background(UIGlobals.backgroundColor)
         .padding()        
     }
 }
 
-
-struct RhythmsView:View {
+struct ClapOrPlay:View {
+    @State var mode:ClapOrPlay.Mode
     @State var exampleName:String = ""
     @State var metronome = Metronome.shared
     @State var score:Score = Score(timeSignature: TimeSignature(), lines: 1)
@@ -56,6 +83,11 @@ struct RhythmsView:View {
     let exampleData = ExampleData.shared
     let audioRecorder = AudioRecorder()
     
+    enum Mode {
+        case clap
+        case play
+    }
+
     enum AnswerState {
         case notRecorded
         case recording
@@ -63,8 +95,9 @@ struct RhythmsView:View {
         case submittedAnswer
     }
     
-    init(contentSection:ContentSection) {
-        let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 1)
+    init(mode:ClapOrPlay.Mode, contentSection:ContentSection) {
+        self.mode = mode
+        let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: mode == .clap ? 1 : 5)
         score.setStaff(num: 0, staff: staff)
         let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
@@ -74,7 +107,7 @@ struct RhythmsView:View {
                 if entry is Note {
                     let timeSlice = score.addTimeSlice()
                     let note = entry as! Note
-                    note.setIsOnlyRhythm(way: true)
+                    note.setIsOnlyRhythm(way: mode == .clap ? true : false)
                     timeSlice.addNote(n: note)
                 }
                 if entry is BarLine {
@@ -82,7 +115,7 @@ struct RhythmsView:View {
                 }
             }
         }
-        score.addBarLine(atScoreEnd: true)
+        //score.addBarLine(atScoreEnd: true)
     }
     
     var body: some View {
@@ -114,7 +147,12 @@ struct RhythmsView:View {
                             answerState = .recording
                             audioRecorder.startRecording()
                         }) {
-                            Text("Record Your Rhythm")
+                            if self.mode == .clap {
+                                Text("Please record your clapping")
+                            }
+                            else {
+                                Text("Please record your playing")
+                            }
                         }
                         .padding()
                     }
@@ -150,15 +188,15 @@ struct RhythmsView:View {
 
                 }
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 2)
+                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
                 )
+                .background(UIGlobals.backgroundColor)
                 .padding()
             }
 
             
             if answerState == AnswerState.submittedAnswer {
-                RhythmsAnswerView(audioRecorder: audioRecorder, score: score, metronome: metronome, answered: $answerState)
+                RhythmsAnswerView(mode: mode, audioRecorder: audioRecorder, score: score, metronome: metronome, answered: $answerState)
             }
             if logger.status != nil {
                 Text(logger.status!).foregroundColor(logger.isError ? .red : .gray)
