@@ -85,29 +85,17 @@ struct NoteView: View {
                     .stroke(Color.black, lineWidth: 1)
                 }
                 
-                // quaver beam
-//                if note.beamType != .none {
-//                    let xOffset:Double = -1.0 * stemDirection
-//                    if note.beamType == .start {
-//                        Path { path in
-//                            path.move(to: CGPoint(x: (geometry.size.width + (noteWidth * xOffset))/2.0,
-//                                                  y: Double(noteEllipseMidpoint)+(note.stemLength * Double(lineSpacing))))
-//                            path.addLine(to: CGPoint(x: geometry.size.width,
-//                                                     y: Double(noteEllipseMidpoint)+(note.stemLength * Double(lineSpacing))))
-//                        }
-//                        .stroke(Color.black, lineWidth: 1)
-//                    }
-//                    else {
-//                        Path { path in
-//                            path.move(to: CGPoint(x: (geometry.size.width + (noteWidth * xOffset))/2.0,
-//                                                  y: Double(noteEllipseMidpoint)+(note.stemLength * Double(lineSpacing))))
-//                            path.addLine(to: CGPoint(x: 0,
-//                                                     y: Double(noteEllipseMidpoint)+(note.stemLength * Double(lineSpacing))))
-//                        }
-//                        .stroke(Color.black, lineWidth: 1)
-//
-//                    }
-//                }
+                // ledger line hack - totally not generalized :(
+                if staff.type == .treble {
+                    if note.midiNumber <= Note.MIDDLE_C {
+                        let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : 0
+                        Path { path in
+                            path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
+                            path.addLine(to: CGPoint(x: (geometry.size.width - xOffset), y: noteEllipseMidpoint))
+                        }
+                        .stroke(Color.black, lineWidth: 1)
+                    }
+                }
                 
                 // hilite
                 if note.hilite {

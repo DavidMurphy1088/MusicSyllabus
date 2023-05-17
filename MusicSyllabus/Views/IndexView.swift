@@ -1,10 +1,9 @@
 import SwiftUI
 import CoreData
 
-struct TopView: View {
+struct IndexView: View {
     @Environment(\.scenePhase) var scenePhase
-    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "NZMEB Musicianship")
-    static let devMode = true
+    let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
     
     init () {
 //        if devMode {
@@ -14,18 +13,13 @@ struct TopView: View {
         
     var body: some View {
         TabView {
-            if TopView.devMode {
+            if MusicSyllabusApp.devMode {
                 
-                TopicsViewNavigation(topic: root)
-                    .tabItem {Label("Book1", image: "music.note")
-                }
-                
-                ClapOrPlay(mode: .play, contentSection:
+                 ClapOrPlay(mode: .play, contentSection:
                     ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Playing"),
                     type: ContentSection.SectionType.example, name: "test"))
                     .tabItem {Label("Playing", systemImage: "music.quarternote.3")
                 }
-
 
                 ClapOrPlay(mode: .clap, contentSection:
                     ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
@@ -37,6 +31,10 @@ struct TopView: View {
                     ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
                     type: ContentSection.SectionType.example, name: "test"))
                     .tabItem {Label("Intervals", systemImage: "music.note.list")
+                }
+
+                TopicsViewNavigation(topic: root)
+                    .tabItem {Label("Book1", systemImage: "music.note.list")
                 }
 
 //                

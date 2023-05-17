@@ -20,7 +20,7 @@ enum BeamType {
 class Note : Hashable, Comparable, ObservableObject {
     let id = UUID()
     var midiNumber:Int
-    var staff:Int
+    var staff:Int?
     var value:Double = Note.VALUE_QUARTER
     var isOnlyRhythmNote = false
     var stemUp:Bool
@@ -50,10 +50,10 @@ class Note : Hashable, Comparable, ObservableObject {
         return (note1 % 12) == (note2 % 12)
     }
     
-    init(num:Int, value:Double? = 0, staff:Int = 0) {
+    init(num:Int, value:Double = Note.VALUE_QUARTER, staff:Int? = nil) {
         self.midiNumber = num
         self.staff = staff
-        self.value = value!
+        self.value = value
         self.stemUp = true
     }
     

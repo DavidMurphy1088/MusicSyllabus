@@ -63,7 +63,7 @@ class Staff : ObservableObject {
         self.linesInStaff = linesInStaff
         lowestNoteValue = 20 //MIDI C0
         highestNoteValue = 107 //MIDI B7
-        middleNoteValue = type == StaffType.treble ? 71 : 50
+        middleNoteValue = type == StaffType.treble ? 71 : Note.MIDDLE_C - Note.OCTAVE + 2
 
         //Determine the staff placement for each note pitch
         //var noteOffsetEntries:[String] = []
@@ -237,8 +237,13 @@ class Staff : ObservableObject {
     
     //Tell a note how to display itself
     func getNoteViewData(noteValue:Int) -> (Int, String, [Int]) {
-        //let x = StaffPlacementsByKey()
-        let offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
+        var offset = 0
+        if self.type == .treble {
+            offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
+        }
+        else {
+            offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
+        }
         var ledgerLines:[Int] = []
         return (offset, "X", ledgerLines)
     }

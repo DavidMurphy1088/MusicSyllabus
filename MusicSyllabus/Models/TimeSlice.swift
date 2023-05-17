@@ -2,7 +2,7 @@ import Foundation
 
 class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
     var score:Score?
-    var note:[Note]
+    var notes:[Note]
     var footnote:String?
     var barLine:Int = 0
     
@@ -10,12 +10,12 @@ class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
     
     init(score:Score?) {
         self.score = score
-        self.note = []
+        self.notes = []
         TimeSlice.idIndex += 1
     }
     
     func addNote(n:Note) {
-        self.note.append(n)
+        self.notes.append(n)
         if let score = score {
             score.updateStaffs()
             score.addStemCharaceteristics()
@@ -24,7 +24,7 @@ class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
     
     func addChord(c:Chord) {
         for n in c.notes {
-            self.note.append(n)
+            self.notes.append(n)
         }
         if let score = score {
             score.updateStaffs()

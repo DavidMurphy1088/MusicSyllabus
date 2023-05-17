@@ -27,7 +27,7 @@
 		7B55CEC42A03E480009F9B5D /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC32A03E480009F9B5D /* ScoreView.swift */; };
 		7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */; };
 		7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDDE2A0133000007FF7E /* MusicSyllabusApp.swift */; };
-		7B5EEDE12A0133000007FF7E /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE02A0133000007FF7E /* TopView.swift */; };
+		7B5EEDE12A0133000007FF7E /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE02A0133000007FF7E /* IndexView.swift */; };
 		7B5EEDE32A0133020007FF7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE22A0133020007FF7E /* Assets.xcassets */; };
 		7B5EEDE62A0133020007FF7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE52A0133020007FF7E /* Preview Assets.xcassets */; };
 		7B5EEDE82A0133020007FF7E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE72A0133020007FF7E /* Persistence.swift */; };
@@ -78,7 +78,7 @@
 		7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
 		7B5EEDDB2A0133000007FF7E /* MusicSyllabus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicSyllabus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B5EEDDE2A0133000007FF7E /* MusicSyllabusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSyllabusApp.swift; sourceTree = "<group>"; };
-		7B5EEDE02A0133000007FF7E /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
+		7B5EEDE02A0133000007FF7E /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
 		7B5EEDE22A0133020007FF7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7B5EEDE52A0133020007FF7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7B5EEDE72A0133020007FF7E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -187,15 +187,15 @@
 			children = (
 				7B3BA4502A070A3D000246C6 /* ClapTestView.swift */,
 				7B55CEBF2A03D052009F9B5D /* ContentSectionView.swift */,
+				7B43C6A22A13A53400BBB027 /* LaunchScreen.swift */,
 				7BF902522A0B696F002E977A /* MetronomeView.swift */,
 				7B25F8372A04D57D00F9552E /* NoteView.swift */,
 				7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */,
 				7B55CEC32A03E480009F9B5D /* ScoreView.swift */,
 				7B3D956B2A10D4AB007CA60D /* StaffView.swift */,
 				7B25F8392A0657CC00F9552E /* Syllabus */,
-				7B5EEDE02A0133000007FF7E /* TopView.swift */,
+				7B5EEDE02A0133000007FF7E /* IndexView.swift */,
 				7B43C69E2A138CAE00BBB027 /* UIGlobals.swift */,
-				7B43C6A22A13A53400BBB027 /* LaunchScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -327,7 +327,7 @@
 				7B51F0E22A0A5CB200A7ABFA /* AudioRecorderOld.swift in Sources */,
 				7B55CEC02A03D052009F9B5D /* ContentSectionView.swift in Sources */,
 				7BF9B9CF2A0271E400121EBA /* PianoKeyboard.swift in Sources */,
-				7B5EEDE12A0133000007FF7E /* TopView.swift in Sources */,
+				7B5EEDE12A0133000007FF7E /* IndexView.swift in Sources */,
 				7B5EEE032A025F430007FF7E /* TimeSlice.swift in Sources */,
 				7B43C6A32A13A53400BBB027 /* LaunchScreen.swift in Sources */,
 				7B5EEE052A025F760007FF7E /* Scale.swift in Sources */,

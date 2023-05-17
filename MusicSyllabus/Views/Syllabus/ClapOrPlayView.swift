@@ -34,7 +34,6 @@ struct RhythmsAnswerView:View {
 
                 }) {
                     if playingCorrect {
-                        
                         Button(action: {
                             playingCorrect = false
                             metronome.stopPlayingScore()
@@ -99,20 +98,45 @@ struct ClapOrPlay:View {
         self.mode = mode
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: mode == .clap ? 1 : 5)
         score.setStaff(num: 0, staff: staff)
+        if mode == .play {
+            let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .clap ? 1 : 5)
+            score.setStaff(num: 1, staff: bstaff)
+        }
         let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
         
-        if let entries = exampleData {
-            for entry in entries {
-                if entry is Note {
-                    let timeSlice = score.addTimeSlice()
-                    let note = entry as! Note
-                    note.setIsOnlyRhythm(way: mode == .clap ? true : false)
-                    timeSlice.addNote(n: note)
+        var lastTS:TimeSlice? = nil
+        
+        if false {
+            let timeSlice = score.addTimeSlice()
+            var n = Note.MIDDLE_C - Note.OCTAVE
+            timeSlice.addNote(n: Note(num: n))
+            timeSlice.addNote(n: Note(num: n + 4))
+        }
+        else {
+            if let entries = exampleData {
+                for entry in entries {
+                    if entry is Note {
+                        let timeSlice = score.addTimeSlice()
+                        let note = entry as! Note
+                        note.staff = 0
+                        note.setIsOnlyRhythm(way: mode == .clap ? true : false)
+                        timeSlice.addNote(n: note)
+                        lastTS = timeSlice
+                    }
+                    if entry is BarLine {
+                        score.addBarLine()
+                    }
                 }
-                if entry is BarLine {
-                    score.addBarLine()
+                if mode == .play {
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4))
+                    //lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7))
                 }
+//                let timeSlice = score.addTimeSlice()
+//                var n = Note.MIDDLE_C + Note.OCTAVE
+//                timeSlice.addNote(n: Note(num: n, value: 1))
             }
         }
         //score.addBarLine(atScoreEnd: true)
@@ -156,6 +180,13 @@ struct ClapOrPlay:View {
                         }
                         .padding()
                     }
+                    
+                    Button(action: {
+                        metronome.playScore(score: score)
+                    }) {
+                        Text("***PLAY***")
+                    }.padding()
+                    
                     if answerState == AnswerState.recording {
                         HStack {
                             Image("microphone")

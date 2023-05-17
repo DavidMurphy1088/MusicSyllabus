@@ -16,7 +16,7 @@ class Scale {
         //self.minorType = minorType
         var num = score.key.firstScaleNote()
         for i in 0..<7 {
-            notes.append(Note(num: num))
+            notes.append(Note(num: num, value: 1))
             if score.key.type == Key.KeyType.major {
                 if [2,6].contains(i) {
                     num += 1
@@ -41,10 +41,10 @@ class Scale {
     
     func noteInScale(note: Note) -> Bool {
         for octaveOffset in 0...4 {
-            if self.notes.contains(Note(num: note.midiNumber + octaveOffset*12)){
+            if self.notes.contains(Note(num: note.midiNumber + octaveOffset*12, value: 1)){
                 return true
             }
-            if self.notes.contains(Note(num: note.midiNumber - octaveOffset*12)){
+            if self.notes.contains(Note(num: note.midiNumber - octaveOffset*12, value: 1)){
                 return true
             }
         }

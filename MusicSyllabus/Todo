@@ -1,12 +1,23 @@
 get dev account
 
-no sound on score playing on real phone, (met works...)
-quaver bar wrong when rotate device
+--HIGH
+
+playing view needs chord at end
+Test on iPad
+quaver bar wrong when rotate device - need to refresh layout on rotate
+try tapping rhythm on ui
 record volume too soft
-start up logo - transarent background
-middle C needs ledger line
-playing view nees chord at end
+
+check audio perms asked for properly, orderly
+what are icons in bottom menu in prod mode - one a settings?
+
+--MID
+midi sampler has to load f=paino file every time it starts, causes a delay at metronom.playScore
+start up logo - fade to trasnparent
 icon for recording needs transpernet backgoud
+
+--LOW
+handle ledger lines for all notes (now its just middle C)
 
 Checks
 //layout of plying example 1 with low middle C ruins layout relative to staff enclsoing border

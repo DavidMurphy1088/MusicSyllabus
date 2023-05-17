@@ -21,7 +21,7 @@ class Logger : ObservableObject {
     
     func log(_ reporter:AnyObject, _ msg:String) {
         let msg = String(describing: type(of: reporter)) + ":" + msg
-        if TopView.devMode {
+        if MusicSyllabusApp.devMode {
             publish(msg, false)
         }
     }

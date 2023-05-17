@@ -3,15 +3,30 @@ import CoreData
 import MessageUI
 
 class BeamCounter : ObservableObject  {
-    //static let shared = BeamCounter()
-    var notes:[(Note, CGRect)] = []
+    var notePositions:[(Note, CGRect)] = []
+    var rotationOccured = false
     @Published var updated:Int = 0
     
     init() {
     }
     
     func add(p: (Note, CGRect)) {
-        self.notes.append(p)
+        for n in notePositions { //TODO remove
+            if n.0.id == p.0.id {
+                print("================== duplicated id", p.0.id)
+//                if rotationOccured {
+//                    self.notePositions = []
+//                    self.rotationOccured = false
+//                }
+//                else {
+                    return
+                //}
+            }
+        }
+        if p.0.sequence == 0 {
+            print ("--------------------- new Adding COUNT:", self.notePositions.count)
+        }
+        self.notePositions.append(p)
         //print("======== BeamCtr ADD ", "type:", type(of: p.1), "midi", p.0.midiNumber, "\tseq:", p.0.sequence, "\tBeam:", p.0.beamType) //+ "\tOrigin:", p.1.origin)
         DispatchQueue.main.async {
             self.updated += 1
@@ -20,11 +35,11 @@ class BeamCounter : ObservableObject  {
     
     func getNotes() -> [(Note, Note, CGRect, CGRect)] {
         var result:[(Note, Note, CGRect, CGRect)] = []
-        self.notes = notes.sorted(by: { $0.0.sequence < $1.0.sequence })
-        if notes.count > 1 {
-            for i in 0..<notes.count-1 {
+        self.notePositions = notePositions.sorted(by: { $0.0.sequence < $1.0.sequence })
+        if notePositions.count > 1 {
+            for i in 0..<notePositions.count-1 {
                 //print("==== BeamCtr GET notes\t", notes[i].0.beamType, notes[i].0.midiNumber, "\tX:", notes[i].1.origin.x)
-                result.append((notes[i].0, notes[i+1].0, notes[i].1, notes[i+1].1))
+                result.append((notePositions[i].0, notePositions[i+1].0, notePositions[i].1, notePositions[i+1].1))
             }
         }
         //result = result.sorted(by: { $0.0.sequence < $1.0.sequence })
@@ -158,12 +173,39 @@ struct TimeSignatureView: View {
     }
 }
 
+struct CustomCGPoint: Equatable {
+    var x: CGFloat
+    var y: CGFloat
+    
+    var cgPoint: CGPoint {
+        CGPoint(x: x, y: y)
+    }
+}
+
+struct MyView<Content: View>: View {
+    let content: Content
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack {
+            content
+        }
+    }
+}
+
 struct StaffView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
 
     var lineSpacing:Int
     var beamCounter:BeamCounter = BeamCounter()
+    //@State private var position = CustomCGPoint(x: 100, y: 200)
+    @State private var rotationId: UUID = UUID()
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @State private var position: CGPoint = .zero
 
     init (score:Score, staff:Staff, lineSpacing:Int) {
         self.score = score
@@ -178,7 +220,7 @@ struct StaffView: View {
     func getNotes(entry:ScoreEntry) -> [Note] {
         if entry is TimeSlice {
             let ts = entry as! TimeSlice
-            return ts.note
+            return ts.notes
         }
         else {
             let n:[Note] = []
@@ -192,18 +234,17 @@ struct StaffView: View {
                 
                 StaffLinesView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing)
                 
-                HStack { //GeometryReader { geo11 in
-                    
+                HStack {
                     if staff.linesInStaff != 1 {
                         HStack {
                             if staff.type == StaffType.treble {
                                 Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
                             }
                             else {
-                                Text("\u{1d122}").font(.system(size: CGFloat(lineSpacing * 6)))
+                                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
                             }
                         }
-                        .padding(.bottom, Double(lineSpacing) * 1.3)
+                        .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
                         .frame(width: clefWidth())
                         //.border(Color.green)
                     }
@@ -220,10 +261,27 @@ struct StaffView: View {
                                                  note: note,
                                                  noteWidth: Double(lineSpacing) * 1.2,
                                                  lineSpacing: lineSpacing)
+                                            //only called when view first apepars, e.g. not when device rotated
                                             .onAppear {
                                                 let position = geo.frame(in: .named("Staff1"))
                                                 beamCounter.add(p: (note, position))
                                             }
+//                                            .onChange(of: rotationId) { _ in
+//                                                let position = geo.frame(in: .named("Staff1"))
+//                                                beamCounter.add(p: (note, position))
+//                                            }
+                                            //.position(position)
+//                                            .onAppear {
+//                                                //position = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
+//                                                let pos = geo.frame(in: .named("Staff1"))
+//                                                beamCounter.add(p: (note, pos))
+//                                            }
+//                                            .onChange(of: verticalSizeClass) { _ in
+//                                                //position = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
+//                                                let pos = geo.frame(in: .named("Staff1"))
+//                                                beamCounter.add(p: (note, pos))
+//                                            }
+
                                             //.border(Color.blue)
                                         }
                                     }
@@ -235,14 +293,23 @@ struct StaffView: View {
                             BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
                         }
                     }
-                    .coordinateSpace(name: "Staff0")
+                    //.coordinateSpace(name: "Staff0")
                 }
                 .coordinateSpace(name: "Staff1")
-                QuaverBeamView(beamCounter: self.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
+                if staff.type == .treble {
+                    QuaverBeamView(beamCounter: self.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
+                    //                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                    //                    //self.beamCounter.notePositions = []
+                    //                    rotationId = UUID() // Update the ID when device rotation occurs
+                    //                    print("============================= ROTATION OCCURRED")
+                    //                    beamCounter.rotationOccured = true
+                    //                }
+                }
+
             }
-            .coordinateSpace(name: "Staff2")
+            //.coordinateSpace(name: "Staff2")
         }
-        .coordinateSpace(name: "Staff3")
+        //.coordinateSpace(name: "Staff3")
     }
 }
 

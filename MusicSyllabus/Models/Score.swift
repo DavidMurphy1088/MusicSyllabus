@@ -163,7 +163,7 @@ class Score : ObservableObject {
 
         for entry in self.scoreEntries {
             if entry is TimeSlice {
-                let note = (entry as! TimeSlice).note[0]
+                let note = (entry as! TimeSlice).notes[0]
                 note.beamType = .none
                 note.sequence = ctr
                 note.stemLength = 3.5
