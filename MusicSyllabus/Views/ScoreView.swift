@@ -8,29 +8,24 @@ struct ScoreView: View {
 
     var body: some View {
         VStack {
-            //Spacer()
             VStack {
                 ForEach(score.getStaff(), id: \.self.type) { staff in
-                    //if staff.type == .bass {
+                    if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
                         StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
                             .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))  //fixed size of height for all staff lines + ledger lines
-                    //}
+                    }
                 }
-                .padding(.vertical, CGFloat(lineSpacing) * 3.0)
-
-//                StaffView(score: score, staff: score.staff[0], lineSpacing: lineSpacing)
-//                    .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))
-
+                .padding(.vertical, CGFloat(lineSpacing) * 2.0)
             }
             .padding(.horizontal, (score.scoreEntries.count > 10 && UIDevice.current.userInterfaceIdiom == .phone)  ? 0 : 12)
-            //Spacer()
             .coordinateSpace(name: "Score1")
         }
         .coordinateSpace(name: "Score2")
+        .padding(.vertical)
         .overlay(
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
         .background(UIGlobals.backgroundColor)
-        //.border(Color.pink)
+        //.border(Color.blue)
     }
 }

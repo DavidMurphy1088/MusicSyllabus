@@ -19,6 +19,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             Logger.logger.log(self, "Set AVAudioSession category done, category \(category)")
             let perms = AVAudioSession.sharedInstance().recordPermission
             //Logger.logger.log(self, "AVAudioSession permission \(perms.rawValue)")
+            if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                print("App Version: \(appVersion)")
+            }
         }
         catch let error {
             Logger.logger.reportError(self, "Set AVAudioSession category failed", error)

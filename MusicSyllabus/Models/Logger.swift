@@ -6,7 +6,7 @@ class Logger : ObservableObject {
     @Published var isError:Bool = false
 
     func reportError(_ reporter:AnyObject, _ context:String, _ err:Error? = nil) {
-        var msg = String("*ERROR* :" + String(describing: type(of: reporter))) + " " + context
+        var msg = String("*** *** ERROR *** *** :" + String(describing: type(of: reporter))) + " " + context
         if let err = err {
             msg += String()
         }

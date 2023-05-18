@@ -55,8 +55,10 @@ class Score : ObservableObject {
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
     @Published var showFootnotes = false
+    @Published var hiddenStaffNo:Int?
 
     var staff:[Staff] = []
+    
     var minorScaleType = Scale.MinorType.natural
     var tempo:Float = 75 //BPM, 75 = andante
     static let maxTempo:Float = 200
@@ -81,6 +83,12 @@ class Score : ObservableObject {
         // Connect the nodes.
         //engine.connect(sampler, to: reverb, format: nil)
         //engine.connect(reverb, to: engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
+    }
+    
+    func setHiddenStaff(num:Int?) {
+        DispatchQueue.main.async {
+            self.hiddenStaffNo = num
+        }
     }
     
     func setShowFootnotes(_ on:Bool) {

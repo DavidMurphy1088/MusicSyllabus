@@ -13,7 +13,7 @@ class BeamCounter : ObservableObject  {
     func add(p: (Note, CGRect)) {
         for n in notePositions { //TODO remove
             if n.0.id == p.0.id {
-                print("================== duplicated id", p.0.id)
+//                print("================== duplicated id", p.0.id)
 //                if rotationOccured {
 //                    self.notePositions = []
 //                    self.rotationOccured = false
@@ -23,9 +23,9 @@ class BeamCounter : ObservableObject  {
                 //}
             }
         }
-        if p.0.sequence == 0 {
-            print ("--------------------- new Adding COUNT:", self.notePositions.count)
-        }
+//        if p.0.sequence == 0 {
+//            print ("--------------------- new Adding COUNT:", self.notePositions.count)
+//        }
         self.notePositions.append(p)
         //print("======== BeamCtr ADD ", "type:", type(of: p.1), "midi", p.0.midiNumber, "\tseq:", p.0.sequence, "\tBeam:", p.0.beamType) //+ "\tOrigin:", p.1.origin)
         DispatchQueue.main.async {
@@ -82,11 +82,11 @@ struct QuaverBeamView: View {
                             path.move(to: CGPoint(x: x1, y: y1))
                             path.addLine(to: CGPoint(x: x2, y: y2))
                         }
+                        //.clipped()
                         //print("  ==>QuaverBeamView  \tmidis", note1.midiNumber, note2.midiNumber, "\tBeam", note1.beamType, note2.beamType) //, rect1.origin, rect1.minX)
                         .stroke(Color.black, lineWidth: 3)
                     }
-                    
-                }
+                 }
             }
         }
     }
@@ -94,7 +94,6 @@ struct QuaverBeamView: View {
 
 struct StaffLinesView: View {
     @ObservedObject var staff:Staff
-    var parentGeometry: GeometryProxy
     var lineSpacing:Int
 
     var body: some View {
@@ -137,7 +136,7 @@ struct StaffLinesView: View {
 
 struct TimeSignatureView: View {
     @ObservedObject var staff:Staff
-    var parentGeometry: GeometryProxy
+    //var parentGeometry: GeometryProxy
     var lineSpacing:Int
     var clefWidth:Double
     
@@ -202,7 +201,6 @@ struct StaffView: View {
 
     var lineSpacing:Int
     var beamCounter:BeamCounter = BeamCounter()
-    //@State private var position = CustomCGPoint(x: 100, y: 200)
     @State private var rotationId: UUID = UUID()
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var position: CGPoint = .zero
@@ -229,48 +227,89 @@ struct StaffView: View {
     }
     
     var body: some View {
-        GeometryReader { geo in
-            ZStack (alignment: .leading) {
-                
-                StaffLinesView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing)
-                
-                HStack {
-                    if staff.linesInStaff != 1 {
-                        HStack {
-                            if staff.type == StaffType.treble {
-                                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
-                            }
-                            else {
-                                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
-                            }
+        ZStack (alignment: .leading) {
+            
+            StaffLinesView(staff: staff, lineSpacing: lineSpacing)
+            
+            HStack {
+                if staff.linesInStaff != 1 {
+                    HStack {
+                        if staff.type == StaffType.treble {
+                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
                         }
-                        .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
-                        .frame(width: clefWidth())
-                        //.border(Color.green)
+                        else {
+                            Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+                        }
                     }
-                    
-                    TimeSignatureView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0).padding(.leading, -10)
-                    
-                    ForEach(score.scoreEntries, id: \.self) { entry in
-                        ZStack {
-                            if entry is TimeSlice {
-                                ForEach(getNotes(entry: entry), id: \.self) { note in
-                                    VStack {
-                                        GeometryReader { geo in
+                    .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
+                    .frame(width: clefWidth())
+                    //.border(Color.green)
+                }
+                
+                TimeSignatureView(staff: staff, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0).padding(.leading, -10)
+                
+                ForEach(score.scoreEntries, id: \.self) { entry in
+                    ZStack {
+                        if entry is TimeSlice {
+                            ForEach(getNotes(entry: entry), id: \.self) { note in
+                                VStack {
+                                    GeometryReader { geoforNote in
+                                        if note.staff == nil || note.staff == staff.staffNum {
                                             NoteView(staff: staff,
-                                                 note: note,
-                                                 noteWidth: Double(lineSpacing) * 1.2,
-                                                 lineSpacing: lineSpacing)
+                                                     note: note,
+                                                     noteWidth: Double(lineSpacing) * 1.2,
+                                                     lineSpacing: lineSpacing)
                                             //only called when view first apepars, e.g. not when device rotated
                                             .onAppear {
-                                                let position = geo.frame(in: .named("Staff1"))
+                                                let position = geoforNote.frame(in: .named("Staff1"))
                                                 beamCounter.add(p: (note, position))
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                            if let tag = (entry as! TimeSlice).tag {
+                                if staff.staffNum == 0 {
+                                    VStack {
+                                        Spacer()
+                                        Text(tag)
+                                            //.fontDesign(.serif)
+                                            .font(.custom("Times New Roman", size: Double(lineSpacing) * 2.0)).bold()//.foregroundColor(.blue).padding()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if entry is BarLine {
+                        BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+                    }
+                }
+                //.coordinateSpace(name: "Staff0")
+            }
+            .coordinateSpace(name: "Staff1")
+            if staff.type == .treble {
+                QuaverBeamView(beamCounter: self.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
+                //                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                //                    //self.beamCounter.notePositions = []
+                //                    rotationId = UUID() // Update the ID when device rotation occurs
+                //                    print("============================= ROTATION OCCURRED")
+                //                    beamCounter.rotationOccured = true
+                //                }
+            }
+            //.coordinateSpace(name: "Staff2")
+        }
+        //.coordinateSpace(name: "Staff3")
+        //.border(Color.orange)
+    }
+        
+}
+
 //                                            .onChange(of: rotationId) { _ in
 //                                                let position = geo.frame(in: .named("Staff1"))
 //                                                beamCounter.add(p: (note, position))
 //                                            }
-                                            //.position(position)
+//.position(position)
 //                                            .onAppear {
 //                                                //position = CGPoint(x: geometry.frame(in: .global).midX, y: geometry.frame(in: .global).midY)
 //                                                let pos = geo.frame(in: .named("Staff1"))
@@ -282,39 +321,34 @@ struct StaffView: View {
 //                                                beamCounter.add(p: (note, pos))
 //                                            }
 
-                                            //.border(Color.blue)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if entry is BarLine {
-                            BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
-                        }
-                    }
-                    //.coordinateSpace(name: "Staff0")
-                }
-                .coordinateSpace(name: "Staff1")
-                if staff.type == .treble {
-                    QuaverBeamView(beamCounter: self.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
-                    //                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                    //                    //self.beamCounter.notePositions = []
-                    //                    rotationId = UUID() // Update the ID when device rotation occurs
-                    //                    print("============================= ROTATION OCCURRED")
-                    //                    beamCounter.rotationOccured = true
-                    //                }
-                }
-
-            }
-            //.coordinateSpace(name: "Staff2")
-        }
-        //.coordinateSpace(name: "Staff3")
-    }
-}
-
-//extension CGRect {
-//    func origin(for index: Int) -> CGPoint {
-//        return CGPoint(x: self.minX, y: self.minY + (CGFloat(index) * 20))
+//.border(Color.blue)
+//    var body1: some View {
+//        //GeometryReader { geo in
+//            ZStack (alignment: .leading) {
+//
+//               // StaffLinesView(staff: staff, parentGeometry: geo, lineSpacing: lineSpacing)
+//                //Text("---------------- STAFF VIEW IS ORANGE ---------------")
+//                StaffLinesView(staff: staff, lineSpacing: lineSpacing)
+//
+//                HStack {
+//                    if staff.linesInStaff != 1 {
+//                        HStack {
+//                            if staff.type == StaffType.treble {
+//                                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+//                            }
+//                            else {
+//                                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+//                            }
+//                        }
+//                        .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
+//                        .frame(width: clefWidth())
+//                        .border(Color.green)
+//                    }
+//                    TimeSignatureView(staff: staff, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0).padding(.leading, -10)
+//                }
+//            }
+//        //}
+//        .border(Color.orange)
 //    }
-//}
+        
+  

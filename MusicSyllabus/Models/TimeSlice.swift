@@ -1,10 +1,11 @@
 import Foundation
 
-class TimeSlice : ScoreEntry {//}, Hashable   { //}: ObservableObject,  {
+class TimeSlice : ScoreEntry {
     var score:Score?
     var notes:[Note]
     var footnote:String?
     var barLine:Int = 0
+    var tag:String?
     
     private static var idIndex = 0
     
