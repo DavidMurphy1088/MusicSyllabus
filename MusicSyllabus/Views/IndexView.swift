@@ -15,23 +15,23 @@ struct IndexView: View {
         TabView {
             if MusicSyllabusApp.devMode {
                 
-                 ClapOrPlay(mode: .play, contentSection:
-                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Playing"),
-                    type: ContentSection.SectionType.example, name: "test"))
-                    .tabItem {Label("Playing", systemImage: "music.quarternote.3")
-                }
+//                 ClapOrPlay(mode: .play, contentSection:
+//                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Playing"),
+//                    type: ContentSection.SectionType.example, name: "test"))
+//                    .tabItem {Label("Playing", systemImage: "music.quarternote.3")
+//                }
 
                 ClapOrPlay(mode: .clap, contentSection:
                     ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
                     type: ContentSection.SectionType.example, name: "test"))
                     .tabItem {Label("Clapping", systemImage: "hands.clap")
                 }
-
-                IntervalsView(contentSection:
-                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
-                    type: ContentSection.SectionType.example, name: "test"))
-                    .tabItem {Label("Intervals", systemImage: "music.note.list")
-                }
+//
+//                IntervalsView(contentSection:
+//                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
+//                    type: ContentSection.SectionType.example, name: "test"))
+//                    .tabItem {Label("Intervals", systemImage: "music.note.list")
+//                }
 
                 TopicsViewNavigation(topic: root)
                     .tabItem {Label("Book1", systemImage: "music.note.list")

@@ -1,16 +1,14 @@
 get dev account
-setup google docs
 send amber test flight version
-reserch Aural books for AMEB
+
+--RELEASE
+- adjust bottom bar nav
+- remove bottom nav?
 
 --HIGH
-Lost quaver bream on answer mode (2 cleffs?)
-do playing test answer
+do clapping test - try tapping rhythm on ui
+try on real piano
 record volume too soft
-app develper acct - use Daniel
-try tapping rhythm on ui
-playing view needs indication of requried chord and chord at end
-Test on iPad
 quaver bar wrong when rotate device - need to refresh layout on rotate
 
 check audio perms asked for properly, orderly
@@ -20,6 +18,7 @@ what are icons in bottom menu in prod mode - one a settings?
 midi sampler has to load piano sound file every time it starts, causes a delay at metronom.playScore
 start up logo - fade to trasnparent
 icon for recording needs transpernet backgoud
+playing view needs G major
 
 --LOW
 handle ledger lines for all notes (now its just middle C)

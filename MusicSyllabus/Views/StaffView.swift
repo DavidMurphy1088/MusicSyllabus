@@ -7,8 +7,8 @@ class BeamCounter : ObservableObject  {
     var rotationOccured = false
     @Published var updated:Int = 0
     
-    init() {
-    }
+    //sometimes getNotes() returns a zero length array. The below is a hack to fix this but needs correcting
+    static var lastNonZeroPostions:[(Note, Note, CGRect, CGRect)] = [] //TOOD FIX!!!
     
     func add(p: (Note, CGRect)) {
         for n in notePositions { //TODO remove
@@ -42,8 +42,17 @@ class BeamCounter : ObservableObject  {
                 result.append((notePositions[i].0, notePositions[i+1].0, notePositions[i].1, notePositions[i+1].1))
             }
         }
-        //result = result.sorted(by: { $0.0.sequence < $1.0.sequence })
-        return result
+        
+        if result.count > 0 {
+            BeamCounter.lastNonZeroPostions = result.map { $0 }
+            //print("====Beam Ctr", result.count)
+            return result
+        }
+        else {
+            //print("====Beam Ctr NONE", BeamCounter.lastNonZeroPostions.count)
+            return BeamCounter.lastNonZeroPostions
+        }
+        //return result
     }
 }
 
@@ -89,6 +98,7 @@ struct QuaverBeamView: View {
                  }
             }
         }
+        //.onAppear(BeamCounter.lastNonZeroPostions = [])
     }
 }
 

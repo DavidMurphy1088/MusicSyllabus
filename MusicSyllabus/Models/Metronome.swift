@@ -4,11 +4,12 @@ import AVFoundation
 
 class Metronome: ObservableObject {
     static public var shared:Metronome = Metronome()
-    let mdidNoteEngine = AVAudioEngine()
+    let midiNoteEngine = AVAudioEngine()
     
     @Published var clapCounter = 0
     @Published var tempoName:String = ""
     var midiSampler:AVAudioUnitSampler?
+    //var x: AVAudioUnitMIDIInstrument?
     
     var tempo: Double
     var clapCnt = 0
@@ -42,7 +43,7 @@ class Metronome: ObservableObject {
             //url = Bundle.main.url(forResource: "Mechanical metronome - Low", withExtension: "aif")
             clapURL = Bundle.main.url(forResource: "Mechanical metronome - High", withExtension: "aif")
             do {
-                for i in 0..<self.numberOfAudioPlayers {
+                for _ in 0..<self.numberOfAudioPlayers {
                     let audioPlayer = try AVAudioPlayer(contentsOf: self.clapURL!)
                     if audioPlayer != nil {
                         self.audioPlayers.append(audioPlayer)
@@ -55,7 +56,7 @@ class Metronome: ObservableObject {
                     }
                 }
             }
-            catch let error {
+            catch  {
                 Logger.logger.reportError(self, "Cannot prepare AVAudioPlayer")
             }
         }
@@ -88,8 +89,7 @@ class Metronome: ObservableObject {
             return
         }
         AppDelegate.startAVAudioSession(category: .playback)
-        //for _ in 0..<numberOfAudioPlayers {
-            do {
+        do {
 //                audioPlayers = []
 //                for _ in 0..<numberOfAudioPlayers {
 //                    let audioPlayer = try AVAudioPlayer(contentsOf: self.clapURL!)
@@ -97,23 +97,22 @@ class Metronome: ObservableObject {
 //                    audioPlayer.volume = 1.0 // Set the volume to full
 //                    audioPlayers.append(audioPlayer)
 //                }
-                //if needMidi {
-                    midiSampler = AVAudioUnitSampler()
-                    mdidNoteEngine.attach(midiSampler!)
-                    mdidNoteEngine.connect(midiSampler!, to:mdidNoteEngine.mainMixerNode, format:mdidNoteEngine.mainMixerNode.outputFormat(forBus: 0))
-                    //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
-                    //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-                    if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
-                        try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-                    }
-                    try self.mdidNoteEngine.start()
-                //}
+            midiSampler = AVAudioUnitSampler()
+            midiNoteEngine.attach(midiSampler!)
+            midiNoteEngine.connect(midiSampler!, to:midiNoteEngine.mainMixerNode, format:midiNoteEngine.mainMixerNode.outputFormat(forBus: 0))
+            //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
+            //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
+            //let name = "Envalentoned_violin"
+            let name = "Nice-Steinway-v3.8"
+            if let url = Bundle.main.url(forResource:name, withExtension:"sf2") {
+                try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
             }
-            catch let error {
-                Logger.logger.reportError(self, "Cant create midi sampler", error)
-            }
-            setTempo(tempo: self.tempo)
-       // }
+            try self.midiNoteEngine.start()
+        }
+        catch let error {
+            Logger.logger.reportError(self, "Cant create midi sampler", error)
+        }
+        setTempo(tempo: self.tempo)
     }
     
     func setTempo(tempo: Double) {
@@ -240,7 +239,9 @@ class Metronome: ObservableObject {
                 if playSynched {
                     if let score = score {
                         if let timeSlice = nextTimeSlice {
+                            var channel = 0
                             for note in timeSlice.notes {
+                                //print("    ---", note.midiNumber)
                                 if currentNoteDuration < note.value {
                                     //note only plays once even though it might spans > 1 tick
                                     continue
@@ -251,7 +252,8 @@ class Metronome: ObservableObject {
                                     note.setHilite(hilite: false)
                                 }
                                 let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
-                                midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:0)
+                                midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:UInt8(channel))
+                                //channel += 1
                             }
                             
                             //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick

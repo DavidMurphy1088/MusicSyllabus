@@ -32,7 +32,7 @@ struct MetronomeView: View {
             }) {
                 Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
             }
-            .padding()
+            //.padding()
             
             Slider(value: $tempo, in: 40...220, onEditingChanged: { value in
                 metronome.setTempo(tempo: tempo)

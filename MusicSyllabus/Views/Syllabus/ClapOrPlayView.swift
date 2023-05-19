@@ -82,7 +82,7 @@ struct ClapOrPlay:View {
     let exampleData = ExampleData.shared
     
     @ObservedObject var audioRecorder = AudioRecorder.shared
-    //@ObservedObject var audioStatus = AudioRecorder.shared.status
+    @ObservedObject var tapRecorder = TapRecorder.shared
     
     @State var exampleName:String = ""
     
@@ -108,44 +108,36 @@ struct ClapOrPlay:View {
         if mode == .play {
             let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .clap ? 1 : 5)
             score.setStaff(num: 1, staff: bstaff)
-            score.hiddenStaffNo = 1
+            //score.hiddenStaffNo = 1
         }
-        let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
+        let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
         
         var lastTS:TimeSlice? = nil
+        var lastNoteValue:Double? = 1.0
         
-        if false {
-            let timeSlice = score.addTimeSlice()
-            var n = Note.MIDDLE_C - Note.OCTAVE
-            timeSlice.addNote(n: Note(num: n))
-            timeSlice.addNote(n: Note(num: n + 4))
-        }
-        else {
-            if let entries = exampleData {
-                for entry in entries {
-                    if entry is Note {
-                        let timeSlice = score.addTimeSlice()
-                        let note = entry as! Note
-                        note.staff = 0
-                        note.setIsOnlyRhythm(way: mode == .clap ? true : false)
-                        timeSlice.addNote(n: note)
-                        lastTS = timeSlice
-                    }
-                    if entry is BarLine {
-                        score.addBarLine()
-                    }
+
+        if let entries = exampleData {
+            for entry in entries {
+                if entry is Note {
+                    let timeSlice = score.addTimeSlice()
+                    let note = entry as! Note
+                    note.staff = 0
+                    note.setIsOnlyRhythm(way: mode == .clap ? true : false)
+                    //note.value = 1
+                    timeSlice.addNote(n: note)
+                    lastTS = timeSlice
+                    lastNoteValue = note.value
                 }
-                if mode == .play {
-                    lastTS?.tag = "I"
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, staff: 1))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, staff: 1))
-                    //lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, staff: 1))
+                if entry is BarLine {
+                    score.addBarLine()
                 }
-//                let timeSlice = score.addTimeSlice()
-//                var n = Note.MIDDLE_C + Note.OCTAVE
-//                timeSlice.addNote(n: Note(num: n, value: 1))
+            }
+            if mode == .play {
+                lastTS?.tag = "I"
+                lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNoteValue!))
+                lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNoteValue!))
+                lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNoteValue!))
             }
         }
         //score.addBarLine(atScoreEnd: true)
@@ -155,7 +147,7 @@ struct ClapOrPlay:View {
         let result:String
         if self.mode == .clap {
             if self.answerState == .notRecorded {
-                result = "Please record your tapping to see the correct answer"
+                result = "\n\u{25BA}   Start recording\n\u{25BA}   Tap the rhythm\n\u{25BA}   Stop recording"
             }
             else {
                 result = "Record your tapping again"
@@ -183,11 +175,15 @@ struct ClapOrPlay:View {
                 VStack {
                     if answerState == .notRecorded || answerState == .recorded {
                         if answerState == .notRecorded {
-                            Text(self.instructionText()).padding()
+                            Text("Steps- \n"+self.instructionText()).padding()
                         }
                         Button(action: {
                             answerState = .recording
-                            audioRecorder.startRecording()
+                            if self.mode == .clap {
+                                tapRecorder.startRecording()
+                            } else {
+                                audioRecorder.startRecording()
+                            }
                         }) {
                             Text(answerState == .notRecorded ? "Start Recording" : "Redo Recording")
                         }
@@ -195,25 +191,35 @@ struct ClapOrPlay:View {
                     }
 
                     if answerState == AnswerState.recording {
-                        HStack {
-                            Image("microphone")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                                .scaleEffect(isAnimating ? 1.1 : 0.9)
-                                .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true))
-                                .onAppear() {
-                                    self.isAnimating = true
-                                }
-                                .padding()
-                            Button(action: {
-                                answerState = .recorded
-                                audioRecorder.stopRecording()
-                                isAnimating = false
-                            }) {
-                                Text("Stop Recording")
-                            }.padding()
+                        if self.mode == .clap {
+                            TappingView()
                         }
+                        else {
+                            HStack {
+                                Image(systemName: "stop.circle")
+//                                    .resizable()
+//                                    .frame(width: 24, height: 24)
+//                                    .foregroundColor(.red)
+                                //Image("microphone")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(Color.red)
+                                    .scaleEffect(isAnimating ? 1.1 : 0.9)
+                                    .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true))
+                                    .onAppear() {
+                                        self.isAnimating = true
+                                    }
+                                    .padding()
+                            }
+                        }
+                        Button(action: {
+                            answerState = .recorded
+                            self.mode == .clap ? tapRecorder.stopRecording() : audioRecorder.stopRecording()
+                            isAnimating = false
+                        }) {
+                            Text("Stop Recording")
+                        }.padding()
                     }
                     if answerState == AnswerState.recorded {
                         Button(action: {
@@ -242,7 +248,7 @@ struct ClapOrPlay:View {
             Text(audioRecorder.status).padding()
             
             if logger.status != nil {
-                Text(logger.status!).font(.caption).foregroundColor(logger.isError ? .red : .gray)
+                //Text(logger.status!).font(.caption).foregroundColor(logger.isError ? .red : .gray)
             }
 
         }

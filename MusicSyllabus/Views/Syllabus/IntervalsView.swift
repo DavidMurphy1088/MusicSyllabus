@@ -103,7 +103,7 @@ struct IntervalsView:View {
     
     init(contentSection:ContentSection) {
         self.contentSection = contentSection
-        let exampleData = exampleData.get(contentSection.parent!.name, contentSection.name)
+        let exampleData = exampleData.get(contentSection: contentSection) //contentSection.parent!.name, contentSection.name, exampleKey: contentSection.gr)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         score.setStaff(num: 0, staff: staff)
         

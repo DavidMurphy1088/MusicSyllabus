@@ -41,6 +41,8 @@
 		7B5EEE012A025F160007FF7E /* Staff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEE002A025F160007FF7E /* Staff.swift */; };
 		7B5EEE032A025F430007FF7E /* TimeSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEE022A025F430007FF7E /* TimeSlice.swift */; };
 		7B5EEE052A025F760007FF7E /* Scale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEE042A025F760007FF7E /* Scale.swift */; };
+		7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32872A177A67004E2FA6 /* TappingView.swift */; };
+		7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32892A177C09004E2FA6 /* TapRecorder.swift */; };
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
 		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902542A0CBE47002E977A /* ExampleData.swift */; };
@@ -93,6 +95,8 @@
 		7B5EEE002A025F160007FF7E /* Staff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Staff.swift; sourceTree = "<group>"; };
 		7B5EEE022A025F430007FF7E /* TimeSlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSlice.swift; sourceTree = "<group>"; };
 		7B5EEE042A025F760007FF7E /* Scale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scale.swift; sourceTree = "<group>"; };
+		7B6C32872A177A67004E2FA6 /* TappingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappingView.swift; sourceTree = "<group>"; };
+		7B6C32892A177C09004E2FA6 /* TapRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRecorder.swift; sourceTree = "<group>"; };
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
 		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF902542A0CBE47002E977A /* ExampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleData.swift; sourceTree = "<group>"; };
@@ -187,6 +191,7 @@
 			children = (
 				7B3BA4502A070A3D000246C6 /* ClapTestView.swift */,
 				7B55CEBF2A03D052009F9B5D /* ContentSectionView.swift */,
+				7B5EEDE02A0133000007FF7E /* IndexView.swift */,
 				7B43C6A22A13A53400BBB027 /* LaunchScreen.swift */,
 				7BF902522A0B696F002E977A /* MetronomeView.swift */,
 				7B25F8372A04D57D00F9552E /* NoteView.swift */,
@@ -194,8 +199,8 @@
 				7B55CEC32A03E480009F9B5D /* ScoreView.swift */,
 				7B3D956B2A10D4AB007CA60D /* StaffView.swift */,
 				7B25F8392A0657CC00F9552E /* Syllabus */,
-				7B5EEDE02A0133000007FF7E /* IndexView.swift */,
 				7B43C69E2A138CAE00BBB027 /* UIGlobals.swift */,
+				7B6C32872A177A67004E2FA6 /* TappingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -219,6 +224,7 @@
 				7B5EEDF62A025E0B0007FF7E /* Score.swift */,
 				7BF9B9C82A02618700121EBA /* SoundGenerator.swift */,
 				7B5EEE002A025F160007FF7E /* Staff.swift */,
+				7B6C32892A177C09004E2FA6 /* TapRecorder.swift */,
 				7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */,
 				7B5EEE022A025F430007FF7E /* TimeSlice.swift */,
 			);
@@ -334,9 +340,11 @@
 				7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */,
 				7B5EEDEB2A0133020007FF7E /* MusicSyllabus.xcdatamodeld in Sources */,
 				7B5EEDFD2A025EC00007FF7E /* Note.swift in Sources */,
+				7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */,
 				7B51F0DD2A0A508B00A7ABFA /* Metronome.swift in Sources */,
 				7B5EEDFF2A025EE60007FF7E /* Chord.swift in Sources */,
 				7B5EEDF52A0134AB0007FF7E /* IntervalsView.swift in Sources */,
+				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7B51F0E02A0A5B6100A7ABFA /* AudioAnalyser.swift in Sources */,
 				7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */,
@@ -404,6 +412,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				NEW_SETTING = "";
+				NEW_SETTING1 = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -458,6 +468,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				NEW_SETTING = "";
+				NEW_SETTING1 = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -472,19 +484,21 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Music Syllabus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application does not use the camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This application uses your microphone to record your music playing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -506,19 +520,21 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Music Syllabus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This application does not use the camera";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This application uses your microphone to record your music playing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

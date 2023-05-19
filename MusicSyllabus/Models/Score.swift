@@ -88,6 +88,9 @@ class Score : ObservableObject {
     func setHiddenStaff(num:Int?) {
         DispatchQueue.main.async {
             self.hiddenStaffNo = num
+            for staff in self.staff {
+                staff.update()
+            }
         }
     }
     
