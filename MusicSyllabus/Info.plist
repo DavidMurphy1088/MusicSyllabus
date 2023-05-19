@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>This application uses your microphone to record your playing</string>
+    <string>This application does not use the camera</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This application uses your microphone to record your playing</string>
+	<string>This application uses your microphone to record your music playing</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

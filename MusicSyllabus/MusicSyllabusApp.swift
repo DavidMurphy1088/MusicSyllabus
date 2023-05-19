@@ -7,7 +7,23 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         Logger.logger.log(self, "Firebase Configured")
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+
+        Logger.logger.log(self, "Version.Build \(appVersion).\(buildNumber)")
         return true
+    }
+    
+    //Never appears to be called?
+    //App somehow independently does UI to ask permission
+    func requestMicrophonePermission() {
+        AVAudioSession.sharedInstance().requestRecordPermission { (granted) in
+            if granted {
+                Logger.logger.log(self, "Microphone usage granted")
+            } else {
+                Logger.logger.reportError(self, "Microphone Usage not granted")
+            }
+        }
     }
     
     static func startAVAudioSession(category: AVAudioSession.Category) {
@@ -17,7 +33,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             try AVAudioSession.sharedInstance().setActive(true)
 
             Logger.logger.log(self, "Set AVAudioSession category done, category \(category)")
-            let perms = AVAudioSession.sharedInstance().recordPermission
+            //let perms = AVAudioSession.sharedInstance().recordPermission
             //Logger.logger.log(self, "AVAudioSession permission \(perms.rawValue)")
             if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                 print("App Version: \(appVersion)")
