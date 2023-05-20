@@ -1,34 +1,12 @@
 import SwiftUI
 
-struct TopicsViewNavigation: View {
-    let topic:ContentSection
-    
-    var body: some View {
-        NavigationView {
-            VStack {
-                List(topic.subSections) { subtopic in
-                    NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
-                        Text(subtopic.name)
-                    }
-                }
-                Spacer()
-            }
-            //the font that shows on the scrolling list of links
-            .navigationTitle(topic.name)//.font(.caption)
-            //.navigationBarBackButtonHidden(false)
-            //.navigationBarTitle(topic.name)
-            //.navigationBarTitleDisplayMode(.inline)
-        }
-    }
-}
 
 struct ContentSectionView: View {
     var contentSection:ContentSection
-    var parentSection:ContentSection // the parent of this section that describes the test type
+    var parentSection:ContentSection? // the parent of this section that describes the test type
     
     init(contentSection:ContentSection) {
         self.contentSection = contentSection
-        parentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "")
         var parentType:ContentSection? = contentSection
 
         while parentType != nil {
@@ -38,30 +16,37 @@ struct ContentSectionView: View {
             }
             parentType = parentType!.parent
         }
+        //print("ContentSectionView", contentSection.name, contentSection.subSections.count, "parentType", parentType?.name)
     }
     
     var body: some View {
         VStack {
+            //Text("contentSection.subSections.count \(String(contentSection.subSections.count))")
             if contentSection.subSections.count > 0 {
-                List(contentSection.subSections) { subtopic in
-                    NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
-                        Text(subtopic.name)
+                VStack {
+                    //Text("contentSection.subSections")
+                    List(contentSection.subSections) { subtopic in
+                        NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
+                            Text(subtopic.name)
                             //.navigationBarTitle("Title").font(.largeTitle)
                             //.navigationBarTitleDisplayMode(.inline)
+                        }
                     }
                 }
-                Spacer()
             }
             else {
-                if parentSection.sectionType == ContentSection.SectionType.testType {
-                    if parentSection.name.contains("Intervals Visual") {
-                        IntervalsView(contentSection: contentSection)
-                    }
-                    if parentSection.name.contains("Clapping") {
-                        ClapOrPlay(mode: .clap, contentSection: contentSection)
-                    }
-                    if parentSection.name.contains("Playing") {
-                        ClapOrPlay(mode: .play, contentSection: contentSection)
+                if let parentSection = parentSection {
+                    if parentSection.sectionType == ContentSection.SectionType.testType {
+                        if parentSection.name.contains("Intervals Visual") {
+                            IntervalsView(contentSection: contentSection)
+                        }
+                        if parentSection.name.contains("Clapping") {
+                            ClapOrPlay(mode: .clap, contentSection: contentSection)
+                            //QuestionAndAnswerView(contentSection: contentSection)
+                        }
+                        if parentSection.name.contains("Playing") {
+                            ClapOrPlay(mode: .play, contentSection: contentSection)
+                        }
                     }
                 }
              }

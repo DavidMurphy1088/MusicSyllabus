@@ -18,21 +18,24 @@ struct TappingView: View {
     }
 
     var body: some View {
-        VStack(spacing:25) {
-            Image(systemName: "heart.fill")
-                .resizable()
-                .frame(width: 75, height: 75)
-                .padding()
-                .foregroundColor(.red)
-                .onTapGesture {
-                    print("Tap on image.")
-                }
-                Rectangle()
-                    .fill(Color.blue)
+        VStack {
+            Text("TapView")
         }
-        .gesture(newGesture)
-        .frame(width: 200, height: 200)
-        .border(Color.purple)
+//        VStack(spacing:25) {
+//            Image(systemName: "heart.fill")
+//                .resizable()
+//                .frame(width: 75, height: 75)
+//                .padding()
+//                .foregroundColor(.red)
+//                .onTapGesture {
+//                    print("Tap on image.")
+//                }
+//                Rectangle()
+//                    .fill(Color.blue)
+//        }
+//        .gesture(newGesture)
+//        .frame(width: 200, height: 200)
+//        .border(Color.purple)
     }
 //        .overlay(
 //            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)

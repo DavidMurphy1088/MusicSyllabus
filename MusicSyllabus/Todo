@@ -1,11 +1,9 @@
-get dev account
-send amber test flight version
-
 --RELEASE
 - adjust bottom bar nav
 - remove bottom nav?
 
 --HIGH
+send amber test flight version
 do clapping test - try tapping rhythm on ui
 try on real piano
 record volume too soft

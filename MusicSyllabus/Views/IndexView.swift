@@ -4,16 +4,29 @@ import CoreData
 struct IndexView: View {
     @Environment(\.scenePhase) var scenePhase
     let root = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
+    var xxx:Int = 1
     
     init () {
-//        if devMode {
-//           // Metronome.shared.setTempo(tempo: 120)
-//        }
     }
         
     var body: some View {
         TabView {
             if MusicSyllabusApp.devMode {
+                
+//                QuestionAndAnswerView(questionPresentView: QuestionPresentView(x: $xxx), questionAnswerView: QuestionAnswerView())
+//                        .tabItem {Label("Playing", systemImage: "music.quarternote.3")
+//                    }
+                
+                QuestionAndAnswerView(
+                    presentType: IntervalPresentView.self,
+                    answerType: IntervalAnswerView.self,
+                    contentSection: ContentSection(parent: nil,
+                                                   type: ContentSection.SectionType.testType,
+                                                   name: "test")
+                )
+                    .tabItem {Label("Playing", systemImage: "music.quarternote.3")
+                }
+
                 
 //                 ClapOrPlay(mode: .play, contentSection:
 //                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Playing"),
@@ -21,11 +34,11 @@ struct IndexView: View {
 //                    .tabItem {Label("Playing", systemImage: "music.quarternote.3")
 //                }
 
-                ClapOrPlay(mode: .clap, contentSection:
-                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
-                    type: ContentSection.SectionType.example, name: "test"))
-                    .tabItem {Label("Clapping", systemImage: "hands.clap")
-                }
+//                ClapOrPlay(mode: .clap, contentSection:
+//                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Clapping"),
+//                    type: ContentSection.SectionType.example, name: "test"))
+//                    .tabItem {Label("Clapping", systemImage: "hands.clap")
+//                }
 //
 //                IntervalsView(contentSection:
 //                    ContentSection(parent: ContentSection(parent: nil,type: ContentSection.SectionType.none, name: "Intervals Visual"),
@@ -33,8 +46,11 @@ struct IndexView: View {
 //                    .tabItem {Label("Intervals", systemImage: "music.note.list")
 //                }
 
-                TopicsViewNavigation(topic: root)
-                    .tabItem {Label("Book1", systemImage: "music.note.list")
+                TopicsNavigationView(topic: root)
+                    .tabItem {Label("Musicianship1", systemImage: "music.note.list")
+                }
+                TopicsNavigationView(topic: root)
+                    .tabItem {Label("Musicianship2", systemImage: "music.note.list")
                 }
 
 //                
@@ -43,13 +59,13 @@ struct IndexView: View {
 //                }
             }
             else {
-                TopicsViewNavigation(topic: root)
+                TopicsNavigationView(topic: root)
                     .tabItem {Label("Book1", image: "music.note")
                 }
-                TopicsViewNavigation(topic: root)
+                TopicsNavigationView(topic: root)
                     .tabItem {Label("Book2", image: "music.note")
                 }
-                TopicsViewNavigation(topic: root)
+                TopicsNavigationView(topic: root)
                     .tabItem {Label("Book3", image: "music.note")
                 }
             }

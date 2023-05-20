@@ -256,9 +256,3 @@ struct ClapOrPlay:View {
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
     }
 }
-
-//override func viewDidLoad() {
-//    super.viewDidLoad()
-//    requestMicrophonePermission()
-//    // Additional code for setting up your view or performing other tasks
-//}
