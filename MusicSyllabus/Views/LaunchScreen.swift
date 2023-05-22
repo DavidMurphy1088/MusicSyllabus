@@ -25,11 +25,11 @@ struct LaunchScreenView: View {
     @State private var firstAnimation = false  // Mark 2
     @State private var secondAnimation = false // Mark 2
     @State private var startFadeoutAnimation = false // Mark 2
+    @State private var imageOpacity: Double = 0
+    static var durationSeconds = 3.0
+    @State var ctr = 0.0
     
-    @State private var imageOpacity: Double = 1.0
-
     @ViewBuilder
-    //nzmeb_logo_transparent nzbeb-bird
     
     private var image: some View {  // Mark 3
         GeometryReader { geo in
@@ -62,19 +62,20 @@ struct LaunchScreenView: View {
         Color.teal.ignoresSafeArea()
     }
     
-//    private let animationTimer = Timer // Mark 5
-//        //.publish(every: 0.05, on: .current, in: .common)
-//        //.autoconnect()
+    private let animationTimer = Timer // Mark 5
+        .publish(every: 0.07, on: .current, in: .common)
+        .autoconnect()
     
     var body: some View {
         ZStack {
             backgroundColor  // Mark 3
             image  // Mark 3
         }
-//        .onReceive(animationTimer) { timerValue in
-//            //updateAnimation()  // Mark 5
-//            imageOpacity *= 1.05
-//        }
+        .onReceive(animationTimer) { timerValue in
+            //updateAnimation()  // Mark 5
+            ctr += 1
+            imageOpacity = sin(Double(ctr / (LaunchScreenView.durationSeconds * Double.pi * 2.0)))
+        }
         //.opacity(startFadeoutAnimation ? 0 : 1)
     }
     

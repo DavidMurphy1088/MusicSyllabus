@@ -28,16 +28,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     static func startAVAudioSession(category: AVAudioSession.Category) {
         do {
-            //try AVAudioSession.sharedInstance().setActive(false)
             try AVAudioSession.sharedInstance().setCategory(category, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
-
-            Logger.logger.log(self, "Set AVAudioSession category done, category \(category)")
-            //let perms = AVAudioSession.sharedInstance().recordPermission
-            //Logger.logger.log(self, "AVAudioSession permission \(perms.rawValue)")
-            if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                print("App Version: \(appVersion)")
-            }
+            //Logger.logger.log(self, "Set AVAudioSession category done, category \(category)")
         }
         catch let error {
             Logger.logger.reportError(self, "Set AVAudioSession category failed", error)
@@ -49,41 +42,38 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct MusicSyllabusApp: App {
     @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    static let devMode = true
-
+    static let productionMode = false
+    static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
+    
+    init() {
+        //Good place to run work before all the views ae created
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                ContentView()
-                if !MusicSyllabusApp.devMode {
+            VStack {
+                if launchScreenState.state == .finished {
+                    if MusicSyllabusApp.productionMode {
+                        TopicsNavigationView(topic: MusicSyllabusApp.root)
+                            .tabItem {Label("Exercises", image: "music.note")
+                        }
+                    }
+                    else {
+                        IndexView()
+                    }
+                }
+                if MusicSyllabusApp.productionMode {
                     if launchScreenState.state != .finished {
                         LaunchScreenView()
                     }
                 }
-            }.environmentObject(launchScreenState)
+                
+            }
+            .environmentObject(launchScreenState)
+            .task {
+                try? await Task.sleep(for: Duration.seconds(LaunchScreenView.durationSeconds))
+                self.launchScreenState.dismiss()
+            }
         }
-    }
-}
-
-struct ContentView: View {
-    //https://holyswift.app/animated-launch-screen-in-swiftui/
-    @EnvironmentObject private var launchScreenState: LaunchScreenStateManager
-    
-    var body: some View {
-        VStack {
-            IndexView() //.environment(\.managedObjectContext, persistenceController.container.viewContext)
-        }
-        .padding()
-        .task {
-            //try? await getDataFromApi()
-            try? await Task.sleep(for: Duration.seconds(3))
-            self.launchScreenState.dismiss()
-        }
-    }
-    
-    fileprivate func getDataFromApi() async throws {
-        let googleURL = URL(string: "https://www.google.com")!
-        let (_,response) = try await URLSession.shared.data(from: googleURL)
-        print(response as? HTTPURLResponse)
     }
 }

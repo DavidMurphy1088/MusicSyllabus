@@ -18,18 +18,17 @@ struct ContentSectionView: View {
         }
         //print("ContentSectionView", contentSection.name, contentSection.subSections.count, "parentType", parentType?.name)
     }
-    
+   
     var body: some View {
         VStack {
             //Text("contentSection.subSections.count \(String(contentSection.subSections.count))")
             if contentSection.subSections.count > 0 {
                 VStack {
-                    //Text("contentSection.subSections")
                     List(contentSection.subSections) { subtopic in
                         NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
                             Text(subtopic.name)
-                            //.navigationBarTitle("Title").font(.largeTitle)
-                            //.navigationBarTitleDisplayMode(.inline)
+                                //.navigationBarTitle("Title").font(.largeTitle)
+                                //.navigationBarTitleDisplayMode(.inline)
                         }
                     }
                 }
@@ -38,14 +37,31 @@ struct ContentSectionView: View {
                 if let parentSection = parentSection {
                     if parentSection.sectionType == ContentSection.SectionType.testType {
                         if parentSection.name.contains("Intervals Visual") {
-                            IntervalsView(contentSection: contentSection)
+                           //IntervalsView(contentSection: contentSection)
+                           IntervalView(
+                                //presentType: IntervalPresentView.self,
+                                //answerType: IntervalAnswerView.self,
+                                contentSection: contentSection
+                            )
                         }
                         if parentSection.name.contains("Clapping") {
-                            ClapOrPlay(mode: .clap, contentSection: contentSection)
-                            //QuestionAndAnswerView(contentSection: contentSection)
+                            //ClapOrPlayOld(mode: .clap, contentSection: contentSection)
+                            ClapOrPlayView (
+                                mode: QuestionMode.clap,
+                                 //presentType: IntervalPresentView.self,
+                                 //answerType: IntervalAnswerView.self,
+                                 contentSection: contentSection
+                             )
+
                         }
                         if parentSection.name.contains("Playing") {
-                            ClapOrPlay(mode: .play, contentSection: contentSection)
+                            //ClapOrPlayOld(mode: .play, contentSection: contentSection)
+                            ClapOrPlayView (
+                                mode: QuestionMode.play,
+                                 //presentType: IntervalPresentView.self,
+                                 //answerType: IntervalAnswerView.self,
+                                 contentSection: contentSection
+                             )
                         }
                     }
                 }

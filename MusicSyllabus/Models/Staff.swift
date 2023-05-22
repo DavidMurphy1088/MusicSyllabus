@@ -45,6 +45,7 @@ class NoteOffsetsInStaffByKey {
 }
 
 class Staff : ObservableObject {
+    let id = UUID()
     @Published var publishUpdate = 0
     let score:Score
     var type:StaffType
@@ -55,6 +56,7 @@ class Staff : ObservableObject {
     var staffOffsets:[Int] = []
     var noteStaffPlacement:[NoteStaffPlacement]=[]
     var linesInStaff:Int
+    var beamCounter = StaffQuaverBeamCounter()
     
     init(score:Score, type:StaffType, staffNum:Int, linesInStaff:Int) {
         self.score = score
@@ -77,9 +79,10 @@ class Staff : ObservableObject {
         }
         
         for noteValue in 0...highestNoteValue {
-            var placement = NoteStaffPlacement(name: "X", offsetFroMidLine: 100)
+            var placement = NoteStaffPlacement(name: "X", offsetFroMidLine: 0)
             noteStaffPlacement.append(placement)
             if noteValue <= middleNoteValue - 12 || noteValue >= middleNoteValue + 12 {
+            //if noteValue <= middleNoteValue - 12 - 4 || noteValue >= middleNoteValue + 12 + 4 {
                 continue
             }
             if noteValue == 69 || noteValue == 72 || noteValue == 74 { //70 is A
@@ -90,7 +93,12 @@ class Staff : ObservableObject {
                 noteOffsetInScale = noteOffsets[diff - 1]
             }
             else {
-                noteOffsetInScale = noteOffsets[noteOffsets.count + diff - 1]
+                let n = noteOffsets.count + diff - 1
+                if diff >= n {
+                    diff = diff - 12
+                }
+                //noteOffsetInScale = noteOffsets[noteOffsets.count + diff - 1]
+                noteOffsetInScale = noteOffsets[n]
                 noteOffsetInScale =  noteOffsetInScale - 7
             }
             
@@ -101,6 +109,7 @@ class Staff : ObservableObject {
             placement = NoteStaffPlacement(name: "X", offsetFroMidLine: offset)
             noteStaffPlacement[noteValue] = placement
         }
+        //print("     ==Staff created:", self.id)
         
 //        var noteIdx = 4
 //        var allDone = false

@@ -22,12 +22,13 @@ class Note : Hashable, Comparable, ObservableObject {
     var midiNumber:Int
     var staff:Int?
     var value:Double = Note.VALUE_QUARTER
+    var isDotted:Bool = false
     var isOnlyRhythmNote = false
     var stemUp:Bool
     var beamType:BeamType = .none
-    var stemLength:Double = 0 //measured in number of staff lines
+    var stemLength:Double = 3.5 //measured in number of staff lines
     var sequence:Int = 0 //the note's sequence position 
-
+    
     @Published var hilite = false
     
     static let MIDDLE_C = 60 //Midi pitch for C4
@@ -50,10 +51,15 @@ class Note : Hashable, Comparable, ObservableObject {
         return (note1 % 12) == (note2 % 12)
     }
     
-    init(num:Int, value:Double = Note.VALUE_QUARTER, staff:Int? = nil) {
+    init(num:Int, value:Double = Note.VALUE_QUARTER, staff:Int? = nil, isDotted:Bool = false) {
         self.midiNumber = num
         self.staff = staff
         self.value = value
+        self.isDotted = isDotted
+        if value == 3.0 {
+            self.value = Note.VALUE_HALF
+            self.isDotted = true
+        }
         self.stemUp = true
     }
     

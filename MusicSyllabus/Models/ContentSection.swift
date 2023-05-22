@@ -10,7 +10,8 @@ class ContentSection: Identifiable {
     var subSections:[ContentSection] = []
     var sectionType:SectionType
     var parent:ContentSection?
-
+    var isActive:Bool
+    
     enum SectionType {
         case none
         case grade
@@ -18,11 +19,12 @@ class ContentSection: Identifiable {
         case example
     }
     
-    init(parent:ContentSection?, type:SectionType, name:String) {
+    init(parent:ContentSection?, type:SectionType, name:String, isActive:Bool = false) {
         self.parent = parent
         self.sectionType = type
         self.name = name
         var level = 0
+        self.isActive = isActive
         var par = parent
         while par != nil {
             level += 1
@@ -32,22 +34,23 @@ class ContentSection: Identifiable {
         if level == 0 {
             subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Pre Preliminary"))
             subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Preliminary"))
-            subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade 1"))
-            subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade 2"))
-            subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade 3"))
+            subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade 1", isActive: true))
+            for i in 2..<9 {
+                subSections.append(ContentSection(parent: self, type: SectionType.grade, name: "Grade \(i)"))
+            }
         }
         if level == 1 {
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping"))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing", isActive: true))
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural"))
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Echo Clap"))
         }
         if level == 2 {
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 1"))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 2"))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 3"))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 4"))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 1", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 2", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 3", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 4", isActive: true))
         }
         if level == 0 {
             

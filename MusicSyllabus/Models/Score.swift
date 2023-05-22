@@ -49,6 +49,7 @@ class BarLine : ScoreEntry {
 }
 
 class Score : ObservableObject {
+    let id = UUID()
     var timeSignature:TimeSignature
     let ledgerLineCount = 3//4 is required to represent low E
 
@@ -75,6 +76,7 @@ class Score : ObservableObject {
     init(timeSignature:TimeSignature, lines:Int) {
         self.timeSignature = timeSignature
         staffLineCount = lines + (2*ledgerLineCount)
+        //print("----Score init", self.id)
         //engine.attach(reverb)
         //reverb.loadFactoryPreset(.largeHall2)
         //reverb.loadFactoryPreset(
@@ -83,11 +85,13 @@ class Score : ObservableObject {
         // Connect the nodes.
         //engine.connect(sampler, to: reverb, format: nil)
         //engine.connect(reverb, to: engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
+        //print("\n   ==Score created:", self.id)
     }
     
     func setHiddenStaff(num:Int?) {
         DispatchQueue.main.async {
             self.hiddenStaffNo = num
+            //print("Score set hidden", self.id, self.hiddenStaffNo)
             for staff in self.staff {
                 staff.update()
             }
@@ -146,6 +150,7 @@ class Score : ObservableObject {
     }
     
     func addTimeSlice() -> TimeSlice {
+        //print("----Score add Timeslice", self.id)
         let ts = TimeSlice(score: self)
         self.scoreEntries.append(ts)
         return ts

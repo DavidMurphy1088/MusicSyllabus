@@ -7,9 +7,12 @@ Sound Fonts
     
 Image background trasnparent
 https://retoucher.online/upload
-
+https://retoucher.online/upload
 
 Audio - For example, in the .playAndRecord category, you can specify whether the audio is intended for voice chat, video recording, or audio conferencing.
 
 'GoogleService-Info.plist', or the Bundle ID in the options if you are using a customized options. To ensure that everything can be configured correctly, you may need to make the Bundle IDs consistent. To continue with this plist file, you may change your app's bundle identifier to 'com.dmurphy.westernwheelers.Music-Syllabus'. Or you can download a new configuration file that matches your bundle identifier from https://console.firebase.google.com/ and replace the current one.
 
+it's important to note that SwiftUI views are often re-created multiple times during their lifetime.
+This happens when the view's state changes or when it needs to be re-rendered due to changes in the environment or parent views.
+But a state change in a view does not recall its init()

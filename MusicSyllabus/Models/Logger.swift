@@ -2,11 +2,11 @@ import Foundation
 
 class Logger : ObservableObject {
     static var logger = Logger()
-    @Published var status:String? = nil
+    @Published var status:String = ""
     @Published var isError:Bool = false
 
     func reportError(_ reporter:AnyObject, _ context:String, _ err:Error? = nil) {
-        var msg = String("*** *** ERROR *** *** :" + String(describing: type(of: reporter))) + " " + context
+        var msg = String("*** ERROR *** :" + String(describing: type(of: reporter))) + " " + context
         if let err = err {
             msg += String()
         }
@@ -21,13 +21,13 @@ class Logger : ObservableObject {
     
     func log(_ reporter:AnyObject, _ msg:String) {
         let msg = String(describing: type(of: reporter)) + ":" + msg
-        if MusicSyllabusApp.devMode {
+        print(msg)
+        if !MusicSyllabusApp.productionMode {
             publish(msg, false)
         }
     }
     
     func publish(_ msg:String, _ isErr:Bool) {
-        print(msg)
         DispatchQueue.global(qos: .background).async {
             self.status = msg
             self.isError = isErr

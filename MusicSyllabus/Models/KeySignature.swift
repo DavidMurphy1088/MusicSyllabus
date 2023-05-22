@@ -2,7 +2,6 @@ import Foundation
 import AVKit
 import AVFoundation
 
-
 class KeySignature {
     var accidentalType:AccidentalType
     var sharps:[Int] = []

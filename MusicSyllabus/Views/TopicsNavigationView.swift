@@ -5,22 +5,41 @@ struct TopicsNavigationView: View {
     let topic:ContentSection
     
     var body: some View {
-        VStack {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            
             NavigationView {
-                VStack {
-                    List(topic.subSections) { subtopic in
-                        NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
-                        //NavigationLink(destination: QuestionAndAnswerView()) {
-                            Text(subtopic.name)
-                        }
+                
+                //This is the list placed in the split navigation screen.
+                //The 2nd NavigationView below (for iPhone without split nav) will present the topics on the first screen the user sees
+                List(topic.subSections) { contentSection in
+                    NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
+                        Text(contentSection.name)
                     }
-                    Spacer()
+                    .disabled(!contentSection.isActive)
                 }
-                //the font that shows on the scrolling list of links
+                
+                List(topic.subSections) { contentSection in
+                    NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
+                        Text(contentSection.name)
+                    }
+                    .disabled(!contentSection.isActive)
+                    //.navigationViewStyle(DoubleColumnNavigationViewStyle())
+                    //the font that shows on the scrolling list of links
+                    .navigationTitle(topic.name)//.font(.caption)
+                    //.navigationBarTitleDisplayMode(.inline)
+
+                }
+            }
+        }
+        else {
+            NavigationView {
+                List(topic.subSections) { contentSection in
+                    NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
+                        Text(contentSection.name)
+                    }
+                    .disabled(!contentSection.isActive)
+                }
                 .navigationTitle(topic.name)//.font(.caption)
-                //.navigationBarBackButtonHidden(false)
-                //.navigationBarTitle(topic.name)
-                //.navigationBarTitleDisplayMode(.inline)
             }
         }
     }

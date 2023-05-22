@@ -1,27 +1,31 @@
---RELEASE
-- adjust bottom bar nav
-- remove bottom nav?
-
 --HIGH
-send amber test flight version
 do clapping test - try tapping rhythm on ui
-try on real piano
-record volume too soft
-quaver bar wrong when rotate device - need to refresh layout on rotate
-
-check audio perms asked for properly, orderly
-what are icons in bottom menu in prod mode - one a settings?
+do test #4 and #5
+longer recordings get an error
+more examples for play/clap
+G Major triad wont display top D in base cleff
+minims more horz space on staff
 
 --MID
+quaver bar wrong  when rotate device - need to refresh layout on rotate
 midi sampler has to load piano sound file every time it starts, causes a delay at metronom.playScore
-start up logo - fade to trasnparent
-icon for recording needs transpernet backgoud
-playing view needs G major
+try on real piano
+improve sharpenthe logo image
 
 --LOW
 handle ledger lines for all notes (now its just middle C)
 quaver beam processing inefficient - casues lag on lots of notes
+check audio perms asked for properly, orderly
 
-Checks
+--- Questions
 //layout of plying example 1 with low middle C ruins layout relative to staff enclsoing border
+record volume too soft
+review  proposal
+
+
+--DONE
+RECORDING PLAYBACK Stops App
+quaver bar wrong
+start screen is blank
+start up logo - fade to trasnparent
 

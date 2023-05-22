@@ -47,7 +47,14 @@ struct NoteView: View {
         accidental = pos.1
         ledgerLines = pos.2
     }
-            
+//    func test(_ note:Note) -> Bool {
+//        if note.midiNumber < 60 {
+//            print(note.midiNumber)
+//            return true
+//        }
+//        return false
+//    }
+        
     var body: some View {
         GeometryReader { geometry in
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle * lineSpacing) / 2.0
@@ -63,12 +70,12 @@ struct NoteView: View {
                         .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
                 }
                 if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
-                    Ellipse()
+                        Ellipse()
                         //Open ellipse
-                        .stroke(Color.black, lineWidth: 2)
-                        //.foregroundColor(note.value == 4 ? self.color : .blue)
-                        .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
-                        .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
+                            .stroke(Color.black, lineWidth: 2)
+                            .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
+                            .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
+                            //.frame(width:6) //trying to have minim have more horz space
                 }
                 
                 // stem
@@ -85,7 +92,17 @@ struct NoteView: View {
                     .stroke(Color.black, lineWidth: 1)
                 }
                 
-                // ledger line hack - totally not generalized :(
+                //dotted
+                if note.isDotted {
+                    Ellipse()
+                        //Open ellipse
+                        .stroke(Color.black, lineWidth: 2)
+                        //.foregroundColor(note.value == 4 ? self.color : .blue)
+                        .frame(width: noteWidth/4.0, height: noteWidth/4.0)
+                        .position(x: geometry.size.width/2 + noteWidth, y: noteEllipseMidpoint)
+                }
+
+                 //ledger line hack - totally not generalized :(
                 if staff.type == .treble {
                     if note.midiNumber <= Note.MIDDLE_C {
                         let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : 0

@@ -14,7 +14,7 @@ struct QuaverBeamView: View {
         self.lineSpacing = lineSpacing
         self.noteWidth = noteWidth
         //print ("======== QuaverBeamView init", beamCounter.notes.count)
-        //print("     ==QuaverBeamView created, staff ID:", staff.id)
+        print("     ==QuaverBeamView created, staff ID:", staff.id)
     }
     
     var body: some View {
@@ -130,7 +130,7 @@ struct StaffView: View {
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
-        //print("   ==StaffView created, score ID:", self.score.id)
+        print("   ==StaffView created, score ID:", self.score.id)
     }
     
     func clefWidth() -> Double {
