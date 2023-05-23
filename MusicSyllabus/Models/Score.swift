@@ -4,9 +4,13 @@ import AVFoundation
 
 class ScoreEntry : Hashable {
     let id = UUID()
+    var sequence:Int = 0
     static func == (lhs: ScoreEntry, rhs: ScoreEntry) -> Bool {
         return lhs.id == rhs.id
     }
+//    init(sequence:Int) {
+//        self.sequence = sequence
+//    }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
@@ -72,6 +76,7 @@ class Score : ObservableObject {
     static var accNatural = "\u{266e}"
     static var accFlat = "\u{266d}"
     var scoreEntries:[ScoreEntry] = []
+    var label:String? = nil
     
     init(timeSignature:TimeSignature, lines:Int) {
         self.timeSignature = timeSignature
@@ -152,17 +157,21 @@ class Score : ObservableObject {
     func addTimeSlice() -> TimeSlice {
         //print("----Score add Timeslice", self.id)
         let ts = TimeSlice(score: self)
+        ts.sequence = self.scoreEntries.count
         self.scoreEntries.append(ts)
         return ts
     }
     
     func addBarLine(atScoreEnd:Bool? = false) {
+        var barLine:BarLine?
         if let atScoreEnd = atScoreEnd {
-            self.scoreEntries.append(BarLine(atScoreEnd: atScoreEnd))
+            barLine = (BarLine(atScoreEnd: atScoreEnd))
         }
         else {
-            self.scoreEntries.append(BarLine(atScoreEnd: false))
+            barLine = BarLine(atScoreEnd: false)
         }
+        barLine?.sequence = self.scoreEntries.count
+        self.scoreEntries.append(barLine!)
     }
 
     func clear() {
@@ -179,7 +188,11 @@ class Score : ObservableObject {
 
         for entry in self.scoreEntries {
             if entry is TimeSlice {
-                let note = (entry as! TimeSlice).notes[0]
+                let ts = (entry as! TimeSlice)
+                if ts.notes.count == 0 {
+                    continue
+                }
+                let note = ts.notes[0]
                 note.beamType = .none
                 note.sequence = ctr
                 note.stemLength = 3.5

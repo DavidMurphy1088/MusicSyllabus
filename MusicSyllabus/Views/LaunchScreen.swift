@@ -35,7 +35,6 @@ struct LaunchScreenView: View {
         GeometryReader { geo in
             VStack {
                 Spacer()
-                //Image(systemName: "hurricane")
                 HStack {
                     Spacer()
                     Image("nzmeb_logo_transparent")

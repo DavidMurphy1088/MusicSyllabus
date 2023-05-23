@@ -46,6 +46,8 @@
 		7B61AA012A19A46F0058A090 /* CapOrPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */; };
 		7B61AA032A19D6350058A090 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA022A19D6350058A090 /* ConfigurationView.swift */; };
 		7B61AA052A1B74F00058A090 /* StaffBeamCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA042A1B74F00058A090 /* StaffBeamCounter.swift */; };
+		7B61AA072A1C812A0058A090 /* CompareRhythmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */; };
+		7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA082A1CDA6E0058A090 /* HelpView.swift */; };
 		7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32872A177A67004E2FA6 /* TappingView.swift */; };
 		7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32892A177C09004E2FA6 /* TapRecorder.swift */; };
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
@@ -105,6 +107,8 @@
 		7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapOrPlayView.swift; sourceTree = "<group>"; };
 		7B61AA022A19D6350058A090 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		7B61AA042A1B74F00058A090 /* StaffBeamCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffBeamCounter.swift; sourceTree = "<group>"; };
+		7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareRhythmsView.swift; sourceTree = "<group>"; };
+		7B61AA082A1CDA6E0058A090 /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
 		7B6C32872A177A67004E2FA6 /* TappingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappingView.swift; sourceTree = "<group>"; };
 		7B6C32892A177C09004E2FA6 /* TapRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRecorder.swift; sourceTree = "<group>"; };
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
@@ -140,6 +144,8 @@
 				7B519FA22A182BC700A105E9 /* IntervalsView.swift */,
 				7B5EEDF42A0134AB0007FF7E /* IntervalsViewOld.swift */,
 				7B61A9FE2A19A3810058A090 /* ViewProtocol.swift */,
+				7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */,
+				7B61AA082A1CDA6E0058A090 /* HelpView.swift */,
 			);
 			path = Syllabus;
 			sourceTree = "<group>";
@@ -342,6 +348,7 @@
 				7BF9B9D12A03A6EB00121EBA /* ContentSection.swift in Sources */,
 				7B5EEE012A025F160007FF7E /* Staff.swift in Sources */,
 				7B5EEDE82A0133020007FF7E /* Persistence.swift in Sources */,
+				7B61AA072A1C812A0058A090 /* CompareRhythmsView.swift in Sources */,
 				7B55CEC42A03E480009F9B5D /* ScoreView.swift in Sources */,
 				7B43C69F2A138CAE00BBB027 /* UIGlobals.swift in Sources */,
 				7B55CEB62A03C312009F9B5D /* MusicSyllabusApp.swift in Sources */,
@@ -371,6 +378,7 @@
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B3D956C2A10D4AB007CA60D /* StaffView.swift in Sources */,
 				7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */,
+				7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */,
 				7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */,
 				7B61AA032A19D6350058A090 /* ConfigurationView.swift in Sources */,
 			);

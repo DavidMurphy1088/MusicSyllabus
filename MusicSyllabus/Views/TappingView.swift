@@ -23,39 +23,21 @@ struct TappingView: View {
     @ObservedObject var invert:Invert = Invert()
 
     var body: some View {
-        //GeometryReader { geo in
         VStack {
             Text("Tap the drum").padding()
-            VStack(spacing:25) {
-                Image("drum")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(invert.invert ? .blue : .red)
-                
-                //.frame(width: 200, height: 200)
-                //.frame(width: geo.size.width * 0.75)
-                //.rotationEffect(firstAnimation ? Angle(degrees: 900) : Angle(degrees: 1800)) // Mark 4
-                //.scaleEffect(secondAnimation ? 0 : 1) // Mark 4
-                //.offset(y: secondAnimation ? 400 : 0) // Mark 4
-                //.opacity(imageOpacity)
-                    //.border(Color(invert.invert ? .blue : .black), width: 4)
-                    .border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 8 : 4)
-                //Rectangle()
-                //.fill(Color.blue)
-                    .onTapGesture {
-                        //print(invert.invert)
-                        invert.rev()
-                        tapRecorder.clap()
-                    }
-            }
+            Image("drum")
+                .resizable()
+                .scaledToFit()
+                .foregroundColor(invert.invert ? .blue : .red)
+                //.frame(width: getSize(w: geo.size.height, h: geo.size.height), height: geo.size.height/4)
+                //.frame(width: 30, height: 30)
+                .border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 2 : 4)
+                .onTapGesture {
+                    invert.rev()
+                    tapRecorder.makeTap()
+                }
         }
-        //}
-//        .overlay(
-//            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-//        )
-//        .background(UIGlobals.backgroundColor)
     }
-
 }
 
 

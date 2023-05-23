@@ -31,9 +31,9 @@ class ExampleData {
         //data["Clapping.test"] = data["Musicianship.Grade 1.Playing.Example 1"]
         
         data["test_interval"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
-        data["test_clap"] = data["Musicianship.Grade 1.Playing.Example 4"]
-        //data["test_clap"] = "(TS,3,4) (67,1) (65,1)"
-        
+        data["test_clap"] = "(K) (TS,4,4) (71,1) (67,.5) (69,.5) (71,1) (72,1) (B) (74,1)"
+        //data["test_clap"] = "(71,1) (67,.5) (69,.5) (71,1) (71,1) (B) (72,2)"
+
         //data["test"]      = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
     }
     

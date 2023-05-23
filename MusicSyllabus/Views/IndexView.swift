@@ -8,14 +8,6 @@ struct IndexView: View {
         TabView {
             if !MusicSyllabusApp.productionMode {
                 
-                //                    ClapOrPlayView(
-                //                        mode: QuestionMode.clap,
-                //                        contentSection: ContentSection(parent: nil,
-                //                                                       type: ContentSection.SectionType.testType,
-                //                                                       name: "test_clap")
-                //                    )
-                //                    .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")
-                //                    }
                 
                 ClapOrPlayView(
                     mode: QuestionMode.clap,
@@ -26,17 +18,26 @@ struct IndexView: View {
                 .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")
                 }
                 
-                
-                IntervalView(
-                    //                    presentType: IntervalPresentView.self,
-                    //                    answerType: IntervalAnswerView.self,
+                ClapOrPlayView(
+                    mode: QuestionMode.play,
                     contentSection: ContentSection(parent: nil,
                                                    type: ContentSection.SectionType.testType,
-                                                   name: "test_interval")
+                                                   name: "test_clap")
                 )
-                .tabItem {Label("Playing", systemImage: "music.quarternote.3")
+                .tabItem {Label("Play_Test", systemImage: "music.quarternote.3")
                 }
 
+//                
+//                IntervalView(
+//                    //                    presentType: IntervalPresentView.self,
+//                    //                    answerType: IntervalAnswerView.self,
+//                    contentSection: ContentSection(parent: nil,
+//                                                   type: ContentSection.SectionType.testType,
+//                                                   name: "test_interval")
+//                )
+//                .tabItem {Label("Playing", systemImage: "music.quarternote.3")
+//                }
+//
                 TopicsNavigationView(topic: MusicSyllabusApp.root)
                     .tabItem {Label("Musicianship1", systemImage: "music.note.list")
                     }

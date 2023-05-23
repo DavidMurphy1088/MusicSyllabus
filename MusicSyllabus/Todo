@@ -1,5 +1,8 @@
 --HIGH
-do clapping test - try tapping rhythm on ui
+CLAP
+  intermittent - quaver beams not on student rhythm
+  detect tempo for clapping visual
+  
 do test #4 and #5
 longer recordings get an error
 more examples for play/clap

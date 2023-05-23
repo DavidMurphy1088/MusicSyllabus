@@ -35,9 +35,9 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             }
             audioRecorder.delegate = self
             audioRecorder.record()
-            Logger.logger.log(self, "Recording started - isRecording?: \(audioRecorder.isRecording)")
+
             if audioRecorder.isRecording {
-                setStatus("Recording started")
+                setStatus("Recording started, status:\(audioRecorder.isRecording ? "OK" : "Error")")
             }
             else {
                 Logger.logger.reportError(self, "Recording, recorder is not recording")
@@ -49,8 +49,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        //print("NOTIFY::did finish recording, success:", flag)
-        //finishRecording(success: flag)
+        setStatus("Playback stopped, status:\(flag ? "OK" : "Error")")
     }
 
     func stopRecording() {
@@ -62,22 +61,12 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             Logger.logger.log(self, "Recording ended - wasRecording? -\(audioRecorder.isRecording) secs:\(String(format: "%.1f", audioRecorder.currentTime))")
             setStatus("Recorded time \(String(format: "%.1f", audioRecorder.currentTime)) seconds")
             audioRecorder.stop()
-//            do {
-////                try recordingSession.setCategory(.playback, mode: .default)
-////                try recordingSession.setActive(true) //DONT DO
-////                try recordingSession.setCategory(.playback, mode: .default)
-//            }
-//            catch let error {
-//                Logger.logger.reportError(self, "Recording ended with error", error)
-//            }
             AppDelegate.startAVAudioSession(category: .playback)
-            //audioRecorder = nil
-            //recordingSession = nil
         }
     }
 
     func playRecording() {
-        Logger.logger.log(self, "Playback starting")
+        //Logger.logger.log(self, "Playback starting")
         AppDelegate.startAVAudioSession(category: .playback)
         guard let url = audioFilename else {
             Logger.logger.reportError(self, "At playback, file URL is nil")
@@ -94,19 +83,19 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
                 Logger.logger.reportError(self, "At playback, cannot create audio player for \(url.path)")
                 return
             }
-            let msg = "playback started...\(audioRecorder.isRecording)"
-            setStatus(msg)
-            Logger.logger.log(self, "playback started, still recording:\(audioRecorder.isRecording)")
+            //var msg = "playback started, still recording? \(audioRecorder.isRecording)"
+            //setStatus(msg)
+            //Logger.logger.log(self, msg)
             audioPlayer.delegate = self
             audioPlayer.play()
-            Logger.logger.log(self, "playback playing...\(audioPlayer.isPlaying)")
+            setStatus("Playback started, status:\(audioPlayer.isPlaying ? "OK" : "Error")")
         } catch let error {
             Logger.logger.reportError(self, "At Playback, start playing error", error)
         }
     }
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        Logger.logger.log(self, "playback stopped, ok:\(flag)")
+        setStatus("Playback stopped, status:\(flag ? "OK" : "Error")")
     }
     
     func getDocumentsDirectory() -> URL {

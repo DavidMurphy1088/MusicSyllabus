@@ -7,8 +7,11 @@ struct ScoreView: View {
     let lineSpacing:Int = UIDevice.current.userInterfaceIdiom == .phone ? 10 : 16 //was 10 , TODO dont hard code
 
     var body: some View {
-        VStack {
+        //VStack {
             VStack {
+                if let label = score.label {
+                    Text(label)
+                }
                 ForEach(score.getStaff(), id: \.self.type) { staff in
                     if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
                         StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
@@ -19,13 +22,13 @@ struct ScoreView: View {
             }
             .padding(.horizontal, (score.scoreEntries.count > 10 && UIDevice.current.userInterfaceIdiom == .phone)  ? 0 : 12)
             .coordinateSpace(name: "Score1")
-        }
-        .coordinateSpace(name: "Score2")
-        .padding(.vertical)
-        .overlay(
-            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-        )
-        .background(UIGlobals.backgroundColor)
-        //.border(Color.blue)
+            .overlay(
+                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+            )
+            .background(UIGlobals.backgroundColor)
+
+        //}
+        //.coordinateSpace(name: "Score2")
+        //.padding(.vertical)
     }
 }

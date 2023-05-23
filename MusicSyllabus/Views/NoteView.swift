@@ -6,11 +6,13 @@ struct BarLineView: View {
     var entry:ScoreEntry
     var staff:Staff
     var lineSpacing:Int
+    //var geometry:GeometryReader
     
     func xPos(geo: GeometryProxy) -> Int {
-        let barLine = entry as! BarLine
+        //let barLine = entry as! BarLine
         //return Int(barLine.atScoreEnd ? geo.size.width - 8 : geo.size.width/2)
-        return Int(geo.size.width / 1.0)
+        //print("Barline init", geo.size)
+        return Int(geo.size.width / 2.0)
     }
     
     var body: some View {
@@ -59,20 +61,22 @@ struct NoteView: View {
         GeometryReader { geometry in
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle * lineSpacing) / 2.0
             let stemDirection:Double = (note.midiNumber < 71 || note.isOnlyRhythmNote) ? -1 : 1
-
+            let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
+            
             ZStack {
                 if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(note.value)  {
                     Ellipse()
                         //Closed ellipse
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
-                        .foregroundColor(self.color)
+                        .foregroundColor(noteColor)
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
                         .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
+                        //.foregroundColor(noteColor)
                 }
                 if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
-                            .stroke(Color.black, lineWidth: 2)
+                            .stroke(noteColor, lineWidth: 2)
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
                             .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
                             //.frame(width:6) //trying to have minim have more horz space
@@ -89,7 +93,7 @@ struct NoteView: View {
                         path.addLine(to: CGPoint(x: (geometry.size.width - (noteWidth * xOffset))/2.0,
                                                  y: noteEllipseMidpoint + (note.stemLength * Double(lineSpacing) * yOffset)))
                     }
-                    .stroke(Color.black, lineWidth: 1)
+                    .stroke(noteColor, lineWidth: 1)
                 }
                 
                 //dotted
@@ -100,6 +104,7 @@ struct NoteView: View {
                         //.foregroundColor(note.value == 4 ? self.color : .blue)
                         .frame(width: noteWidth/4.0, height: noteWidth/4.0)
                         .position(x: geometry.size.width/2 + noteWidth, y: noteEllipseMidpoint)
+                        .foregroundColor(noteColor)
                 }
 
                  //ledger line hack - totally not generalized :(

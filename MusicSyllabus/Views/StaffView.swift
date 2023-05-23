@@ -125,12 +125,37 @@ struct StaffView: View {
     @State private var rotationId: UUID = UUID()
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var position: CGPoint = .zero
+    var entryPositions:[Double] = []
+    var totalDuration = 0.0
 
     init (score:Score, staff:Staff, lineSpacing:Int) {
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
         //print("   ==StaffView created, score ID:", self.score.id)
+        
+// This code was sritten to be able toposition notes on the staff with spacing between them as a function of their rhythm value
+//        for entry in score.scoreEntries {
+//            if entry is TimeSlice {
+//                //let ts = entry as! TimeSlice
+//                let notes = getNotes(entry: entry)
+//                if notes.count > 0 {
+//                    entryPositions.append(totalDuration)
+//                    var value = notes[0].value
+//                    if value > 1 {
+//                        value = value / 2.0
+//                    }
+//                    totalDuration += value
+//                    print(" tt note,", totalDuration, notes[0].value)
+//                }
+//            }
+//            if entry is BarLine {
+//                entryPositions.append(totalDuration)
+//                totalDuration += 0.25 //bar line width
+//                print(" tt bar ", totalDuration)
+//           }
+//        }
+        //print("StaffView Init", entryPositions.count, entryPositions, "total", totalDuration)
     }
     
     func clefWidth() -> Double {
@@ -148,6 +173,72 @@ struct StaffView: View {
         }
     }
     
+    func xPos(note:Note) -> CGFloat {
+        return CGFloat(self.entryPositions[note.sequence])
+    }
+    
+    //This version has the view precalc the postions of the notes so it cna place them on the staff with spacing
+    //as a function of the note's value.
+    var bodyNew: some View {
+        //In SwiftUI, the HStack container view arranges its child views horizontally, and by default, it does not respect the position modifiers applied
+        //to its child views. Instead, it aligns the child views based on their intrinsic content size and alignment settings.
+        GeometryReader { geo in
+            ZStack {
+                StaffLinesView(staff: staff, lineSpacing: lineSpacing)
+                
+                //Clef view
+                if staff.linesInStaff != 1 {
+                    HStack {
+                        if staff.type == StaffType.treble {
+                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+                        }
+                        else {
+                            Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+                        }
+                    }
+                    .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
+                    .frame(width: clefWidth())
+                    //.border(Color.green)
+                    .position(x: Double(lineSpacing) * 2, y:geo.size.height / 2.0)
+                }
+
+                ForEach(score.scoreEntries, id: \.self) { entry in
+                    if entry is TimeSlice {
+                        ForEach(getNotes(entry: entry), id: \.self) { note in
+                            GeometryReader { geoforNote in
+                                if note.staff == nil || note.staff == staff.staffNum {
+                                    //ZStack {
+                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
+                                    NoteView(staff: staff,
+                                             note: note, noteWidth: Double(lineSpacing) * 1.0, //1.2
+                                             lineSpacing: lineSpacing)
+                                        //.frame(width: 70)
+                                        .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
+                                    //.position(x: 0)
+                                    //only called when view first apepars, e.g. not when device rotated
+                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
+                                    //Text("xpos:\(String(format: "%.1f", geoForNote.x))")
+                                        .border(Color.blue)
+                                }
+                                //}
+                            }
+                        }
+                    }
+                    if entry is BarLine {
+                        GeometryReader { geo in
+                            BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+                                .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
+                                .frame(width: 50)
+                                .border(Color.red)
+                        }
+                    }
+
+                }
+            }
+            //.border(Color.red)
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
         ZStack (alignment: .leading) {
@@ -155,7 +246,6 @@ struct StaffView: View {
             StaffLinesView(staff: staff, lineSpacing: lineSpacing)
             
             HStack {
-                
                 //clefs
                 if staff.linesInStaff != 1 {
                     HStack {
@@ -169,16 +259,16 @@ struct StaffView: View {
                     .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
                     .frame(width: clefWidth())
                     //.border(Color.green)
-                }
                 
-                //Key signature hack
-                if score.key.keySig.accidentalCount > 0 {
-                    GeometryReader { geometry in
-                        let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
-                        Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
-                        .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
-                        //.padding()
-                        //.border(Color.blue)
+                    //Key signature hack
+                    if score.key.keySig.accidentalCount > 0 {
+                        GeometryReader { geometry in
+                            let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
+                            Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
+                                .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
+                            //.padding()
+                            //.border(Color.blue)
+                        }
                     }
                 }
                 
@@ -197,11 +287,16 @@ struct StaffView: View {
                                                      note: note,
                                                      noteWidth: Double(lineSpacing) * 1.2,
                                                      lineSpacing: lineSpacing)
+                                            //.frame(width: self.xPos(n: note))
                                             //only called when view first apepars, e.g. not when device rotated
                                             .onAppear {
-                                                let position = geoforNote.frame(in: .named("Staff1"))
+                                                let position:CGRect = geoforNote.frame(in: .named("Staff1"))
                                                 staff.beamCounter.add(p: (note, position))
+                                                //let position:CGRect = geoforNote.frame(in: .named("Staff1"))
+                                                //print("  staffView", position)
                                             }
+                                            //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
+                                            //Text("xpos:\(String(format: "%.1f", geoForNote.x))")
                                         }
                                     }
                                 }
@@ -216,7 +311,7 @@ struct StaffView: View {
                                     }
                                 }
                             }
-                        }
+                       }
                     }
 
                     if entry is BarLine {
@@ -228,12 +323,6 @@ struct StaffView: View {
             .coordinateSpace(name: "Staff1")
             if staff.type == .treble {
                 QuaverBeamView(beamCounter: staff.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
-                //                .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                //                    //self.beamCounter.notePositions = []
-                //                    rotationId = UUID() // Update the ID when device rotation occurs
-                //                    print("============================= ROTATION OCCURRED")
-                //                    beamCounter.rotationOccured = true
-                //                }
             }
             //.coordinateSpace(name: "Staff2")
         }

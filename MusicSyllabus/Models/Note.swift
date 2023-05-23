@@ -17,7 +17,22 @@ enum BeamType {
     case end
 }
 
+enum NoteTag {
+    case noTag
+    case inError
+}
+
 class Note : Hashable, Comparable, ObservableObject {
+    @Published var hilite = false
+    static let MIDDLE_C = 60 //Midi pitch for C4
+    static let OCTAVE = 12
+    static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
+    
+    static let VALUE_QUAVER = 0.5
+    static let VALUE_QUARTER = 1.0
+    static let VALUE_HALF = 2.0
+    static let VALUE_WHOLE = 4.0
+
     let id = UUID()
     var midiNumber:Int
     var staff:Int?
@@ -28,17 +43,7 @@ class Note : Hashable, Comparable, ObservableObject {
     var beamType:BeamType = .none
     var stemLength:Double = 3.5 //measured in number of staff lines
     var sequence:Int = 0 //the note's sequence position 
-    
-    @Published var hilite = false
-    
-    static let MIDDLE_C = 60 //Midi pitch for C4
-    static let OCTAVE = 12
-    static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
-    
-    static let VALUE_QUAVER = 0.5
-    static let VALUE_QUARTER = 1.0
-    static let VALUE_HALF = 2.0
-    static let VALUE_WHOLE = 4.0
+    var noteTag:NoteTag = .noTag
 
     static func == (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber == rhs.midiNumber
