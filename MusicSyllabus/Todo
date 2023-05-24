@@ -2,18 +2,21 @@
 CLAP
   intermittent - quaver beams not on student rhythm
   detect tempo for clapping visual
+  hilight on correct staff notes where students rhythm matches
   
-do test #4 and #5
+instruments - more sf2 files
+do test #5
 longer recordings get an error
 more examples for play/clap
 G Major triad wont display top D in base cleff
 minims more horz space on staff
 
 --MID
+onDone score playing not called if metroom running with the playing
 quaver bar wrong  when rotate device - need to refresh layout on rotate
 midi sampler has to load piano sound file every time it starts, causes a delay at metronom.playScore
 try on real piano
-improve sharpenthe logo image
+scroller for logged messagws
 
 --LOW
 handle ledger lines for all notes (now its just middle C)
@@ -27,8 +30,5 @@ review  proposal
 
 
 --DONE
-RECORDING PLAYBACK Stops App
-quaver bar wrong
-start screen is blank
-start up logo - fade to trasnparent
+
 

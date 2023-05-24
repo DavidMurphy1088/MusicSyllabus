@@ -9,15 +9,14 @@ class Metronome: ObservableObject {
     @Published var clapCounter = 0
     @Published var tempoName:String = ""
     var midiSampler:AVAudioUnitSampler?
-    //var x: AVAudioUnitMIDIInstrument?
     
     var tempo: Double
     var clapCnt = 0
-
+    
     var isThreadRunning = false
     var isTicking = false
     private var score:Score?
-    var nextScoreIndex = 0 
+    var nextScoreIndex = 0
     private var audioPlayers:[AVAudioPlayer] = []
     private let numberOfAudioPlayers = 16 //Need > 1 since only one cannot sound again within the required tick frequency
     private var nextTimeSlice:TimeSlice?
@@ -25,11 +24,22 @@ class Metronome: ObservableObject {
     //the shortest note value which is used to set the metronome's thread firing frequency
     private let shortestNoteValue = Note.VALUE_QUAVER
     private var clapURL:URL? = nil
-    
+
+    var samplerFileName = ""
+    var soundFontNames = [("Piano", "Nice-Steinway-v3.8"), ("Guitar", "GuitarAcoustic")]
+    //var soundFontSF2Files = ["Nice-Steinway-v3.8", "GuitarAcoustic"]
+    var soundFontProgram = 0
+
     init() {
         self.tempo = 60.0
         let wav = false
         //var url:URL?
+        //let name = "Envalentoned_violin"
+        //let name = "Nice-Steinway-v3.8"
+        //let name = "GuitarAcoustic"
+        //self.samplerFileName = "Essential Keys-sforzando-v9.6"
+
+        self.samplerFileName = soundFontNames[0].1
         
         if wav {
             guard let tickSoundPath = Bundle.main.path(forResource: "clap-single-17", ofType: "wav") else {
@@ -71,19 +81,20 @@ class Metronome: ObservableObject {
         //engine.attach(midiSampler!)
         //engine.connect(midiSampler!, to:engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
         
-//        do {
-//            //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-//            if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
-//                try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-//            }
-//            //try self.engine.start()
-//        } catch let error {
-//            Logger.logger.reportError(self, "loading sampler", error)
-//        }
-//        Logger.logger.log(self, "Score::Initialised engine, connected sampler, started engine")
-
+        //        do {
+        //            //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
+        //            if let url = Bundle.main.url(forResource:"Nice-Steinway-v3.8", withExtension:"sf2") {
+        //                try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+        //            }
+        //            //try self.engine.start()
+        //        } catch let error {
+        //            Logger.logger.reportError(self, "loading sampler", error)
+        //        }
+        //        Logger.logger.log(self, "Score::Initialised engine, connected sampler, started engine")
+        
     }
     
+
     func startAudio() {
         guard self.clapURL != nil else {
             return
@@ -102,15 +113,20 @@ class Metronome: ObservableObject {
             midiNoteEngine.connect(midiSampler!, to:midiNoteEngine.mainMixerNode, format:midiNoteEngine.mainMixerNode.outputFormat(forBus: 0))
             //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
             //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-            //let name = "Envalentoned_violin"
-            let name = "Nice-Steinway-v3.8"
-            if let url = Bundle.main.url(forResource:name, withExtension:"sf2") {
-                try self.midiSampler!.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+            //https://sites.google.com/site/soundfonts4u/
+            
+            //printInstruments(name: name)
+            if let url = Bundle.main.url(forResource:self.samplerFileName, withExtension:"sf2") {
+                print(url)
+                try self.midiSampler!.loadSoundBankInstrument(at: url, program: UInt8(self.soundFontProgram), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+            }
+            else {
+                Logger.logger.reportError(self, "Cannot loadSoundBankInstrument \(self.samplerFileName)")
             }
             try self.midiNoteEngine.start()
         }
         catch let error {
-            Logger.logger.reportError(self, "Cant create midi sampler", error)
+            Logger.logger.reportError(self, "Cant create midi sampler \(error.localizedDescription)")
         }
         setTempo(tempo: self.tempo)
     }
@@ -154,7 +170,7 @@ class Metronome: ObservableObject {
         }
         DispatchQueue.main.async {
             self.tempoName = name
-            Logger.logger.log(self, "set tempo \(self.tempo)")
+            //Logger.logger.log(self, "set tempo \(self.tempo)")
         }
     }
     
@@ -189,8 +205,11 @@ class Metronome: ObservableObject {
         self.isTicking = true
     }
     
-    func stopPlayingScore() {
+    func stopPlayingScore(note:Int? = 0) {
         self.score = nil
+        if let note = note {
+            midiSampler?.stopNote(UInt8(note), onChannel: 0)
+        }
     }
 
     func stopTicking() {

@@ -26,12 +26,19 @@ class ExampleData {
         data["Musicianship.Grade 1.Clapping.Example 3"] = data["Musicianship.Grade 1.Playing.Example 3"]
         data["Musicianship.Grade 1.Clapping.Example 4"] = data["Musicianship.Grade 1.Playing.Example 4"]
 
+        data["Musicianship.Grade 1.Intervals Aural.Example 1"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
+        data["Musicianship.Grade 1.Intervals Aural.Example 2"] = data["Musicianship.Grade 1.Intervals Visual.Example 2"]
+        data["Musicianship.Grade 1.Intervals Aural.Example 3"] = data["Musicianship.Grade 1.Intervals Visual.Example 3"]
+        data["Musicianship.Grade 1.Intervals Aural.Example 4"] = data["Musicianship.Grade 1.Intervals Visual.Example 4"]
+
         //data["Intervals Visual.test"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
         //data["Playing.test"] = data["Musicianship.Grade 1.Playing.Example 1"]
         //data["Clapping.test"] = data["Musicianship.Grade 1.Playing.Example 1"]
         
         data["test_interval"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
         data["test_clap"] = "(K) (TS,4,4) (71,1) (67,.5) (69,.5) (71,1) (72,1) (B) (74,1)"
+        data["test_aural_interval"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
+        
         //data["test_clap"] = "(71,1) (67,.5) (69,.5) (71,1) (71,1) (B) (72,2)"
 
         //data["test"]      = data["Musicianship.Grade 1.Intervals Visual.Example 1"]

@@ -51,6 +51,7 @@
 		7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32872A177A67004E2FA6 /* TappingView.swift */; };
 		7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32892A177C09004E2FA6 /* TapRecorder.swift */; };
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
+		7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */; };
 		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902542A0CBE47002E977A /* ExampleData.swift */; };
 		7BF9B9C92A02618700121EBA /* SoundGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF9B9C82A02618700121EBA /* SoundGenerator.swift */; };
@@ -112,6 +113,7 @@
 		7B6C32872A177A67004E2FA6 /* TappingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappingView.swift; sourceTree = "<group>"; };
 		7B6C32892A177C09004E2FA6 /* TapRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRecorder.swift; sourceTree = "<group>"; };
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
+		7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GuitarAcoustic.sf2; sourceTree = "<group>"; };
 		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF902542A0CBE47002E977A /* ExampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleData.swift; sourceTree = "<group>"; };
 		7BF9B9C82A02618700121EBA /* SoundGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundGenerator.swift; sourceTree = "<group>"; };
@@ -153,9 +155,10 @@
 		7B51F0DE2A0A52EA00A7ABFA /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */,
+				7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */,
 				7B51F0CD2A09C94D00A7ABFA /* Mechanical metronome - Low.aif */,
 				7BF9B9CA2A02654100121EBA /* Nice-Steinway-v3.8.sf2 */,
-				7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				7B5EEDE62A0133020007FF7E /* Preview Assets.xcassets in Resources */,
 				7B3BA4532A0710D7000246C6 /* Notes in Resources */,
 				7B43C69D2A1354D000BBB027 /* Todo in Resources */,
+				7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */,
 				7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
 				7B51F0CE2A09C94D00A7ABFA /* Mechanical metronome - High.aif in Resources */,
@@ -512,7 +516,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
@@ -548,7 +552,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;

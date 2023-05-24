@@ -3,23 +3,33 @@ import CoreData
 
 struct IndexView: View {
     @Environment(\.scenePhase) var scenePhase
+    @State private var isShowingConfiguration = false
 
     var body: some View {
         TabView {
             if !MusicSyllabusApp.productionMode {
-                
-                
                 ClapOrPlayView(
-                    mode: QuestionMode.clap,
+                    mode: QuestionMode.rhythmClap,
                     contentSection: ContentSection(parent: nil,
                                                    type: ContentSection.SectionType.testType,
                                                    name: "test_clap")
                 )
                 .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")
                 }
+
+                IntervalView(
+                    mode: QuestionMode.intervalAural,
+                    contentSection: ContentSection(parent: nil,
+                                                   type: ContentSection.SectionType.testType,
+                                                   name: "test_aural_interval")
+                )
+                .tabItem {Label("AuralInt", systemImage: "music.quarternote.3")
+                }
+
+                
                 
                 ClapOrPlayView(
-                    mode: QuestionMode.play,
+                    mode: QuestionMode.rhythmPlay,
                     contentSection: ContentSection(parent: nil,
                                                    type: ContentSection.SectionType.testType,
                                                    name: "test_clap")
@@ -27,17 +37,7 @@ struct IndexView: View {
                 .tabItem {Label("Play_Test", systemImage: "music.quarternote.3")
                 }
 
-//                
-//                IntervalView(
-//                    //                    presentType: IntervalPresentView.self,
-//                    //                    answerType: IntervalAnswerView.self,
-//                    contentSection: ContentSection(parent: nil,
-//                                                   type: ContentSection.SectionType.testType,
-//                                                   name: "test_interval")
-//                )
-//                .tabItem {Label("Playing", systemImage: "music.quarternote.3")
-//                }
-//
+
                 TopicsNavigationView(topic: MusicSyllabusApp.root)
                     .tabItem {Label("Musicianship1", systemImage: "music.note.list")
                     }
@@ -48,21 +48,13 @@ struct IndexView: View {
             }
             else {
                 TopicsNavigationView(topic: MusicSyllabusApp.root)
-                    .tabItem {Label("Exercises", image: "music.note")
-                    }
-                ConfigurationView()
-                    .tabItem {Label("Configuration", image: "music.note")
-                    }
-                //                TopicsNavigationView(topic: root)
-                //                    .tabItem {Label("Book3", image: "music.note")
-                //                }
+                    .tabItem {Label("Exercises", image: "music.note")}
+                ConfigurationView(isPresented: $isShowingConfiguration)
+                    .tabItem {Label("Configuration", image: "music.note")}
             }
             //.navigationViewStyle(StackNavigationViewStyle())
             }
-            //.accentColor(.blue)
-            
         }
-
 }
 
 

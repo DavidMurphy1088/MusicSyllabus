@@ -14,6 +14,13 @@ class ScoreEntry : Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    func getNotes() -> [Note]? {
+        if self is TimeSlice {
+            let ts:TimeSlice = self as! TimeSlice
+            return ts.notes
+        }
+        return nil
+    }
 }
 
 class Sampler {

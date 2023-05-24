@@ -39,15 +39,14 @@ struct ContentSectionView: View {
                         if parentSection.name.contains("Intervals Visual") {
                            //IntervalsView(contentSection: contentSection)
                            IntervalView(
-                                //presentType: IntervalPresentView.self,
-                                //answerType: IntervalAnswerView.self,
+                                mode: QuestionMode.intervalVisual,
                                 contentSection: contentSection
                             )
                         }
                         if parentSection.name.contains("Clapping") {
                             //ClapOrPlayOld(mode: .clap, contentSection: contentSection)
                             ClapOrPlayView (
-                                mode: QuestionMode.clap,
+                                mode: QuestionMode.rhythmClap,
                                  //presentType: IntervalPresentView.self,
                                  //answerType: IntervalAnswerView.self,
                                  contentSection: contentSection
@@ -57,12 +56,20 @@ struct ContentSectionView: View {
                         if parentSection.name.contains("Playing") {
                             //ClapOrPlayOld(mode: .play, contentSection: contentSection)
                             ClapOrPlayView (
-                                mode: QuestionMode.play,
+                                mode: QuestionMode.rhythmPlay,
                                  //presentType: IntervalPresentView.self,
                                  //answerType: IntervalAnswerView.self,
                                  contentSection: contentSection
                              )
                         }
+                        if parentSection.name.contains("Intervals Aural") {
+                           //IntervalsView(contentSection: contentSection)
+                           IntervalView(
+                                mode: QuestionMode.intervalAural,
+                                contentSection: contentSection
+                            )
+                        }
+
                     }
                 }
              }

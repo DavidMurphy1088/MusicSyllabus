@@ -5,8 +5,10 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     var score:Score
     let exampleData = ExampleData.shared
     var intervalNotes:[Note] = []
-    @State private var logger = Logger.logger
+    @ObservedObject private var logger = Logger.logger
     @State private var selectedIntervalIndex = 0
+    var mode:QuestionMode
+    let metronome = Metronome.shared
 
     class IntervalName : Hashable {
         var interval: Int
@@ -39,11 +41,13 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) {
         self.answer = answer
         self.score = score
+        self.mode = mode
         let exampleData = exampleData.get(contentSection: contentSection) //contentSection.parent!.name, contentSection.name, exampleKey: contentSection.gr)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         
         self.score.setStaff(num: 0, staff: staff)
         //print("  IntervalPresentView INIT score:", score.id)
+        var chord:Chord = Chord()
         if let entries = exampleData {
             for entry in entries {
                 if entry is Note {
@@ -52,8 +56,14 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     let note = entry as! Note
                     timeSlice.addNote(n: note)
                     intervalNotes.append(note)
+                    if mode == .intervalAural {
+                        chord.notes.append(Note(num: note.midiNumber))
+                    }
                 }
             }
+        }
+        if chord.notes.count > 0 {
+            score.addTimeSlice().addChord(c: chord)
         }
         score.addBarLine(atScoreEnd: true)
     }
@@ -63,7 +73,22 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         AnyView(
             VStack {
                 HStack {
-                    ScoreView(score: score).padding()
+                    if mode == .intervalVisual {
+                        ScoreView(score: score).padding()
+                    }
+                    else {
+                        Button(action: {
+                            metronome.playScore(score: score)
+                        }) {
+                            Text("Hear Interval")
+                        }
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                        )
+                        .background(UIGlobals.backgroundColor)
+                        .padding()
+                    }
                 }
                 VStack {
                     VStack {
@@ -133,9 +158,15 @@ struct IntervalPresentView: View, QuestionPartProtocol {
 
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
+        .onAppear() {
+            Timer.scheduledTimer(withTimeInterval: 0.75, repeats: false) { _ in
+                metronome.playScore(score: score)
+            }
+        }
         )
     }
 }
+
 
 struct IntervalAnswerView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
@@ -202,11 +233,11 @@ struct IntervalView: View {
     @ObservedObject var answer: Answer = Answer()
     var presentQuestionView:IntervalPresentView?
     var answerQuestionView:IntervalAnswerView?
-
-    init(contentSection:ContentSection) {
+    
+    init(mode:QuestionMode, contentSection:ContentSection) {
         self.contentSection = contentSection
-        presentQuestionView = IntervalPresentView(contentSection: contentSection, score: self.score, answer: answer, mode:.none)
-        answerQuestionView = IntervalAnswerView(contentSection: contentSection, score: score, answer: answer, mode:.none)
+        presentQuestionView = IntervalPresentView(contentSection: contentSection, score: self.score, answer: answer, mode:mode)
+        answerQuestionView = IntervalAnswerView(contentSection: contentSection, score: score, answer: answer, mode:mode)
         //print("\n======QuestionAndAnswerView init name:", contentSection.name, contentSection.sectionType, "self ID", id, "score ID:", score.id)
     }
 
@@ -259,10 +290,7 @@ struct QuestionAndAnswerViewGeneric_Bad: View {
                 }
             }
         }
-//        .onAppear {
-//            //print("======QuestionAndAnswerView onAppear")
-//            initViewInstances()
-//        }
+
     }
 }
 

@@ -1,8 +1,14 @@
 import SwiftUI
 
 enum QuestionMode {
-    case clap
-    case play
+    //intervals
+    case intervalVisual
+    case intervalAural
+    
+    //rhythms
+    case rhythmClap
+    case rhythmPlay
+    
     case none
 }
 
@@ -32,11 +38,11 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         self.score = score
         self.contentSection = contentSection
         self.mode = mode
-        let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: mode == .clap ? 1 : 5)
+        let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: mode == .rhythmClap ? 1 : 5)
 
         score.setStaff(num: 0, staff: staff)
-        if mode == .play {
-            let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .clap ? 1 : 5)
+        if mode == .rhythmPlay {
+            let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .rhythmClap ? 1 : 5)
             score.setStaff(num: 1, staff: bstaff)
             score.hiddenStaffNo = 1
         }
@@ -56,7 +62,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     let timeSlice = score.addTimeSlice()
                     let note = entry as! Note
                     note.staff = 0
-                    note.setIsOnlyRhythm(way: mode == .clap ? true : false)
+                    note.setIsOnlyRhythm(way: mode == .rhythmClap ? true : false)
                     //note.value = 1
                     timeSlice.addNote(n: note)
                     lastTS = timeSlice
@@ -73,7 +79,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     score.setKey(key: Key(type: .major, keySig: KeySignature(type: .sharp, count: 1)))
                 }
             }
-            if mode == .play && lastNote != nil {
+            if mode == .rhythmPlay && lastNote != nil {
                 let isDotted = lastNote!.isDotted
                 lastTS?.tag = "I"
                 if score.key.keySig.accidentalCount > 0 { //G Major
@@ -94,7 +100,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
 
     func instructionText() -> String {
         let result:String
-        if self.mode == .clap {
+        if self.mode == .rhythmClap {
             result = "\n\u{25BA}   Start recording\n\u{25BA}   Tap your rhythm on the drum that appears\n\u{25BA}   Stop the recording"
         }
         else {
@@ -118,7 +124,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 Button(action: {
                                         helpPopup = true
                                     }) {
-                                        Image(systemName: "questionmark.circle.fill").font(.system(size: 48)).padding()
+                                        Image(systemName: "questionmark.circle.fill").font(.system(size: 24)).padding()
                                     }
                                     .popover(isPresented: $helpPopup, arrowEdge: .top) {
                                         HelpView(helpInfo: self.instructionText())
@@ -127,7 +133,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 
                                 Button(action: {
                                     answer.setState(.recording)
-                                    if self.mode == .clap {
+                                    if self.mode == .rhythmClap {
                                         tapRecorder.startRecording()
                                     } else {
                                         audioRecorder.startRecording()
@@ -139,7 +145,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                             }
                             
                             if answer.state == .recording {
-                                if self.mode == .clap {
+                                if self.mode == .rhythmClap {
                                     TappingView(tapRecorder: tapRecorder).padding()
                                         .frame(width: geometry.size.width/4, height: geometry.size.height/4)
                                 }
@@ -157,7 +163,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                     .padding()
                                     .onTapGesture {
                                         answer.setState(.recorded)
-                                        if self.mode == .clap {
+                                        if self.mode == .rhythmClap {
                                             self.tapRecorder.stopRecording()
                                         }
                                         else {
@@ -168,7 +174,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 
                                 Button(action: {
                                     answer.setState(.recorded)
-                                    if self.mode == .clap {
+                                    if self.mode == .rhythmClap {
                                         self.tapRecorder.stopRecording()
                                     }
                                     else {
@@ -219,6 +225,8 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @ObservedObject private var logger = Logger.logger
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @State var playingCorrect = false
+    @State var playingStudent = false
+    
     @ObservedObject var tapRecorder = TapRecorder.shared
     
     private var score:Score
@@ -235,7 +243,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         self.answer = answer
         self.score = score
         self.mode = mode
-        if mode == .clap {
+        if mode == .rhythmClap {
             self.tappingScore = Score(timeSignature: score.timeSignature, lines: 1)
         }
     }
@@ -273,7 +281,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                             }
                         }
                         else {
-                            Text("Hear The Correct \(self.mode == .clap ? "Rhythm" : "Playing")")
+                            Text("Hear The Correct \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
                                 .buttonStyle(DefaultButtonStyle())
                         }
                     }
@@ -281,27 +289,41 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
 
                     //Hear user rhythm
                     Button(action: {
-                        if mode == .clap {
+                        if mode == .rhythmClap {
                             if tappingScore != nil {
-                                DispatchQueue.main.async {
-                                    metronome.playScore(score: tappingScore!)
-                                }
+                                metronome.playScore(score: tappingScore!, onDone: {
+                                    playingStudent = false
+                                })
                             }
+                            playingStudent = true
                         }
                         else {
                             audioRecorder.playRecording()
                         }
                     }) {
-                        Text("Hear Your \(self.mode == .clap ? "Rhythm" : "Playing")")
-                            .font(.system(.body))
+                        if playingStudent {
+                            Button(action: {
+                                playingStudent = false
+                                metronome.stopPlayingScore()
+                            }) {
+                                Text("Stop Playing")
+                                Image(systemName: "stop.circle")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        else {
+                            Text("Hear Your \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
+                                .font(.system(.body))
+                        }
                     }
                     .padding()
                     .onAppear {
-                        if mode == .clap {
-                            tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
+                        if mode == .rhythmClap {
+                            tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
                             tappingScore?.label = "Your Rhythm"
                         }
-                        print("View appeared, ts", tappingScore?.scoreEntries.count)
                     }
                 }
                 .overlay(

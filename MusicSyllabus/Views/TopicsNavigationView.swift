@@ -3,7 +3,8 @@ import CoreData
 
 struct TopicsNavigationView: View {
     let topic:ContentSection
-    
+    @State private var isShowingConfiguration = false
+
     var body: some View {
         if UIDevice.current.userInterfaceIdiom == .pad {
             
@@ -29,6 +30,20 @@ struct TopicsNavigationView: View {
                     //.navigationBarTitleDisplayMode(.inline)
 
                 }
+                .sheet(isPresented: $isShowingConfiguration) {
+                    ConfigurationView(isPresented: $isShowingConfiguration)
+                }
+                .navigationTitle(topic.name)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            isShowingConfiguration = true
+                        }) {
+                            Image(systemName: "gear")
+                        }
+                    }
+                }
+
             }
         }
         else {
@@ -39,7 +54,19 @@ struct TopicsNavigationView: View {
                     }
                     .disabled(!contentSection.isActive)
                 }
-                .navigationTitle(topic.name)//.font(.caption)
+                .sheet(isPresented: $isShowingConfiguration) {
+                    ConfigurationView(isPresented: $isShowingConfiguration)
+                }
+                .navigationTitle(topic.name)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            isShowingConfiguration = true
+                        }) {
+                            Image(systemName: "gear")
+                        }
+                    }
+                }
             }
         }
     }
