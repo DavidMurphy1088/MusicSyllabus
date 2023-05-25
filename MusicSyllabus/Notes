@@ -16,3 +16,5 @@ Audio - For example, in the .playAndRecord category, you can specify whether the
 it's important to note that SwiftUI views are often re-created multiple times during their lifetime.
 This happens when the view's state changes or when it needs to be re-rendered due to changes in the environment or parent views.
 But a state change in a view does not recall its init()
+
+Its appears to be that if a view uses a geometry reader any child view that does not explctyly position itself does not center but goes to a zero postion

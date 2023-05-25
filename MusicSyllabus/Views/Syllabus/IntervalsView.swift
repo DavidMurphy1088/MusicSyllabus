@@ -65,7 +65,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         if chord.notes.count > 0 {
             score.addTimeSlice().addChord(c: chord)
         }
-        score.addBarLine(atScoreEnd: true)
+        //score.addBarLine(atScoreEnd: true)
     }
 
     var body: AnyView {

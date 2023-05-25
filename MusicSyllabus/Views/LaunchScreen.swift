@@ -13,7 +13,8 @@ final class LaunchScreenStateManager: ObservableObject {
     @MainActor func dismiss() {
         Task {
             state = .secondStep
-            try? await Task.sleep(for: Duration.seconds(1))
+            //try? await Task.sleep(for: Duration.seconds(1))
+            sleep(1)
             self.state = .finished
         }
     }
@@ -28,6 +29,7 @@ struct LaunchScreenView: View {
     @State private var imageOpacity: Double = 0
     static var durationSeconds = 3.0
     @State var ctr = 0.0
+    @State var inc = 1.0
     
     @ViewBuilder
     
@@ -41,11 +43,7 @@ struct LaunchScreenView: View {
                         Image("nzmeb_logo_transparent")
                             .resizable()
                             .scaledToFit()
-                        //.frame(width: 200, height: 200)
                             .frame(width: geo.size.width * 0.75)
-                        //.rotationEffect(firstAnimation ? Angle(degrees: 900) : Angle(degrees: 1800)) // Mark 4
-                        //.scaleEffect(secondAnimation ? 0 : 1) // Mark 4
-                        //.offset(y: secondAnimation ? 400 : 0) // Mark 4
                             .opacity(imageOpacity)
                         //.border(Color(.red))
                         Spacer()
@@ -54,7 +52,8 @@ struct LaunchScreenView: View {
                 }
                 VStack(alignment: .center) {
                     Text("NZMEB Musicianship Trainer")
-                        .position(x: geo.size.width * 0.5, y: geo.size.height * 0.85).font(.title)
+                        .position(x: geo.size.width * 0.5, y: geo.size.height * 0.85)
+                        //.font(.title)
                         .opacity(imageOpacity)
                 }
             }
@@ -65,11 +64,14 @@ struct LaunchScreenView: View {
     private var backgroundColor: some View {  // Mark 3
         //Color.orange.ignoresSafeArea()
         //Color.cyan.ignoresSafeArea()
-        Color.teal.ignoresSafeArea()
+        //Color.gray.ignoresSafeArea()
+        //Color.blue.ignoresSafeArea()
+        //Color.secondary.ignoresSafeArea()
+        Color(red: 150 / 255, green: 210 / 255, blue: 225 / 255).ignoresSafeArea()
     }
     
     private let animationTimer = Timer // Mark 5
-        .publish(every: 0.07, on: .current, in: .common)
+        .publish(every: 0.05, on: .current, in: .common)
         .autoconnect()
     
     var body: some View {
@@ -79,30 +81,33 @@ struct LaunchScreenView: View {
         }
         .onReceive(animationTimer) { timerValue in
             //updateAnimation()  // Mark 5
-            ctr += 1
+            ctr += inc
             imageOpacity = sin(Double(ctr / (LaunchScreenView.durationSeconds * Double.pi * 2.0)))
+//            if imageOpacity > 0.96 {
+//                inc += 0.25
+//            }
         }
         //.opacity(startFadeoutAnimation ? 0 : 1)
     }
     
-    private func updateAnimation() { // Mark 5
-        switch launchScreenState.state {
-        case .firstStep:
-            withAnimation(.easeInOut(duration: 0.9)) {
-                firstAnimation.toggle()
-            }
-        case .secondStep:
-            if secondAnimation == false {
-                withAnimation(.linear) {
-                    self.secondAnimation = true
-                    startFadeoutAnimation = true
-                }
-            }
-        case .finished:
-            // use this case to finish any work needed
-            break
-        }
-    }
+//    private func updateAnimation() { // Mark 5
+//        switch launchScreenState.state {
+//        case .firstStep:
+//            withAnimation(.easeInOut(duration: 0.9)) {
+//                firstAnimation.toggle()
+//            }
+//        case .secondStep:
+//            if secondAnimation == false {
+//                withAnimation(.linear) {
+//                    self.secondAnimation = true
+//                    startFadeoutAnimation = true
+//                }
+//            }
+//        case .finished:
+//            // use this case to finish any work needed
+//            break
+//        }
+//    }
     
 }
 

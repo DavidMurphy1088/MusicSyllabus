@@ -24,7 +24,8 @@ class Metronome: ObservableObject {
     //the shortest note value which is used to set the metronome's thread firing frequency
     private let shortestNoteValue = Note.VALUE_QUAVER
     private var clapURL:URL? = nil
-
+    private let speech = SpeechSynthesizer.shared
+    
     var samplerFileName = ""
     var soundFontNames = [("Piano", "Nice-Steinway-v3.8"), ("Guitar", "GuitarAcoustic")]
     //var soundFontSF2Files = ["Nice-Steinway-v3.8", "GuitarAcoustic"]
@@ -234,8 +235,11 @@ class Metronome: ObservableObject {
             var loopCtr = 0
             var keepRunning = true
             var playSynched = false
+            var currentTimeValue = 0.0
+            var noteValueSpeechWord:String? = nil
             
             while keepRunning {
+                noteValueSpeechWord = nil
                 
                 // sound the metronome tick
                 if loopCtr % 2 == 0 {
@@ -259,6 +263,7 @@ class Metronome: ObservableObject {
                     if let score = score {
                         if let timeSlice = nextTimeSlice {
                             var channel = 0
+                            var noteInChordNum = 0
                             for note in timeSlice.notes {
                                 //print("    ---", note.midiNumber)
                                 if currentNoteDuration < note.value {
@@ -272,7 +277,10 @@ class Metronome: ObservableObject {
                                 }
                                 let pitch = note.isOnlyRhythmNote ? Note.MIDDLE_C : note.midiNumber
                                 midiSampler!.startNote(UInt8(pitch), withVelocity:64, onChannel:UInt8(channel))
-                                //channel += 1
+                                if noteInChordNum == 0 && note.value < 1.0 {
+                                    noteValueSpeechWord = "and"
+                                }
+                                noteInChordNum += 1
                             }
                             
                             //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick
@@ -290,6 +298,12 @@ class Metronome: ObservableObject {
                                             currentNoteDuration = nextTimeSlice!.notes[0].value
                                             break
                                         }
+                                        else {
+                                            let barLine = entry as! BarLine
+                                            if barLine != nil {
+                                                currentTimeValue = 0
+                                            }
+                                        }
                                     }
                                     nextScoreIndex += 1
                                 }
@@ -305,7 +319,20 @@ class Metronome: ObservableObject {
                 }
                 //let t = Date().timeIntervalSince1970 - st
                 //print("  Metronome loop", "time:", String(format: "%.2f", t), "scoreIdx", nextScoreIndex)
-
+                
+                
+                if loopCtr % 2 == 0 {
+                    let word = noteCoundSpeechWord(currentTimeValue: currentTimeValue)
+                    speech.speakWord(word)
+                }
+                else {
+                    //quavers say 'and'
+                    if noteValueSpeechWord != nil {
+                        speech.speakWord(noteValueSpeechWord!)
+                    }
+                }
+                currentTimeValue += shortestNoteValue
+                
                 if !self.isTicking {
                    keepRunning = nextTimeSlice != nil
                 }
@@ -319,5 +346,30 @@ class Metronome: ObservableObject {
         }
     }
     
+    func noteCoundSpeechWord(currentTimeValue:Double) -> String {
+        var word = ""
+        if currentTimeValue.truncatingRemainder(dividingBy: 1) == 0 {
+            let cvInt = Int(currentTimeValue)
+            if let score = score {
+                switch cvInt %  score.timeSignature.top {
+                case 0 :
+                    word = "one"
+                    
+                case 1 :
+                    word = "two"
+                    
+                case 2 :
+                    word = "three"
+                    
+                default :
+                    word = "four"
+                }
+            }
+        }
+        else {
+            word = ""
+        }
+        return word
+    }
 }
 

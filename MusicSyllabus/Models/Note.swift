@@ -62,7 +62,7 @@ class Note : Hashable, Comparable, ObservableObject {
         self.value = value
         self.isDotted = isDotted
         if value == 3.0 {
-            self.value = Note.VALUE_HALF
+            //self.value = Note.VALUE_HALF //NO NO
             self.isDotted = true
         }
         self.stemUp = true

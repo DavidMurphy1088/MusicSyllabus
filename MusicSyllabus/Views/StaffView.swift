@@ -77,15 +77,22 @@ struct StaffLinesView: View {
                 }
                 
                 // end of staff bar lines
+                
+                var x:Double = geometry.size.width - 2.0
+                let top:Double = (geometry.size.height/2.0) + Double(2 * lineSpacing)
+                let bottom:Double = (geometry.size.height/2.0) - Double(2 * lineSpacing)
+                
                 Path { path in
-                    //let y:Double = Double(geometry.size.height) / 2.0
-                    let x:Double = geometry.size.width - 2.0
-                    let top:Double = (geometry.size.height/2.0) + Double(2 * lineSpacing)
-                    let bottom:Double = (geometry.size.height/2.0) - Double(2 * lineSpacing)
                     path.move(to: CGPoint(x: x, y: top))
                     path.addLine(to: CGPoint(x: x, y: bottom))
                 }
                 .stroke(Color.black, lineWidth: Double(lineSpacing) / 3)
+                var x1:Double = geometry.size.width - (Double(lineSpacing) * 0.7)
+                Path { path in
+                    path.move(to: CGPoint(x: x1, y: top))
+                    path.addLine(to: CGPoint(x: x1, y: bottom))
+                }
+                .stroke(Color.black, lineWidth: 1)
             }
         }
     }
@@ -113,7 +120,8 @@ struct TimeSignatureView: View {
             Text("\(timeSignature.top)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
             Text("\(timeSignature.bottom)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
         }
-        .bold()
+        //.bold()
+        //.fontWeight(.heavy)
     }
 }
 
@@ -177,74 +185,14 @@ struct StaffView: View {
         return CGFloat(self.entryPositions[note.sequence])
     }
     
-    //This version has the view precalc the postions of the notes so it cna place them on the staff with spacing
-    //as a function of the note's value.
-    var bodyNew: some View {
-        //In SwiftUI, the HStack container view arranges its child views horizontally, and by default, it does not respect the position modifiers applied
-        //to its child views. Instead, it aligns the child views based on their intrinsic content size and alignment settings.
-        GeometryReader { geo in
-            ZStack {
-                StaffLinesView(staff: staff, lineSpacing: lineSpacing)
-                
-                //Clef view
-                if staff.linesInStaff != 1 {
-                    HStack {
-                        if staff.type == StaffType.treble {
-                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
-                        }
-                        else {
-                            Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
-                        }
-                    }
-                    .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
-                    .frame(width: clefWidth())
-                    //.border(Color.green)
-                    .position(x: Double(lineSpacing) * 2, y:geo.size.height / 2.0)
-                }
 
-                ForEach(score.scoreEntries, id: \.self) { entry in
-                    if entry is TimeSlice {
-                        ForEach(getNotes(entry: entry), id: \.self) { note in
-                            GeometryReader { geoforNote in
-                                if note.staff == nil || note.staff == staff.staffNum {
-                                    //ZStack {
-                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
-                                    NoteView(staff: staff,
-                                             note: note, noteWidth: Double(lineSpacing) * 1.0, //1.2
-                                             lineSpacing: lineSpacing)
-                                        //.frame(width: 70)
-                                        .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
-                                    //.position(x: 0)
-                                    //only called when view first apepars, e.g. not when device rotated
-                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
-                                    //Text("xpos:\(String(format: "%.1f", geoForNote.x))")
-                                        .border(Color.blue)
-                                }
-                                //}
-                            }
-                        }
-                    }
-                    if entry is BarLine {
-                        GeometryReader { geo in
-                            BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
-                                .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
-                                .frame(width: 50)
-                                .border(Color.red)
-                        }
-                    }
-
-                }
-            }
-            //.border(Color.red)
-        }
-    }
 
     var body: some View {
         GeometryReader { geometry in
         ZStack (alignment: .leading) {
             
             StaffLinesView(staff: staff, lineSpacing: lineSpacing)
-            
+
             HStack {
                 //clefs
                 if staff.linesInStaff != 1 {
@@ -273,7 +221,6 @@ struct StaffView: View {
                 }
                 
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
-                    //.padding(.leading, -10)
                 //.border(Color.red)
 
                 ForEach(score.scoreEntries, id: \.self) { entry in
@@ -319,8 +266,17 @@ struct StaffView: View {
                     }
                 }
                 //.coordinateSpace(name: "Staff0")
+                
+                //Space between last time slice and the end of the staff
+                VStack {
+                    Text("")
+                }
+                .frame(width: Double(lineSpacing) * 1.0)
+                //.position(x: geometry.size.width - 50.0, y: geometry.size.height / 2.0)
+                //.border(Color.red)
             }
             .coordinateSpace(name: "Staff1")
+
             if staff.type == .treble {
                 QuaverBeamView(beamCounter: staff.beamCounter, staff:staff, lineSpacing:lineSpacing, noteWidth: Double(lineSpacing) * 1.2) //at left edge
             }
@@ -328,7 +284,7 @@ struct StaffView: View {
         }
         //.coordinateSpace(name: "Staff3")
         //.border(Color.orange)
-                    }
+        }
     }
         
 }
@@ -380,3 +336,65 @@ struct StaffView: View {
 //    }
         
   
+//This version has the view precalc the postions of the notes so it cna place them on the staff with spacing
+//as a function of the note's value.
+//    var bodyNew: some View {
+//        //In SwiftUI, the HStack container view arranges its child views horizontally, and by default, it does not respect the position modifiers applied
+//        //to its child views. Instead, it aligns the child views based on their intrinsic content size and alignment settings.
+//        GeometryReader { geo in
+//            ZStack {
+//                StaffLinesView(staff: staff, lineSpacing: lineSpacing)
+//
+//                //Clef view
+//                if staff.linesInStaff != 1 {
+//                    HStack {
+//                        if staff.type == StaffType.treble {
+//                            Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+//                        }
+//                        else {
+//                            Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+//                        }
+//                    }
+//                    .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
+//                    .frame(width: clefWidth())
+//                    //.border(Color.green)
+//                    .position(x: Double(lineSpacing) * 2, y:geo.size.height / 2.0)
+//                }
+//
+//                ForEach(score.scoreEntries, id: \.self) { entry in
+//                    if entry is TimeSlice {
+//                        ForEach(getNotes(entry: entry), id: \.self) { note in
+//                            GeometryReader { geoforNote in
+//                                if note.staff == nil || note.staff == staff.staffNum {
+//                                    //ZStack {
+//                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
+//                                    NoteView(staff: staff,
+//                                             note: note, noteWidth: Double(lineSpacing) * 1.0, //1.2
+//                                             lineSpacing: lineSpacing)
+//                                        //.frame(width: 70)
+//                                        .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
+//                                    //.position(x: 0)
+//                                    //only called when view first apepars, e.g. not when device rotated
+//                                    //Text("pos:\(String(format: "%.1f", self.notePos[note.sequence]))")
+//                                    //Text("xpos:\(String(format: "%.1f", geoForNote.x))")
+//                                        .border(Color.blue)
+//                                }
+//                                //}
+//                            }
+//                        }
+//                    }
+//                    if entry is BarLine {
+//                        GeometryReader { geo in
+//                            BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+//                                .position(x: 100 + CGFloat(entryPositions[entry.sequence]) * geo.size.width/self.totalDuration, y:geo.size.height / 2.0)
+//                                .frame(width: 50)
+//                                .border(Color.red)
+//                        }
+//                    }
+//                }
+//
+//
+//            }
+//            //.border(Color.red)
+//        }
+//    }

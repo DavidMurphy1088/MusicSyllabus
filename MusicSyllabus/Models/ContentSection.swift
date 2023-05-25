@@ -51,6 +51,12 @@ class ContentSection: Identifiable {
             subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 2", isActive: true))
             subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 3", isActive: true))
             subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 4", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 5", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 6", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 7", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 8", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 9", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 10", isActive: true))
         }
         if level == 0 {
             

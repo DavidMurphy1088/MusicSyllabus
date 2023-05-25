@@ -20,11 +20,25 @@ class ExampleData {
         data["Musicianship.Grade 1.Playing.Example 2"] = "(TS,3,4) (67,1) (65,1) (64,1) (B) (65,1) (64,1) (62,.5) (60,.5) (B) (64,2) (67,1) (B) (60,3) "
         data["Musicianship.Grade 1.Playing.Example 3"] = "(K) (TS,3,4) (67,1) (69,1) (71,1) (B) (72,1) (71,1) (69,1) (B) (71,2) (69,1) (B) (67,3) "
         data["Musicianship.Grade 1.Playing.Example 4"] = "(K) (TS,4,4) (71,1) (67,.5) (69,.5) (71,1) (72,1) (B) (74,1) (72,1) (71,1) (69,1) (B) (71,2) (72,1) (69,1) (B) (67,4)"
+        data["Musicianship.Grade 1.Playing.Example 5"] = "(K) (TS,3,4) (67,1) (69,1) (71,1) (B) (74,2) (71,1) (B) (72,.5) (74,.5) (71,1) (69,1) (B) (67,3)"
+        data["Musicianship.Grade 1.Playing.Example 6"] = "(TS,4,4) (67,1) (65,1) (64,1) (62,1) (B) (60,1) (64,1) (65,1) (67,1) (B) (65,2) (62,2) (B) (60,4)"
+        data["Musicianship.Grade 1.Playing.Example 7"] = "(TS,4,4) (72,2) (72,2) (B) (76,1) (74,1) (72,2) (B) (74,.5) (75,.5) (79,2) (76,1) (B) (72,4)"
+        data["Musicianship.Grade 1.Playing.Example 8"] = "(K) (TS,3,4) (67,1) (69,1) (71,1) (B) (72,1) (74,2) (B) (71,2) (69,1) (B) (67,3)"
+        data["Musicianship.Grade 1.Playing.Example 9"] = "(K) (TS,4,4) (67,1) (71,1) (74,2) (B) (72,2) (71,2) (B) (72,1) (74,.5) (72,.5) (71,1) (69,1) (B) (67,4)"
+        data["Musicianship.Grade 1.Playing.Example 10"] = "(TS,4,4) (79,1) (76,1) (72,2) (B) (74,2) (76,2) (B) (77,1) (79,2) (76,1) (B) (72,4)"
         
+        //data["Musicianship.Grade 1.Playing.Example 7"] = "(K) (TS,3,4) () () () () () () () () () () () () () () () () () () () () () () () () ()"
+
         data["Musicianship.Grade 1.Clapping.Example 1"] = data["Musicianship.Grade 1.Playing.Example 1"]
         data["Musicianship.Grade 1.Clapping.Example 2"] = data["Musicianship.Grade 1.Playing.Example 2"]
         data["Musicianship.Grade 1.Clapping.Example 3"] = data["Musicianship.Grade 1.Playing.Example 3"]
         data["Musicianship.Grade 1.Clapping.Example 4"] = data["Musicianship.Grade 1.Playing.Example 4"]
+        data["Musicianship.Grade 1.Clapping.Example 5"] = data["Musicianship.Grade 1.Playing.Example 5"]
+        data["Musicianship.Grade 1.Clapping.Example 6"] = data["Musicianship.Grade 1.Playing.Example 6"]
+        data["Musicianship.Grade 1.Clapping.Example 7"] = data["Musicianship.Grade 1.Playing.Example 7"]
+        data["Musicianship.Grade 1.Clapping.Example 8"] = data["Musicianship.Grade 1.Playing.Example 8"]
+        data["Musicianship.Grade 1.Clapping.Example 9"] = data["Musicianship.Grade 1.Playing.Example 9"]
+        data["Musicianship.Grade 1.Clapping.Example 10"] = data["Musicianship.Grade 1.Playing.Example 10"]
 
         data["Musicianship.Grade 1.Intervals Aural.Example 1"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
         data["Musicianship.Grade 1.Intervals Aural.Example 2"] = data["Musicianship.Grade 1.Intervals Visual.Example 2"]

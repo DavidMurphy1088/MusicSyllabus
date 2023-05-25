@@ -6,25 +6,17 @@ struct BarLineView: View {
     var entry:ScoreEntry
     var staff:Staff
     var lineSpacing:Int
-    //var geometry:GeometryReader
-    
-    func xPos(geo: GeometryProxy) -> Int {
-        //let barLine = entry as! BarLine
-        //return Int(barLine.atScoreEnd ? geo.size.width - 8 : geo.size.width/2)
-        //print("Barline init", geo.size)
-        return Int(geo.size.width / 2.0)
-    }
-    
+
     var body: some View {
-        GeometryReader { geometry in
-            Path { path in
-                //let y = midPoint
-                path.move(to: CGPoint(x: xPos(geo: geometry), y: Int(geometry.size.height)/2 + 2 * lineSpacing))
-                path.addLine(to: CGPoint(x: xPos(geo: geometry), y: Int(geometry.size.height)/2 - 2 * lineSpacing))
-            }
-            .stroke(Color.black, lineWidth: 1)
-            //.border(Color.green)
-        }
+        //GeometryReader { geometry in
+            Rectangle()
+                .fill(Color.black)
+                .frame(width: 1.0, height: 4.0 * Double(lineSpacing))
+                //.position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                //.border(Color.green)
+        //}
+        .frame(maxWidth: Double(lineSpacing)  * 1.0)
+        //.border(Color.red)
     }
 }
 
@@ -59,38 +51,40 @@ struct NoteView: View {
         
     var body: some View {
         GeometryReader { geometry in
+            let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle * lineSpacing) / 2.0
             let stemDirection:Double = (note.midiNumber < 71 || note.isOnlyRhythmNote) ? -1 : 1
             let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
+            let noteValueUnDotted = note.isDotted ? note.value * 2.0/3.0 : note.value
             
             ZStack {
-                if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(note.value)  {
+                if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(noteValueUnDotted )  {
                     Ellipse()
                         //Closed ellipse
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
                         .foregroundColor(noteColor)
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
-                        .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
+                        .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
                         //.foregroundColor(noteColor)
                 }
-                if note.value == Note.VALUE_HALF || note.value == Note.VALUE_WHOLE {
+                if noteValueUnDotted  == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
                             .stroke(noteColor, lineWidth: 2)
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
-                            .position(x: geometry.size.width/2, y: noteEllipseMidpoint)
+                            .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
                             //.frame(width:6) //trying to have minim have more horz space
                 }
                 
                 // stem
-                if note.value != Note.VALUE_WHOLE {
+                if noteValueUnDotted != Note.VALUE_WHOLE {
                     //Note this code eventually has to go to the code that draws quaver beams since a quaver beam can shorten/lengthen the note stem
                     let xOffset:Double = 1.0 * stemDirection
                     let yOffset:Double = 1.0 * stemDirection
                     Path { path in
-                        path.move(to: CGPoint(x: (geometry.size.width - (noteWidth * xOffset))/2.0,
+                        path.move(to: CGPoint(x: (noteFrameWidth - (noteWidth * xOffset))/2.0,
                                               y: noteEllipseMidpoint))
-                        path.addLine(to: CGPoint(x: (geometry.size.width - (noteWidth * xOffset))/2.0,
+                        path.addLine(to: CGPoint(x: (noteFrameWidth - (noteWidth * xOffset))/2.0,
                                                  y: noteEllipseMidpoint + (note.stemLength * Double(lineSpacing) * yOffset)))
                     }
                     .stroke(noteColor, lineWidth: 1)
@@ -103,7 +97,7 @@ struct NoteView: View {
                         .stroke(Color.black, lineWidth: 2)
                         //.foregroundColor(note.value == 4 ? self.color : .blue)
                         .frame(width: noteWidth/4.0, height: noteWidth/4.0)
-                        .position(x: geometry.size.width/2 + noteWidth, y: noteEllipseMidpoint)
+                        .position(x: noteFrameWidth/2 + noteFrameWidth, y: noteEllipseMidpoint)
                         .foregroundColor(noteColor)
                 }
 
@@ -113,7 +107,7 @@ struct NoteView: View {
                         let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : 0
                         Path { path in
                             path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
-                            path.addLine(to: CGPoint(x: (geometry.size.width - xOffset), y: noteEllipseMidpoint))
+                            path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))
                         }
                         .stroke(Color.black, lineWidth: 1)
                     }
@@ -124,7 +118,7 @@ struct NoteView: View {
                     Ellipse()
                         .stroke(Color.blue, lineWidth: 3) // minim or use foreground color for 1/4 note
                         .frame(width: noteWidth * 1.8, height: CGFloat(Double(lineSpacing) * 1.8))
-                        .position(x: geometry.size.width/2, y: CGFloat(noteEllipseMidpoint))
+                        .position(x: noteFrameWidth/2, y: CGFloat(noteEllipseMidpoint))
                         //.opacity(Double(opacity))
                 }
             }

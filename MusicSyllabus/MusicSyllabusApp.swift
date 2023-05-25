@@ -42,7 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct MusicSyllabusApp: App {
     @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    static let productionMode = false
+    static let productionMode = true
     static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
     
     init() {
@@ -71,8 +71,11 @@ struct MusicSyllabusApp: App {
             }
             .environmentObject(launchScreenState)
             .task {
-                try? await Task.sleep(for: Duration.seconds(LaunchScreenView.durationSeconds))
-                self.launchScreenState.dismiss()
+                //try? await Task.sleep(for: Duration.seconds(LaunchScreenView.durationSeconds))
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self.launchScreenState.dismiss()
+                }
+                
             }
         }
     }

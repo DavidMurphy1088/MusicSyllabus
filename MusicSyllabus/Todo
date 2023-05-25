@@ -1,13 +1,16 @@
 --HIGH
 CLAP
+  speak the rhythm
+  !last tap note does not show, what is its value??
+  !identical student/given rhythms dont line up on UI
   intermittent - quaver beams not on student rhythm
   detect tempo for clapping visual
   hilight on correct staff notes where students rhythm matches
-  
+
+Why does TestFLight not notify???
 instruments - more sf2 files
 do test #5
 longer recordings get an error
-more examples for play/clap
 G Major triad wont display top D in base cleff
 minims more horz space on staff
 
@@ -30,5 +33,5 @@ review  proposal
 
 
 --DONE
-
-
+iOS min version - IOS 15, Sep 20,2021
+More examples for play/clap

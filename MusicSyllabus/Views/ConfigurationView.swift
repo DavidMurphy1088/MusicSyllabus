@@ -31,6 +31,10 @@ struct ConfigurationView: View {
                 let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
 
                 Text("Musicianship Trainer - Version.Build \(appVersion).\(buildNumber)").padding()
+                
+                //ContentView()
+                
+                VoiceListView()
             }
        // }
     }

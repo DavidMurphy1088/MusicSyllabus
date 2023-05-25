@@ -11,9 +11,11 @@ class ScoreEntry : Hashable {
 //    init(sequence:Int) {
 //        self.sequence = sequence
 //    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    
     func getNotes() -> [Note]? {
         if self is TimeSlice {
             let ts:TimeSlice = self as! TimeSlice
@@ -21,6 +23,7 @@ class ScoreEntry : Hashable {
         }
         return nil
     }
+    
 }
 
 class Sampler {
@@ -53,10 +56,10 @@ class Sampler {
 }
 
 class BarLine : ScoreEntry {
-    let atScoreEnd:Bool
-    init(atScoreEnd:Bool = false) {
-        self.atScoreEnd = atScoreEnd
-    }
+    //let atScoreEnd:Bool
+//    init(atScoreEnd:Bool = false) {
+//        self.atScoreEnd = atScoreEnd
+//    }
 }
 
 class Score : ObservableObject {
@@ -110,6 +113,18 @@ class Score : ObservableObject {
         }
     }
     
+    func getLastTimeSlice() -> TimeSlice? {
+        var ts:TimeSlice?
+        for index in stride(from: scoreEntries.count - 1, through: 0, by: -1) {
+            let element = scoreEntries[index]
+            if element is TimeSlice {
+                ts = element as! TimeSlice
+                break
+            }
+        }
+        return ts
+    }
+
     func setShowFootnotes(_ on:Bool) {
         DispatchQueue.main.async {
             self.showFootnotes = on
@@ -169,16 +184,17 @@ class Score : ObservableObject {
         return ts
     }
     
-    func addBarLine(atScoreEnd:Bool? = false) {
-        var barLine:BarLine?
-        if let atScoreEnd = atScoreEnd {
-            barLine = (BarLine(atScoreEnd: atScoreEnd))
-        }
-        else {
-            barLine = BarLine(atScoreEnd: false)
-        }
-        barLine?.sequence = self.scoreEntries.count
-        self.scoreEntries.append(barLine!)
+    func addBarLine() { //atScoreEnd:Bool? = false) {
+//        var barLine:BarLine?
+//        if let atScoreEnd = atScoreEnd {
+//            barLine = (BarLine(atScoreEnd: atScoreEnd))
+//        }
+//        else {
+//            barLine = BarLine(atScoreEnd: false)
+//        }
+        let barLine = BarLine()
+        barLine.sequence = self.scoreEntries.count
+        self.scoreEntries.append(barLine)
     }
 
     func clear() {
