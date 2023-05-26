@@ -71,6 +71,7 @@ class Score : ObservableObject {
     @Published var showNotes = true
     @Published var showFootnotes = false
     @Published var hiddenStaffNo:Int?
+    @Published var studentResponseCorrect:Bool? = nil
 
     var staff:[Staff] = []
     
@@ -113,6 +114,12 @@ class Score : ObservableObject {
         }
     }
     
+    func setStudentResponse(way:Bool?) {
+        DispatchQueue.main.async {
+            self.studentResponseCorrect = way
+        }
+    }
+
     func getLastTimeSlice() -> TimeSlice? {
         var ts:TimeSlice?
         for index in stride(from: scoreEntries.count - 1, through: 0, by: -1) {

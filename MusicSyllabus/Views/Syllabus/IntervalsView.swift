@@ -183,6 +183,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
         self.answer = answer
         self.score = score
         self.noteIsSpace = true //[Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12, Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
+        metronome.speechEnabled = false
     }
     
     var body: AnyView {

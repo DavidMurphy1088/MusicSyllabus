@@ -1,18 +1,16 @@
---HIGH
+--TODO
 CLAP
-  speak the rhythm
-  !last tap note does not show, what is its value??
-  !identical student/given rhythms dont line up on UI
   intermittent - quaver beams not on student rhythm
   detect tempo for clapping visual
   hilight on correct staff notes where students rhythm matches
-
-Why does TestFLight not notify???
-instruments - more sf2 files
+ 
+tap analyse return true/false for correct
+do a simple example to understand geometry
+louder tap on drum, make pic smaller
 do test #5
-longer recordings get an error
 G Major triad wont display top D in base cleff
-minims more horz space on staff
+minims more horz space on staff - good idea?
+make a grade #8 clap example?
 
 --MID
 onDone score playing not called if metroom running with the playing
@@ -20,6 +18,8 @@ quaver bar wrong  when rotate device - need to refresh layout on rotate
 midi sampler has to load piano sound file every time it starts, causes a delay at metronom.playScore
 try on real piano
 scroller for logged messagws
+instruments - more sf2 files
+longer recordings get an error - still true?
 
 --LOW
 handle ledger lines for all notes (now its just middle C)
@@ -35,3 +35,7 @@ review  proposal
 --DONE
 iOS min version - IOS 15, Sep 20,2021
 More examples for play/clap
+!speak the rhythm
+    !last tap note does not show, what is its value??
+turn on/off voice
+!identical student/given rhythms dont line up on UI

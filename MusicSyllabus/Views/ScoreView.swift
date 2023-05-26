@@ -9,8 +9,24 @@ struct ScoreView: View {
     var body: some View {
         //VStack {
             VStack {
-                if let label = score.label {
-                    Text(label)
+                HStack {
+                    if let label = score.label {
+                        Text(label).padding()
+                    }
+                    if let studentResponse = score.studentResponseCorrect {
+                        if studentResponse {
+                            Image(systemName: "checkmark.circle")
+                                .scaleEffect(2.0)
+                                .foregroundColor(Color.green)
+                                .padding()
+                        }
+                        else {
+                            Image(systemName: "xmark.octagon")
+                                .scaleEffect(2.0)
+                                .foregroundColor(Color.red)
+                                .padding()
+                        }
+                    }
                 }
                 ForEach(score.getStaff(), id: \.self.type) { staff in
                     if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {

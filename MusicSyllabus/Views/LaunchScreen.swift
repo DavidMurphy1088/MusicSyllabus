@@ -20,19 +20,42 @@ final class LaunchScreenStateManager: ObservableObject {
     }
 }
 
-struct LaunchScreenView: View {
-    @EnvironmentObject private var launchScreenState: LaunchScreenStateManager // Mark 1
+class Opacity : ObservableObject {
+    @Published var imageOpacity: Double = 0.0
+    var launchTimeSecs:Double
+    var timer:Timer?
+    var ticksPerSec = 30.0
+    var duration = 0.0
+    
+    init(launchTimeSecs:Double) {
+        self.launchTimeSecs = launchTimeSecs
+        let timeInterval = 1.0 / ticksPerSec
+        timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true) { _ in
+            DispatchQueue.main.async {
+                let opacity = sin((self.duration * Double.pi * 1.0) / self.launchTimeSecs)
+                self.imageOpacity = opacity
+                //print("called", self.duration, "opacity", String(format: "%.2f", opacity))
+                if self.duration >= self.launchTimeSecs {
+                    self.timer?.invalidate()
+                }
+                self.duration += timeInterval
+            }
+        }
+    }
 
-    @State private var firstAnimation = false  // Mark 2
-    @State private var secondAnimation = false // Mark 2
-    @State private var startFadeoutAnimation = false // Mark 2
-    @State private var imageOpacity: Double = 0
-    static var durationSeconds = 3.0
-    @State var ctr = 0.0
-    @State var inc = 1.0
+}
+
+struct LaunchScreenView: View {
+    @ObservedObject var opacity:Opacity
+    @State var durationSeconds:Double
+    @EnvironmentObject private var launchScreenState: LaunchScreenStateManager // Mark 1
     
+    init(launchTimeSecs:Double) {
+        self.opacity = Opacity(launchTimeSecs: launchTimeSecs)
+        self.durationSeconds = launchTimeSecs
+    }
+
     @ViewBuilder
-    
     private var image: some View {  // Mark 3
         GeometryReader { geo in
             ZStack {
@@ -44,7 +67,7 @@ struct LaunchScreenView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: geo.size.width * 0.75)
-                            .opacity(imageOpacity)
+                            .opacity(self.opacity.imageOpacity)
                         //.border(Color(.red))
                         Spacer()
                     }
@@ -54,7 +77,7 @@ struct LaunchScreenView: View {
                     Text("NZMEB Musicianship Trainer")
                         .position(x: geo.size.width * 0.5, y: geo.size.height * 0.85)
                         //.font(.title)
-                        .opacity(imageOpacity)
+                        .opacity(self.opacity.imageOpacity)
                 }
             }
         }
@@ -70,52 +93,12 @@ struct LaunchScreenView: View {
         Color(red: 150 / 255, green: 210 / 255, blue: 225 / 255).ignoresSafeArea()
     }
     
-    private let animationTimer = Timer // Mark 5
-        .publish(every: 0.05, on: .current, in: .common)
-        .autoconnect()
-    
     var body: some View {
         ZStack {
-            backgroundColor  // Mark 3
+            //backgroundColor  // Mark 3
             image  // Mark 3
         }
-        .onReceive(animationTimer) { timerValue in
-            //updateAnimation()  // Mark 5
-            ctr += inc
-            imageOpacity = sin(Double(ctr / (LaunchScreenView.durationSeconds * Double.pi * 2.0)))
-//            if imageOpacity > 0.96 {
-//                inc += 0.25
-//            }
-        }
-        //.opacity(startFadeoutAnimation ? 0 : 1)
     }
     
-//    private func updateAnimation() { // Mark 5
-//        switch launchScreenState.state {
-//        case .firstStep:
-//            withAnimation(.easeInOut(duration: 0.9)) {
-//                firstAnimation.toggle()
-//            }
-//        case .secondStep:
-//            if secondAnimation == false {
-//                withAnimation(.linear) {
-//                    self.secondAnimation = true
-//                    startFadeoutAnimation = true
-//                }
-//            }
-//        case .finished:
-//            // use this case to finish any work needed
-//            break
-//        }
-//    }
-    
 }
-
-//struct LaunchScreenView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LaunchScreenView()
-//            .environmentObject(LaunchScreenStateManager())
-//    }
-//}
-
 

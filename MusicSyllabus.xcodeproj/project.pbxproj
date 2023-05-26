@@ -33,7 +33,6 @@
 		7B5EEDE62A0133020007FF7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE52A0133020007FF7E /* Preview Assets.xcassets */; };
 		7B5EEDE82A0133020007FF7E /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE72A0133020007FF7E /* Persistence.swift */; };
 		7B5EEDEB2A0133020007FF7E /* MusicSyllabus.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDE92A0133020007FF7E /* MusicSyllabus.xcdatamodeld */; };
-		7B5EEDF52A0134AB0007FF7E /* IntervalsViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDF42A0134AB0007FF7E /* IntervalsViewOld.swift */; };
 		7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDF62A025E0B0007FF7E /* Score.swift */; };
 		7B5EEDF92A025E440007FF7E /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDF82A025E440007FF7E /* Key.swift */; };
 		7B5EEDFB2A025E870007FF7E /* KeySignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5EEDFA2A025E870007FF7E /* KeySignature.swift */; };
@@ -96,7 +95,6 @@
 		7B5EEDE72A0133020007FF7E /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		7B5EEDEA2A0133020007FF7E /* MusicSyllabus.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MusicSyllabus.xcdatamodel; sourceTree = "<group>"; };
 		7B5EEDEC2A0133020007FF7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7B5EEDF42A0134AB0007FF7E /* IntervalsViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalsViewOld.swift; sourceTree = "<group>"; };
 		7B5EEDF62A025E0B0007FF7E /* Score.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Score.swift; sourceTree = "<group>"; };
 		7B5EEDF82A025E440007FF7E /* Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
 		7B5EEDFA2A025E870007FF7E /* KeySignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySignature.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 			children = (
 				7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */,
 				7B519FA22A182BC700A105E9 /* IntervalsView.swift */,
-				7B5EEDF42A0134AB0007FF7E /* IntervalsViewOld.swift */,
 				7B61A9FE2A19A3810058A090 /* ViewProtocol.swift */,
 				7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */,
 				7B61AA082A1CDA6E0058A090 /* HelpView.swift */,
@@ -377,7 +374,6 @@
 				7B51F0DD2A0A508B00A7ABFA /* Metronome.swift in Sources */,
 				7B5EEDFF2A025EE60007FF7E /* Chord.swift in Sources */,
 				7B61AA012A19A46F0058A090 /* CapOrPlayView.swift in Sources */,
-				7B5EEDF52A0134AB0007FF7E /* IntervalsViewOld.swift in Sources */,
 				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7B51F0E02A0A5B6100A7ABFA /* AudioAnalyser.swift in Sources */,

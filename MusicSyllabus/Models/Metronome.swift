@@ -25,6 +25,7 @@ class Metronome: ObservableObject {
     private let shortestNoteValue = Note.VALUE_QUAVER
     private var clapURL:URL? = nil
     private let speech = SpeechSynthesizer.shared
+    var speechEnabled = false
     
     var samplerFileName = ""
     var soundFontNames = [("Piano", "Nice-Steinway-v3.8"), ("Guitar", "GuitarAcoustic")]
@@ -321,14 +322,16 @@ class Metronome: ObservableObject {
                 //print("  Metronome loop", "time:", String(format: "%.2f", t), "scoreIdx", nextScoreIndex)
                 
                 
-                if loopCtr % 2 == 0 {
-                    let word = noteCoundSpeechWord(currentTimeValue: currentTimeValue)
-                    speech.speakWord(word)
-                }
-                else {
-                    //quavers say 'and'
-                    if noteValueSpeechWord != nil {
-                        speech.speakWord(noteValueSpeechWord!)
+                if speechEnabled {
+                    if loopCtr % 2 == 0 {
+                        let word = noteCoundSpeechWord(currentTimeValue: currentTimeValue)
+                        speech.speakWord(word)
+                    }
+                    else {
+                        //quavers say 'and'
+                        if noteValueSpeechWord != nil {
+                            speech.speakWord(noteValueSpeechWord!)
+                        }
                     }
                 }
                 currentTimeValue += shortestNoteValue

@@ -42,8 +42,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct MusicSyllabusApp: App {
     @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    static let productionMode = true
+    static let productionMode = false
     static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
+    var launchTimeSecs = 2.5
     
     init() {
         //Good place to run work before all the views ae created
@@ -64,15 +65,14 @@ struct MusicSyllabusApp: App {
                 }
                 if MusicSyllabusApp.productionMode {
                     if launchScreenState.state != .finished {
-                        LaunchScreenView()
+                        LaunchScreenView(launchTimeSecs: launchTimeSecs)
                     }
                 }
                 
             }
             .environmentObject(launchScreenState)
             .task {
-                //try? await Task.sleep(for: Duration.seconds(LaunchScreenView.durationSeconds))
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + launchTimeSecs) {
                     self.launchScreenState.dismiss()
                 }
                 

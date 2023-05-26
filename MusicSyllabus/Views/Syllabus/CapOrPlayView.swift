@@ -17,10 +17,11 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @ObservedObject var tapRecorder = TapRecorder.shared
     @ObservedObject private var logger = Logger.logger
+    @State var tappingView:TappingView? = nil
 
-    @State private var isAnimating = false
     @State var showBaseCleff = false
     @State private var helpPopup = false
+    @State var isTapping = false
     
     //WARNING - Making Score a @STATE makes instance #1 of this struct pass its Score to instance #2
     var score:Score
@@ -28,7 +29,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     var contentSection:ContentSection
     let metronome = Metronome.shared
     var mode:QuestionMode
-     
+
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
         return ClapOrPlayPresentView(contentSection: contentSection, score:score, answer: answer, mode: mode)
     }
@@ -39,7 +40,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         self.contentSection = contentSection
         self.mode = mode
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: mode == .rhythmClap ? 1 : 5)
-
+        
         score.setStaff(num: 0, staff: staff)
         if mode == .rhythmPlay {
             let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .rhythmClap ? 1 : 5)
@@ -115,25 +116,36 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 VStack {
                     VStack {
                         MetronomeView(metronome: metronome)
+                            .onAppear() {
+                                tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
+                            }
+
                         HStack {
                             ScoreView(score: score).padding()
                         }
                         
                         VStack {
+                            if self.mode == .rhythmClap {
+                                tappingView
+
+                            }
+                            
                             if answer.state != .recording {
-                                Button(action: {
-                                        helpPopup = true
-                                    }) {
-                                        Image(systemName: "questionmark.circle.fill").font(.system(size: 24)).padding()
-                                    }
-                                    .popover(isPresented: $helpPopup, arrowEdge: .top) {
-                                        HelpView(helpInfo: self.instructionText())
-                                            .padding()
-                                    }
+//                                Button(action: {
+//                                        helpPopup = true
+//                                    }) {
+//                                        Image(systemName: "questionmark.circle.fill").font(.system(size: 24)).padding()
+//                                    }
+//                                    .popover(isPresented: $helpPopup, arrowEdge: .top) {
+//                                        HelpView(helpInfo: self.instructionText())
+//                                            .padding()
+//                                    }
                                 
                                 Button(action: {
                                     answer.setState(.recording)
                                     if self.mode == .rhythmClap {
+                                        self.isTapping = true
+                                        isTapping = true
                                         tapRecorder.startRecording()
                                     } else {
                                         audioRecorder.startRecording()
@@ -145,42 +157,17 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                             }
                             
                             if answer.state == .recording {
-                                if self.mode == .rhythmClap {
-                                    TappingView(tapRecorder: tapRecorder).padding()
-                                        .frame(width: geometry.size.width/4, height: geometry.size.height/4)
-                                }
-                                
-                                Image(systemName: "stop.circle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: geometry.size.width/10, height: geometry.size.height/10)
-                                    .foregroundColor(Color.red)
-                                    .scaleEffect(isAnimating ? 1.1 : 0.9)
-                                    .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true))
-                                    .onAppear() {
-                                        self.isAnimating = true
-                                    }
-                                    .padding()
-                                    .onTapGesture {
-                                        answer.setState(.recorded)
-                                        if self.mode == .rhythmClap {
-                                            self.tapRecorder.stopRecording()
-                                        }
-                                        else {
-                                            audioRecorder.stopRecording()
-                                        }
-                                        isAnimating = false
-                                    }
-                                
                                 Button(action: {
                                     answer.setState(.recorded)
                                     if self.mode == .rhythmClap {
+                                        self.isTapping = false
                                         self.tapRecorder.stopRecording()
+                                        isTapping = false
                                     }
                                     else {
                                         audioRecorder.stopRecording()
                                     }
-                                    isAnimating = false
+                                    //isAnimating = false
                                 }) {
                                     Text("Stop Recording")
                                 }.padding()
@@ -226,7 +213,8 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @State var playingCorrect = false
     @State var playingStudent = false
-    
+    @State var speechEnabled = true
+
     @ObservedObject var tapRecorder = TapRecorder.shared
     
     private var score:Score
@@ -246,114 +234,145 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         if mode == .rhythmClap {
             self.tappingScore = Score(timeSignature: score.timeSignature, lines: 1)
         }
+        metronome.speechEnabled = self.speechEnabled
+
+    }
+    var speechEnabledView : some View {
+        //voice on/off
+        VStack {
+            Button(action: {
+                self.speechEnabled.toggle()
+                metronome.speechEnabled = self.speechEnabled
+            }) {
+                HStack {
+                    //                            Image("talkIcon")
+                    //                                .resizable()
+                    //                                .aspectRatio(contentMode: .fit)
+                    //                                .frame(width: geometry.size.width / 14.0)
+                    //                                .padding()
+                    if !self.speechEnabled {
+                        Image(systemName: "person.fill")
+                        //.frame(width: geometry.size.width / 14.0)
+                            .foregroundColor(.black)
+                            .scaleEffect(3.0)
+                            .padding()
+                    }
+                    else {
+                        Image(systemName: "person.fill")
+                        //.frame(width: geometry.size.width / 20.0)
+                            .foregroundColor(.green)
+                            .scaleEffect(3.0)
+                            .padding()
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+    
+    var stopPlayView : some View {
+        VStack {
+            Button(action: {
+                metronome.playScore(score: score, onDone: {
+                    playingCorrect = false
+                })
+                playingCorrect = true
+                
+            }) {
+                if playingCorrect {
+                    Button(action: {
+                        playingCorrect = false
+                        metronome.stopPlayingScore()
+                    }) {
+                        Text("Stop Playing")
+                        Image(systemName: "stop.circle")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.red)
+                    }
+                }
+                else {
+                    Text("Hear The Correct \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
+                        .buttonStyle(DefaultButtonStyle())
+                }
+            }
+            .padding()
+            
+            //Hear user rhythm
+            Button(action: {
+                if mode == .rhythmClap {
+                    if tappingScore != nil {
+                        metronome.playScore(score: tappingScore!, onDone: {
+                            playingStudent = false
+                        })
+                    }
+                    playingStudent = true
+                }
+                else {
+                    audioRecorder.playRecording()
+                }
+            }) {
+                if playingStudent {
+                    Button(action: {
+                        playingStudent = false
+                        metronome.stopPlayingScore()
+                    }) {
+                        Text("Stop Playing")
+                        Image(systemName: "stop.circle")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.red)
+                    }
+                }
+                else {
+                    Text("Hear Your \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
+                        .font(.system(.body))
+                }
+            }
+            .padding()
+        }
+        .padding()
     }
     
     var body: AnyView {
         AnyView(
             GeometryReader { geometry in
-            VStack {
-                MetronomeView(metronome: metronome)
                 VStack {
-                    ScoreView(score: score).padding()
-                    if tappingScore != nil {
-                        ScoreView(score: tappingScore!).padding()
-                    }
-                }
-                
-                HStack {
+                    MetronomeView(metronome: metronome)
                     VStack {
-                        // Hear correct
-                        Button(action: {
-                            metronome.playScore(score: score, onDone: {
-                                playingCorrect = false
-                            })
-                            playingCorrect = true
-                            
-                        }) {
-                            if playingCorrect {
-                                Button(action: {
-                                    playingCorrect = false
-                                    metronome.stopPlayingScore()
-                                }) {
-                                    Text("Stop Playing")
-                                    Image(systemName: "stop.circle")
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
-                                        .foregroundColor(.red)
-                                }
-                            }
-                            else {
-                                Text("Hear The Correct \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
-                                    .buttonStyle(DefaultButtonStyle())
-                            }
-                        }
-                        .padding()
-                        
-                        //Hear user rhythm
-                        Button(action: {
-                            if mode == .rhythmClap {
-                                if tappingScore != nil {
-                                    metronome.playScore(score: tappingScore!, onDone: {
-                                        playingStudent = false
-                                    })
-                                }
-                                playingStudent = true
-                            }
-                            else {
-                                audioRecorder.playRecording()
-                            }
-                        }) {
-                            if playingStudent {
-                                Button(action: {
-                                    playingStudent = false
-                                    metronome.stopPlayingScore()
-                                }) {
-                                    Text("Stop Playing")
-                                    Image(systemName: "stop.circle")
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
-                                        .foregroundColor(.red)
-                                }
-                            }
-                            else {
-                                Text("Hear Your \(self.mode == .rhythmClap ? "Rhythm" : "Playing")")
-                                    .font(.system(.body))
-                            }
-                        }
-                        .padding()
-                        .onAppear {
-                            if mode == .rhythmClap {
-                                tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
-                                tappingScore?.label = "Your Rhythm"
-                            }
+                        ScoreView(score: score).padding()
+                        if tappingScore != nil {
+                            ScoreView(score: tappingScore!).padding()
                         }
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                    )
-                    .background(UIGlobals.backgroundColor)
-                    .padding()
                     
-                    //voice on/off
-                    VStack {
-                        Image("talkIcon")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: geometry.size.width / 10.0)
+                    HStack {
+                        HStack {
+                            // Hear correct
+                            stopPlayView
+                                .padding()
+                                .onAppear {
+                                    if mode == .rhythmClap {
+                                        tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
+                                        tappingScore?.label = "Your Rhythm"
+                                    }
+                                    tappingScore?.setStudentResponse(way: false)
+                                }
+                            speechEnabledView
+                                .padding()
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                        )
+                        .background(UIGlobals.backgroundColor)
+                        .padding()
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                    )
-                    .background(UIGlobals.backgroundColor)
-                    .padding()
-
+                    
+                    Text(audioRecorder.status).padding()
+                    if logger.status.count > 0 {
+                        Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
+                    }
                 }
-                
-                Text(audioRecorder.status).padding()
-                if logger.status.count > 0 {
-                    Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
-                }
-            }
             }
         )
     }
