@@ -30,11 +30,11 @@ struct ConfigurationView: View {
                 let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
                 let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
 
-                Text("Musicianship Trainer - Version.Build \(appVersion).\(buildNumber)").padding()
+                Text("Musicianship Trainer - Version.Build \(appVersion).\(buildNumber)").font(.headline).padding()
                 
                 //ContentView()
                 
-                VoiceListView()
+                //VoiceListView()
             }
        // }
     }

@@ -65,7 +65,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         if chord.notes.count > 0 {
             score.addTimeSlice().addChord(c: chord)
         }
-        //score.addBarLine(atScoreEnd: true)
     }
 
     var body: AnyView {
@@ -103,9 +102,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                         //.pickerStyle(.inline)
                         //.pickerStyle(MenuPickerStyle())
                         
-                        //.onChange(of: answer.selectedInterval) { newValue in
                         .onChange(of: selectedIntervalIndex) { index in
-                            print("=========================== Selection changed to index \(index)")
                             answer.setState(.answered)
                             answer.selectedInterval = intervals[index].interval
                         }
@@ -158,15 +155,9 @@ struct IntervalPresentView: View, QuestionPartProtocol {
 
         }
         .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
-        .onAppear() {
-            Timer.scheduledTimer(withTimeInterval: 0.75, repeats: false) { _ in
-                metronome.playScore(score: score)
-            }
-        }
         )
     }
 }
-
 
 struct IntervalAnswerView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
@@ -251,47 +242,6 @@ struct IntervalView: View {
                 answerQuestionView
             }
         }
-    }
-}
-
-struct QuestionAndAnswerViewGeneric_Bad: View {
-    //this struct causes the picker in the answer presenter to generate faults about the picker writing to the struct but outside of the struct
-    @ObservedObject var answer: Answer = Answer()
-    @State var metronome = Metronome.shared
-    @State var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 5), lines: 5)
-    @State var presentStateView:QuestionPartProtocol?
-    @State var answerStateView:QuestionPartProtocol?
-    
-    var presentStateType:QuestionPartProtocol.Type
-    var answerStateType:QuestionPartProtocol.Type
-    var contentSection:ContentSection
-    
-    init(mode:QuestionMode, presentType:QuestionPartProtocol.Type, answerType:QuestionPartProtocol.Type, contentSection:ContentSection) {
-        presentStateType = presentType
-        answerStateType = answerType
-        self.contentSection = contentSection
-        //print("======QuestionAndAnswerView init", contentSection.parent, contentSection.sectionType)
-//    }
-//
-//    func initViewInstances() {
-        presentStateView = presentStateType.createInstance(contentSection: contentSection, score:score, answer: answer, mode: mode)
-        answerStateView = answerStateType.createInstance(contentSection: contentSection, score:score, answer: answer, mode: mode)
-    }
-    
-    var body: some View {
-        VStack {
-            if answer.state != .submittedAnswer {
-                if presentStateView != nil {
-                    presentStateView!.body
-                }
-            }
-            else {
-                if answerStateView != nil {
-                    answerStateView!.body
-                }
-            }
-        }
-
     }
 }
 

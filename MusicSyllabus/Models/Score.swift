@@ -23,7 +23,6 @@ class ScoreEntry : Hashable {
         }
         return nil
     }
-    
 }
 
 class Sampler {
@@ -56,23 +55,25 @@ class Sampler {
 }
 
 class BarLine : ScoreEntry {
-    //let atScoreEnd:Bool
-//    init(atScoreEnd:Bool = false) {
-//        self.atScoreEnd = atScoreEnd
-//    }
+
+}
+
+class StudentFeedback { //}: ObservableObject {
+    var correct:Bool = false
+    var feedback:String? = nil
 }
 
 class Score : ObservableObject {
     let id = UUID()
     var timeSignature:TimeSignature
     let ledgerLineCount = 3//4 is required to represent low E
-
+    
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
     @Published var showFootnotes = false
     @Published var hiddenStaffNo:Int?
-    @Published var studentResponseCorrect:Bool? = nil
-
+    @Published var studentFeedback:StudentFeedback? = nil
+    
     var staff:[Staff] = []
     
     var minorScaleType = Scale.MinorType.natural
@@ -81,7 +82,7 @@ class Score : ObservableObject {
     static let minTempo:Float = 30
     static let midTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 2.0
     static let slowTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 4.0
-
+    
     var staffLineCount:Int = 0
     static var accSharp = "\u{266f}"
     static var accNatural = "\u{266e}"
@@ -97,11 +98,62 @@ class Score : ObservableObject {
         //reverb.loadFactoryPreset(.largeHall2)
         //reverb.loadFactoryPreset(
         //reverb.wetDryMix = 50
-
+        
         // Connect the nodes.
         //engine.connect(sampler, to: reverb, format: nil)
         //engine.connect(reverb, to: engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
         //print("\n   ==Score created:", self.id)
+    }
+    
+    // return the first entry and timeslice index of where the scores differ
+    func GetFirstDifferentTimeSlice(compareScore:Score) -> (Int,Int)? {
+        let compareEntries = compareScore.scoreEntries
+        let compareIndex = 0
+        var result:(Int,Int)? = nil
+        var entryCtr = 0
+        var timeSliceCtr = 0
+        
+        for entry in self.scoreEntries {
+            if !(entry is TimeSlice) {
+                entryCtr += 1
+                continue
+            }
+            
+            if compareEntries.count <= compareIndex {
+                result = (entryCtr, timeSliceCtr)
+                break
+            }
+
+            let compareEntry = compareEntries[entryCtr]
+            let compareNotes = compareEntry.getNotes()
+            let notes = entry.getNotes()
+            
+            if compareNotes == nil && notes == nil {
+                result = (entryCtr, timeSliceCtr)
+                break
+            }
+            
+            if notes == nil {
+                result = (entryCtr, timeSliceCtr)
+                break
+            }
+            if notes!.count == 0 {
+                result = (entryCtr, timeSliceCtr)
+                break
+            }
+//            if notes![0].midiNumber != compareNotes![0].midiNumber {
+//                result = timeSliceCtr
+//                break
+//            }
+            if notes![0].value != compareNotes![0].value {
+                result = (entryCtr, timeSliceCtr)
+                break
+            }
+            entryCtr += 1
+            timeSliceCtr += 1
+        }
+        print("---------------------> Score diff", result, entryCtr, timeSliceCtr)
+        return result
     }
     
     func setHiddenStaff(num:Int?) {
@@ -114,9 +166,10 @@ class Score : ObservableObject {
         }
     }
     
-    func setStudentResponse(way:Bool?) {
+    func setStudentFeedback(studentFeedack:StudentFeedback? = nil) {
         DispatchQueue.main.async {
-            self.studentResponseCorrect = way
+            self.studentFeedback = studentFeedack
+            print("===============> Set Student feedback ", studentFeedack?.correct, studentFeedack?.feedback)
         }
     }
 

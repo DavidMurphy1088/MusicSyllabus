@@ -18,3 +18,21 @@ This happens when the view's state changes or when it needs to be re-rendered du
 But a state change in a view does not recall its init()
 
 Its appears to be that if a view uses a geometry reader any child view that does not explctyly position itself does not center but goes to a zero postion
+
+1.9 Build ======================
+
+- Test #5 aural rhythm done
+
+- More examples for play/clap
+
+- Experimental speaking of the rhythm - one, two and, three etc. It can be turned on or off. Default is off
+
+- Identical user and exercise rhythms now line up correctly on staffs
+
+- Metronome lead in for test # 2 clapping - to establish tempo for user
+
+- Preliminary algorithm to attempt to show and explain to the user where their rhythm differs from the example
+======================
+
+- Minimum iOS required set to IOS 15, goes back to Sep  2021
+i have an audio recording of a piano playing a simple melody. I need write software to analyse the audio recording to determine when a note was played and what pitch was played. What techniques should I use in my software

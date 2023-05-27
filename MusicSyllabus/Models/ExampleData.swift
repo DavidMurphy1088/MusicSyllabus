@@ -45,6 +45,17 @@ class ExampleData {
         data["Musicianship.Grade 1.Intervals Aural.Example 3"] = data["Musicianship.Grade 1.Intervals Visual.Example 3"]
         data["Musicianship.Grade 1.Intervals Aural.Example 4"] = data["Musicianship.Grade 1.Intervals Visual.Example 4"]
 
+        data["Musicianship.Grade 1.Echo Clap.Example 1"] = data["Musicianship.Grade 1.Playing.Example 1"]
+        data["Musicianship.Grade 1.Echo Clap.Example 2"] = data["Musicianship.Grade 1.Playing.Example 2"]
+        data["Musicianship.Grade 1.Echo Clap.Example 3"] = data["Musicianship.Grade 1.Playing.Example 3"]
+        data["Musicianship.Grade 1.Echo Clap.Example 4"] = data["Musicianship.Grade 1.Playing.Example 4"]
+        data["Musicianship.Grade 1.Echo Clap.Example 5"] = data["Musicianship.Grade 1.Playing.Example 5"]
+        data["Musicianship.Grade 1.Echo Clap.Example 6"] = data["Musicianship.Grade 1.Playing.Example 6"]
+        data["Musicianship.Grade 1.Echo Clap.Example 7"] = data["Musicianship.Grade 1.Playing.Example 7"]
+        data["Musicianship.Grade 1.Echo Clap.Example 8"] = data["Musicianship.Grade 1.Playing.Example 8"]
+        data["Musicianship.Grade 1.Echo Clap.Example 9"] = data["Musicianship.Grade 1.Playing.Example 9"]
+        data["Musicianship.Grade 1.Echo Clap.Example 10"] = data["Musicianship.Grade 1.Playing.Example 10"]
+
         //data["Intervals Visual.test"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
         //data["Playing.test"] = data["Musicianship.Grade 1.Playing.Example 1"]
         //data["Clapping.test"] = data["Musicianship.Grade 1.Playing.Example 1"]

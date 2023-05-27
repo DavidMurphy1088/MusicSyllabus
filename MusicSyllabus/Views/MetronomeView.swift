@@ -13,31 +13,34 @@ struct MetronomeView: View {
                     .resizable()
                     .frame(width: 60, height: 60)
                     .padding()
+                
+                Button(action: {
+                    metronomeIsOn.toggle()
+                    if metronomeIsOn {
+                        metronome.setTempo(tempo: tempo)
+                        metronome.startTicking()
+                    }
+                    else {
+                        metronome.stopTicking()
+                    }
+                }) {
+                    Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
+                }
+                .padding()
+
                 VStack {
                     HStack {
                         Text("Tempo \(Int(self.tempo))").padding()
                     }
                     Text(metronome.tempoName)
                 }
-            }
-            Button(action: {
-                metronomeIsOn.toggle()
-                if metronomeIsOn {
+                .padding()
+                
+                Slider(value: $tempo, in: 40...220, onEditingChanged: { value in
                     metronome.setTempo(tempo: tempo)
-                    metronome.startTicking()
-                }
-                else {
-                    metronome.stopTicking()
-                }
-            }) {
-                Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
+                })
+                .padding()
             }
-            //.padding()
-            
-            Slider(value: $tempo, in: 40...220, onEditingChanged: { value in
-                metronome.setTempo(tempo: tempo)
-            })
-            .padding()
 
         }
         .overlay(

@@ -16,38 +16,17 @@ class Invert : ObservableObject {
 
 struct TappingView: View {
     @Binding var isRecording:Bool
-    @State var tapRecorder:TapRecorder
-
-    @State var tempo = Metronome.shared.tempo
+    @ObservedObject var tapRecorder:TapRecorder
+    @State var metronome = Metronome.shared
     @State private var tapRecords: [CGPoint] = []
     @State var ctr = 0
     @ObservedObject var invert:Invert = Invert()
-    
-    func scaleEffect() -> Double {
-        let effect = isRecording ? 2.0 : 0.0
-        print("Scale effect", isRecording, effect)
-        return effect
-    }
-    
-    func test() -> Bool {
-        print("animation value()", isRecording)
-        return isRecording
-    }
+    @State private var isScaled = false
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                Text("Tap the rhythm")//.padding()
-                Text("on the drum")//.padding()
-
-//                Button(action: {
-//                    self.isRecording.toggle()
-//                }) {
-//                    Text("Recording??? \(String(self.isRecording))")
-//                }
-
                 ZStack {
-                    
                     Image("drum")
                         .resizable()
                         .scaledToFit()
@@ -56,24 +35,35 @@ struct TappingView: View {
                         .border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 2 : 8)
                         .padding()
                     
-                    //Give up after hours trying to make this shit work. The animation enver stops
                     if isRecording {
-                        Image(systemName: "stop.circle")
-                            .resizable()
-                        //.scaledToFit()
-                            .foregroundColor(Color.red)
-                            .frame(width: geometry.size.width / 10.0, height: geometry.size.height / 10.0)
-                        //.scaleEffect(scaleEffect())
-                        //.animation(.easeOut(duration: 1.0).repeatForever(), value: isRecording)
-                        //.animation(.easeOut(duration: 1.0).repeatForever(), value: test())
+                        if tapRecorder.enableRecordingLight {
+//                            Image(systemName: "stop.circle")
+//                            .resizable()
+//                            //.scaledToFit()
+//                            .foregroundColor(Color.red)
+//                            .frame(width: geometry.size.width / 10.0, height: geometry.size.height / 10.0)
+//                            .scaleEffect(scaleEffect())
+//                            .animation(.easeOut(duration: 1.0).repeatForever(), value: isRecording)
+//                            //.animation(.easeOut(duration: 1.0).repeatForever(), value: test())
+                            
+                            Image(systemName: "stop.circle")
+                                .foregroundColor(Color.red)
+                                .font(.system(size: isScaled ? 70 : 50))
+                                .animation(Animation.easeInOut(duration: 1.0).repeatForever()) // Animates forever
+                                .onAppear {
+                                    self.isScaled.toggle()
+                                }
+                        }
                     }
                 }
                     
                 }
             .frame(width: geometry.size.width)
             .onTapGesture {
-                invert.rev()
-                tapRecorder.makeTap()
+                if isRecording {
+                    invert.rev()
+                    tapRecorder.makeTap()
+                }
             }
 
             }

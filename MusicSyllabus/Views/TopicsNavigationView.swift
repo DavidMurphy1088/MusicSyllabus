@@ -21,8 +21,9 @@ struct TopicsNavigationView: View {
                 
                 List(topic.subSections) { contentSection in
                     NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
-                        Text(contentSection.name)
-                    }
+                        VStack {
+                            Text(contentSection.name).padding()
+                        }                    }
                     .disabled(!contentSection.isActive)
                     //.navigationViewStyle(DoubleColumnNavigationViewStyle())
                     //the font that shows on the scrolling list of links
@@ -50,7 +51,9 @@ struct TopicsNavigationView: View {
             NavigationView {
                 List(topic.subSections) { contentSection in
                     NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
-                        Text(contentSection.name)
+                        VStack {
+                            Text(contentSection.name).padding()
+                        }
                     }
                     .disabled(!contentSection.isActive)
                 }

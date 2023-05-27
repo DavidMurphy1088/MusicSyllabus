@@ -198,11 +198,10 @@ class Metronome: ObservableObject {
         }
     }
     
-    func startTicking() {
-        //self.score = nil
+    func startTicking(numberOfTicks:Int? = nil, onDone: (()->Void)? = nil) {
         if !self.isThreadRunning {
             //self.startAudio(needMidi: false)
-            self.startThreadRunning()
+            self.startThreadRunning(numberOfTicks: numberOfTicks, onDone: onDone)
         }
         self.isTicking = true
     }
@@ -218,18 +217,8 @@ class Metronome: ObservableObject {
         self.isTicking = false
     }
     
-    private func startThreadRunning(onDone: (()->Void)? = nil) {
+    private func startThreadRunning(numberOfTicks:Int? = nil, onDone: (()->Void)? = nil) {
         self.isThreadRunning = true
-        
-//        do {
-//            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default) paly and record
-//            try AVAudioSession.sharedInstance().setActive(true) ??
-//        }
-//        catch let error {
-//            Logger.logger.reportError(self, "Set Category", error)
-//        }
-        
-        //AppDelegate.startAVAudioSession(category: .playback)
         
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             var audioPlayerIdx = 0
@@ -238,6 +227,7 @@ class Metronome: ObservableObject {
             var playSynched = false
             var currentTimeValue = 0.0
             var noteValueSpeechWord:String? = nil
+            var ticksPlayed = 0
             
             while keepRunning {
                 noteValueSpeechWord = nil
@@ -249,7 +239,9 @@ class Metronome: ObservableObject {
                         audioPlayerIdx += 1
                         //audioPlayers[idx].prepareToPlay()
                         //audioPlayers[idx].volume = 1.0
+
                         audioPlayers[idx].play()
+                        ticksPlayed += 1
                         if score != nil {
                             playSynched = true
                         }
@@ -311,9 +303,9 @@ class Metronome: ObservableObject {
                             }
                             //keepRunning = nextTimeSlice != nil
                             if nextTimeSlice == nil {
-                                if let onDone = onDone {
-                                    onDone()
-                                }
+//                                if let onDone = onDone {
+//                                    onDone()
+//                                }
                             }
                         }
                     }
@@ -339,6 +331,11 @@ class Metronome: ObservableObject {
                 if !self.isTicking {
                    keepRunning = nextTimeSlice != nil
                 }
+                if let numberOfTicks = numberOfTicks {
+                    if loopCtr >= numberOfTicks - 1 {
+                        keepRunning = false
+                    }
+                }
                 let sleepTime = (60.0/self.tempo) * shortestNoteValue
                 Thread.sleep(forTimeInterval: sleepTime)
                 loopCtr += 1
@@ -346,6 +343,10 @@ class Metronome: ObservableObject {
             //print ("===> metronome thread stopped")
             self.isThreadRunning = false
             self.isTicking = false
+            if let onDone = onDone {
+                onDone()
+            }
+
         }
     }
     

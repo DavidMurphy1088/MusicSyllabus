@@ -13,8 +13,8 @@ struct ScoreView: View {
                     if let label = score.label {
                         Text(label).padding()
                     }
-                    if let studentResponse = score.studentResponseCorrect {
-                        if studentResponse {
+                    if let studentFeedback = score.studentFeedback {
+                        if studentFeedback.correct {
                             Image(systemName: "checkmark.circle")
                                 .scaleEffect(2.0)
                                 .foregroundColor(Color.green)
@@ -24,6 +24,10 @@ struct ScoreView: View {
                             Image(systemName: "xmark.octagon")
                                 .scaleEffect(2.0)
                                 .foregroundColor(Color.red)
+                                .padding()
+                        }
+                        if let feedback = studentFeedback.feedback {
+                            Text(feedback)
                                 .padding()
                         }
                     }

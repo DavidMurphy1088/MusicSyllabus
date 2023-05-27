@@ -19,7 +19,7 @@
 		7B51F0CE2A09C94D00A7ABFA /* Mechanical metronome - High.aif in Resources */ = {isa = PBXBuildFile; fileRef = 7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */; };
 		7B51F0CF2A09C94D00A7ABFA /* Mechanical metronome - Low.aif in Resources */ = {isa = PBXBuildFile; fileRef = 7B51F0CD2A09C94D00A7ABFA /* Mechanical metronome - Low.aif */; };
 		7B51F0DD2A0A508B00A7ABFA /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51F0DC2A0A508B00A7ABFA /* Metronome.swift */; };
-		7B51F0E02A0A5B6100A7ABFA /* AudioAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyser.swift */; };
+		7B51F0E02A0A5B6100A7ABFA /* AudioAnalyserOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyserOld.swift */; };
 		7B51F0E22A0A5CB200A7ABFA /* AudioRecorderOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51F0E12A0A5CB200A7ABFA /* AudioRecorderOld.swift */; };
 		7B51F0E42A0A6DD900A7ABFA /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */; };
 		7B55CEB62A03C312009F9B5D /* MusicSyllabusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEB52A03C312009F9B5D /* MusicSyllabusApp.swift */; };
@@ -51,6 +51,7 @@
 		7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32892A177C09004E2FA6 /* TapRecorder.swift */; };
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
 		7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */; };
+		7BA7487E2A223773001FDDAD /* AudioAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA7487D2A223773001FDDAD /* AudioAnalyser.swift */; };
 		7BD73C442A1F61E700EC1232 /* SpeechSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */; };
 		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902542A0CBE47002E977A /* ExampleData.swift */; };
@@ -79,7 +80,7 @@
 		7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Mechanical metronome - High.aif"; sourceTree = "<group>"; };
 		7B51F0CD2A09C94D00A7ABFA /* Mechanical metronome - Low.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Mechanical metronome - Low.aif"; sourceTree = "<group>"; };
 		7B51F0DC2A0A508B00A7ABFA /* Metronome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
-		7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalyser.swift; sourceTree = "<group>"; };
+		7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyserOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalyserOld.swift; sourceTree = "<group>"; };
 		7B51F0E12A0A5CB200A7ABFA /* AudioRecorderOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderOld.swift; sourceTree = "<group>"; };
 		7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
 		7B55CEB52A03C312009F9B5D /* MusicSyllabusApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicSyllabusApp.swift; sourceTree = "<group>"; };
@@ -113,6 +114,7 @@
 		7B6C32892A177C09004E2FA6 /* TapRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRecorder.swift; sourceTree = "<group>"; };
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
 		7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GuitarAcoustic.sf2; sourceTree = "<group>"; };
+		7BA7487D2A223773001FDDAD /* AudioAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalyser.swift; sourceTree = "<group>"; };
 		7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSynth.swift; sourceTree = "<group>"; };
 		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF902542A0CBE47002E977A /* ExampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleData.swift; sourceTree = "<group>"; };
@@ -230,7 +232,7 @@
 		7B5EEDF32A01345D0007FF7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyser.swift */,
+				7B51F0DF2A0A5B6100A7ABFA /* AudioAnalyserOld.swift */,
 				7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */,
 				7B51F0E12A0A5CB200A7ABFA /* AudioRecorderOld.swift */,
 				7B5EEDFE2A025EE60007FF7E /* Chord.swift */,
@@ -251,6 +253,7 @@
 				7B6C32892A177C09004E2FA6 /* TapRecorder.swift */,
 				7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */,
 				7B5EEE022A025F430007FF7E /* TimeSlice.swift */,
+				7BA7487D2A223773001FDDAD /* AudioAnalyser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -376,7 +379,7 @@
 				7B61AA012A19A46F0058A090 /* CapOrPlayView.swift in Sources */,
 				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
-				7B51F0E02A0A5B6100A7ABFA /* AudioAnalyser.swift in Sources */,
+				7B51F0E02A0A5B6100A7ABFA /* AudioAnalyserOld.swift in Sources */,
 				7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */,
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
@@ -385,6 +388,7 @@
 				7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */,
 				7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */,
 				7B61AA032A19D6350058A090 /* ConfigurationView.swift in Sources */,
+				7BA7487E2A223773001FDDAD /* AudioAnalyser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,7 +520,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
@@ -552,7 +556,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;

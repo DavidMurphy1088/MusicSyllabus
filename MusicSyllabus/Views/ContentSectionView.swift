@@ -21,14 +21,16 @@ struct ContentSectionView: View {
    
     var body: some View {
         VStack {
-            //Text("contentSection.subSections.count \(String(contentSection.subSections.count))")
             if contentSection.subSections.count > 0 {
                 VStack {
                     List(contentSection.subSections) { subtopic in
                         NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
-                            Text(subtopic.name)
+                            VStack {
+                                Text(subtopic.name).padding()
+                                //Text("___")
                                 //.navigationBarTitle("Title").font(.largeTitle)
                                 //.navigationBarTitleDisplayMode(.inline)
+                            }
                         }
                     }
                 }
@@ -37,14 +39,12 @@ struct ContentSectionView: View {
                 if let parentSection = parentSection {
                     if parentSection.sectionType == ContentSection.SectionType.testType {
                         if parentSection.name.contains("Intervals Visual") {
-                           //IntervalsView(contentSection: contentSection)
                            IntervalView(
                                 mode: QuestionMode.intervalVisual,
                                 contentSection: contentSection
                             )
                         }
                         if parentSection.name.contains("Clapping") {
-                            //ClapOrPlayOld(mode: .clap, contentSection: contentSection)
                             ClapOrPlayView (
                                 mode: QuestionMode.rhythmClap,
                                  //presentType: IntervalPresentView.self,
@@ -54,7 +54,6 @@ struct ContentSectionView: View {
 
                         }
                         if parentSection.name.contains("Playing") {
-                            //ClapOrPlayOld(mode: .play, contentSection: contentSection)
                             ClapOrPlayView (
                                 mode: QuestionMode.rhythmPlay,
                                  //presentType: IntervalPresentView.self,
@@ -63,13 +62,17 @@ struct ContentSectionView: View {
                              )
                         }
                         if parentSection.name.contains("Intervals Aural") {
-                           //IntervalsView(contentSection: contentSection)
                            IntervalView(
                                 mode: QuestionMode.intervalAural,
                                 contentSection: contentSection
                             )
                         }
-
+                        if parentSection.name.contains("Echo Clap") {
+                            ClapOrPlayView (
+                                mode: QuestionMode.rhythmEchoClap,
+                                 contentSection: contentSection
+                             )
+                        }
                     }
                 }
              }

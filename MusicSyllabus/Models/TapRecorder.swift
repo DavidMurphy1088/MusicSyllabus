@@ -7,18 +7,31 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
     var tapTimes:[Double] = []
     var tapValues:[Double] = []
     @Published var status:String = ""
-    //let tapSoundEffect = SoundEffect(systemSound: .click)
-    
+    @Published var enableRecordingLight = false
+
     func setStatus(_ msg:String) {
         DispatchQueue.main.async {
             self.status = msg
         }
     }
     
-    func startRecording()  {
+    func startRecording(timeSignature: TimeSignature, metronomeLeadIn:Bool)  {
         print("TapRecorder::started rec")
         self.tapValues = []
         self.tapTimes = []
+        if metronomeLeadIn {
+            self.enableRecordingLight = false
+            Metronome.shared.startTicking(numberOfTicks: timeSignature.top * 2, onDone: endMetronomePrefix)
+        }
+        else {
+            self.enableRecordingLight = true
+        }
+    }
+    
+    func endMetronomePrefix() {
+        DispatchQueue.main.async {
+            self.enableRecordingLight = true
+        }
     }
     
     func makeTap()  {
@@ -58,13 +71,13 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         if inValue < 0.3 {
             return nil
         }
-        if inValue < 0.8 {
+        if inValue < 0.75 {
             return 0.5
         }
-        if inValue < 1.4 {
+        if inValue < 1.5 {
             return 1.0
         }
-        if inValue < 2.4 {
+        if inValue < 2.5 {
             return 2.0
         }
         return 4.0
@@ -181,13 +194,12 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
 //            return score
 //    }
     
-    
+    //make a score of notes and barlines from the tap intervals
     func makeScore(questionScore:Score) -> Score {
         let outputScore = Score(timeSignature: questionScore.timeSignature, lines: 1)
         let staff = Staff(score: outputScore, type: .treble, staffNum: 0, linesInStaff: 1)
         outputScore.setStaff(num: 0, staff: staff)
         var ctr = 0
-        //var totalValue = 0.0
         
         let lastQuestionTimeslice = questionScore.getLastTimeSlice()
         var lastQuestionNote:Note?
