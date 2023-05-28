@@ -8,7 +8,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     @ObservedObject private var logger = Logger.logger
     @State private var selectedIntervalIndex = 0
     var mode:QuestionMode
-    let metronome = Metronome.shared
+    let metronome = Metronome.getShared()
 
     class IntervalName : Hashable {
         var interval: Int
@@ -163,7 +163,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
     private var score:Score
     private let imageSize = Double(32)
-    private let metronome = Metronome.shared
+    private let metronome = Metronome.getShared()
     private var noteIsSpace:Bool
 
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {

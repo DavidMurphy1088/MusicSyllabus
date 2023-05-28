@@ -59,7 +59,7 @@ struct ConfigSelectInstrument: View {
 }
 
 struct OptionSelectionView: View {
-    let metro = Metronome.shared
+    let metro = Metronome.getShared()
     @Binding var selectedOption: String?
     @Environment(\.presentationMode) var presentationMode
     
@@ -88,7 +88,7 @@ struct OptionSelectionView: View {
 struct ContentView2: View {
     //play all instruments in an SF2
     let numbersArray:[Int] = Array(1...200)
-    let metro = Metronome.shared
+    let metro = Metronome.getShared()
     let score = Score(timeSignature: TimeSignature(top: 4,bottom: 4), lines: 5)
     @State var last = 0
     

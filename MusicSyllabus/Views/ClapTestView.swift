@@ -12,7 +12,7 @@ struct ClapTestView: View {
     
     @State private var isRecording = false
     @ObservedObject var clapRecorder:AudioAnalyser = AudioAnalyser()
-    @ObservedObject var metronome:Metronome = Metronome.shared
+    @ObservedObject var metronome:Metronome = Metronome.getShared()
 
     private class CompletionHandler: NSObject, AVSpeechSynthesizerDelegate {
         let completion: (() -> Void)?

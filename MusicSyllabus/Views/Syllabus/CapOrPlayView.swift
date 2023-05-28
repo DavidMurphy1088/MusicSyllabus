@@ -23,14 +23,15 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     @State var showBaseCleff = false
     @State private var helpPopup = false
     @State var isTapping = false
-    
+    @State var rhythmHeard:Bool
+
     //WARNING - Making Score a @STATE makes instance #1 of this struct pass its Score to instance #2
     var score:Score
     let exampleData = ExampleData.shared
     var contentSection:ContentSection
-    let metronome = Metronome.shared
+    let metronome = Metronome.getShared()
     var mode:QuestionMode
-
+    
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
         return ClapOrPlayPresentView(contentSection: contentSection, score:score, answer: answer, mode: mode)
     }
@@ -50,7 +51,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         }
         let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
-        
+        self.rhythmHeard = self.mode == .rhythmEchoClap ? false : true
         var lastTS:TimeSlice? = nil
         var lastNote:Note? = nil
         
@@ -124,7 +125,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                         if mode == .rhythmEchoClap {
                             //play the score without showing it
                             Button(action: {
-                                metronome.playScore(score: score)
+                                metronome.playScore(score: score, onDone: {self.rhythmHeard = true})
                             }) {
                                 Text("Hear the rhythm")
                                     .padding()
@@ -162,11 +163,11 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                         }
                                 }
                                 .padding()
+                                .disabled(!self.rhythmHeard)
                             }
 
                             if mode == .rhythmClap || mode == .rhythmEchoClap {
                                 tappingView
-                                
                             }
 
                             if answer.state == .recording {
@@ -229,7 +230,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @State var tappingScore:Score?
     
     private var score:Score
-    private let metronome = Metronome.shared
+    private let metronome = Metronome.getShared()
     private var mode:QuestionMode
 
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
@@ -293,7 +294,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                     }
                 }
                 else {
-                    Text("Hear The Correct \((mode == .rhythmClap || mode == .rhythmEchoClap)  ? "Rhythm" : "Playing")")
+                    Text("Hear the Correct \((mode == .rhythmClap || mode == .rhythmEchoClap)  ? "Rhythm" : "Playing")")
                         .buttonStyle(DefaultButtonStyle())
                 }
             }
@@ -349,7 +350,6 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     }
     
     func analyseRhythm() {
-       
             tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
             if let tappingScore = tappingScore {
                 let difference = score.GetFirstDifferentTimeSlice(compareScore: tappingScore)
@@ -375,7 +375,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         AnyView(
             GeometryReader { geometry in
                 VStack {
-                    MetronomeView(metronome: metronome)
+                    MetronomeView()
                     VStack {
                         ScoreView(score: score).padding()
                         if tappingScore != nil {

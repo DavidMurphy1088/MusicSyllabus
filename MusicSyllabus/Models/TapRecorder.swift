@@ -8,6 +8,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
     var tapValues:[Double] = []
     @Published var status:String = ""
     @Published var enableRecordingLight = false
+    var metronome = Metronome.getShared()
 
     func setStatus(_ msg:String) {
         DispatchQueue.main.async {
@@ -21,7 +22,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         self.tapTimes = []
         if metronomeLeadIn {
             self.enableRecordingLight = false
-            Metronome.shared.startTicking(numberOfTicks: timeSignature.top * 2, onDone: endMetronomePrefix)
+            metronome.startTicking(numberOfTicks: timeSignature.top * 2, onDone: endMetronomePrefix)
         }
         else {
             self.enableRecordingLight = true
@@ -38,7 +39,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
         let date = Date()
-        let dateString = dateFormatter.string(from: date)
+        //let dateString = dateFormatter.string(from: date)
         self.tapTimes.append(date.timeIntervalSince1970)
         //AudioServicesPlayAlertSound(SystemSoundID(1104))
         AudioServicesPlaySystemSound(SystemSoundID(1104))

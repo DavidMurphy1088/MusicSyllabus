@@ -2,9 +2,13 @@ import SwiftUI
 import CoreData
 
 struct MetronomeView: View {
-    @ObservedObject var metronome = Metronome.shared
-    @State var tempo = Metronome.shared.tempo
+    @ObservedObject var metronome = Metronome.getShared()
     @State var metronomeIsOn = false
+    @State var tempo:Double = 0.0
+
+    init () {
+        tempo = metronome.tempo
+    }
     
     var body: some View {
         VStack {

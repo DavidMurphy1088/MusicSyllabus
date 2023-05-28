@@ -17,7 +17,7 @@ class Invert : ObservableObject {
 struct TappingView: View {
     @Binding var isRecording:Bool
     @ObservedObject var tapRecorder:TapRecorder
-    @State var metronome = Metronome.shared
+    @State var metronome = Metronome.getShared()
     @State private var tapRecords: [CGPoint] = []
     @State var ctr = 0
     @ObservedObject var invert:Invert = Invert()

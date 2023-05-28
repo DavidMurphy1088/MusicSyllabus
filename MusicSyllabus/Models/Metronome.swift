@@ -3,7 +3,7 @@ import CoreData
 import AVFoundation
 
 class Metronome: ObservableObject {
-    static public var shared:Metronome = Metronome()
+    static private var shared:Metronome = Metronome()
     let midiNoteEngine = AVAudioEngine()
     
     @Published var clapCounter = 0
@@ -32,6 +32,11 @@ class Metronome: ObservableObject {
     //var soundFontSF2Files = ["Nice-Steinway-v3.8", "GuitarAcoustic"]
     var soundFontProgram = 0
 
+    static func getShared() -> Metronome {
+        shared.setTempo(tempo: 60)
+        return Metronome.shared
+    }
+    
     init() {
         self.tempo = 60.0
         let wav = false
