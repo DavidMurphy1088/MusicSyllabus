@@ -12,7 +12,7 @@ struct ClapTestView: View {
     
     @State private var isRecording = false
     @ObservedObject var clapRecorder:AudioAnalyser = AudioAnalyser()
-    @ObservedObject var metronome:Metronome = Metronome.getShared()
+    @ObservedObject var metronome:Metronome = Metronome.getMetronomeWithCurrentSettings()
 
     private class CompletionHandler: NSObject, AVSpeechSynthesizerDelegate {
         let completion: (() -> Void)?
@@ -96,12 +96,12 @@ struct ClapTestView: View {
             Spacer()
             VStack {
                 Text("Tempo: \(Int(tempo))")
-                HStack {
-                    Slider(value: $tempo, in: 0...2000, onEditingChanged: { value in
-                        //print("Slider value changed to: \(requiredDecibelChange)")
-                        metronome.setTempo(tempo: tempo)
-                    })
-                }.padding()
+//                HStack {
+//                    Slider(value: $tempo, in: 0...2000, onEditingChanged: { value in
+//                        //print("Slider value changed to: \(requiredDecibelChange)")
+//                        metronome.setTempo(tempo: tempo)
+//                    })
+//                }.padding()
 
                 Text("Required Decibel Change: \(Int(requiredDecibelChange))")
                 HStack {

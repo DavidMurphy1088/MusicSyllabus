@@ -1,0 +1,10 @@
+https://onlinetonegenerator.com/ - generates sine waves, can slow temo and retain feuenyc, can modify frequency
+
+i have an audio recording of a piano playing a simple melody. I need write software to analyse the audio recording to determine when a note was played and what pitch was played. What techniques should I use in my software
+
+
+Audi is m4a foramt
+
+I have an audio recording of a person playing a simple melody on an acoustic piano. My swift software needs to figure out from the recording what notes the person played and the time duration between each note. What algorithm techniques should I use for this analysis?
+
+

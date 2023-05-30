@@ -29,7 +29,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     var score:Score
     let exampleData = ExampleData.shared
     var contentSection:ContentSection
-    let metronome = Metronome.getShared()
+    let metronome:Metronome
     var mode:QuestionMode
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
@@ -92,22 +92,22 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 }
             }
         }
+        self.metronome = Metronome.getMetronomeWithSettings(initialTempo: mode == .rhythmEchoClap ? 100 : 80, allowChangeTempo: true)
         //print("\n======ClapOrPlayView init name:", contentSection.name, "score ID:", score.id, answer.state)
     }
 
     func getInstruction(mode:QuestionMode) -> String {
-        var result = "Click start recording then "
+        var result = "Press start recording then "
         switch mode {
             
         case .rhythmClap:
-            result += "the metronome will play the tempo. Then tap your rhythm on the drum."
+            result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
 
         case .rhythmPlay:
             result += "play the melody and the final chord."
             
         case .rhythmEchoClap:
             result += "tap your rhythm on the drum."
-            
             
         default:
             result = ""
@@ -120,7 +120,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             GeometryReader { geometry in
                 VStack {
                     VStack {
-//                      MetronomeView(metronome: metronome)
+                        MetronomeView()
 
                         if mode == .rhythmEchoClap {
                             //play the score without showing it
@@ -230,7 +230,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @State var tappingScore:Score?
     
     private var score:Score
-    private let metronome = Metronome.getShared()
+    private let metronome = Metronome.getMetronomeWithCurrentSettings()
     private var mode:QuestionMode
 
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
@@ -350,25 +350,27 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     }
     
     func analyseRhythm() {
-            tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
-            if let tappingScore = tappingScore {
-                let difference = score.GetFirstDifferentTimeSlice(compareScore: tappingScore)
-                if let diff = difference {
-                    if tappingScore.scoreEntries.count > 0 {
-                        let entry = tappingScore.scoreEntries[diff.0]
-                        if let ts = entry as! TimeSlice? {
-                            if ts.notes.count > 0 {
-                                ts.notes[0].noteTag = .inError
-                            }
+        tappingScore = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, inputScore: score)
+        if let tappingScore = tappingScore {
+            let difference = score.GetFirstDifferentTimeSlice(compareScore: tappingScore)
+            if let diff = difference {
+                if tappingScore.scoreEntries.count > 0 {
+                    //let entry = tappingScore.scoreEntries[diff.0]
+                    let tappingTimeSlices = tappingScore.getAllTimeSlices()
+                    let tappingTimeSlice = tappingTimeSlices[diff < tappingTimeSlices.count ? diff : tappingTimeSlices.count - 1]
+                    //if let ts = entry as! TimeSlice? {
+                        if tappingTimeSlice.notes.count > 0 {
+                            tappingTimeSlice.notes[0].noteTag = .inError
                         }
-                        tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: diff.1))
-                    }
-                }
-                else {
-                    tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: nil))
+                    //}
+                    tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: diff))
                 }
             }
-            tappingScore?.label = "Your Rhythm"
+            else {
+                tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: nil))
+            }
+        }
+        tappingScore?.label = "Your Rhythm"
     }
 
     var body: AnyView {

@@ -95,10 +95,10 @@ struct NoteView: View {
                     Ellipse()
                         //Open ellipse
                         .stroke(Color.black, lineWidth: 2)
-                        //.foregroundColor(note.value == 4 ? self.color : .blue)
                         .frame(width: noteWidth/4.0, height: noteWidth/4.0)
-                        .position(x: noteFrameWidth/2 + noteFrameWidth, y: noteEllipseMidpoint)
+                        .position(x: noteFrameWidth/2 + noteWidth/1.0, y: noteEllipseMidpoint)
                         .foregroundColor(noteColor)
+                        //.border(Color .red)
                 }
 
                  //ledger line hack - totally not generalized :(

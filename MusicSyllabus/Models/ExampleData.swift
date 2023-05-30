@@ -11,12 +11,15 @@ class ExampleData {
         //data["Intervals Visual.test"] = "(60,.5) (62,.5) (64,1)"
         //data["Musicianship.Grade 1"] = "A B C D"
 
-        data["Musicianship.Grade 1.Intervals Visual.Example 1"] = "(72,1) (74,1)"
-        data["Musicianship.Grade 1.Intervals Visual.Example 2"] = "(74,1) (71,1)"
-        data["Musicianship.Grade 1.Intervals Visual.Example 3"] = "(69,1) (67,1)"
-        data["Musicianship.Grade 1.Intervals Visual.Example 4"] = "(67,1) (64,1)"
-        
+        data["Musicianship.Grade 1.Intervals Visual.Example 1"] = "(TS,3,4) (72,1) (74,2)"
+        data["Musicianship.Grade 1.Intervals Visual.Example 2"] = "(TS,4,4) (74,2) (71,2)"
+        data["Musicianship.Grade 1.Intervals Visual.Example 3"] = "(TS,3,4) (69,1) (67,2)"
+        data["Musicianship.Grade 1.Intervals Visual.Example 4"] = "(TS,2,4) (67,1) (64,1)"
+        data["Musicianship.Grade 1.Intervals Visual.Example 5"] = "(TS,3,4) (69,1) (72,2)"
+        data["Musicianship.Grade 1.Intervals Visual.Example 6"] = "(TS,C) (69,2) (72,2)"
+
         data["Musicianship.Grade 1.Playing.Example 1"] = "(64,1) (62,1) (60,.5) (62,.5) (64,1) (B) (67,2) (67,2) (B) (65,1) (67,1) (64,1) (62,1) (B) (60,4) "
+        data["Musicianship.Grade 1.Playing.Example 2x"] = "(TS,2,4) (67,1) (65,1) (B) (65,1) (65,1) (B) (65,4)"
         data["Musicianship.Grade 1.Playing.Example 2"] = "(TS,3,4) (67,1) (65,1) (64,1) (B) (65,1) (64,1) (62,.5) (60,.5) (B) (64,2) (67,1) (B) (60,3) "
         data["Musicianship.Grade 1.Playing.Example 3"] = "(K) (TS,3,4) (67,1) (69,1) (71,1) (B) (72,1) (71,1) (69,1) (B) (71,2) (69,1) (B) (67,3) "
         data["Musicianship.Grade 1.Playing.Example 4"] = "(K) (TS,4,4) (71,1) (67,.5) (69,.5) (71,1) (72,1) (B) (74,1) (72,1) (71,1) (69,1) (B) (71,2) (72,1) (69,1) (B) (67,4)"
@@ -40,10 +43,10 @@ class ExampleData {
         data["Musicianship.Grade 1.Clapping.Example 9"] = data["Musicianship.Grade 1.Playing.Example 9"]
         data["Musicianship.Grade 1.Clapping.Example 10"] = data["Musicianship.Grade 1.Playing.Example 10"]
 
-        data["Musicianship.Grade 1.Intervals Aural.Example 1"] = data["Musicianship.Grade 1.Intervals Visual.Example 1"]
-        data["Musicianship.Grade 1.Intervals Aural.Example 2"] = data["Musicianship.Grade 1.Intervals Visual.Example 2"]
-        data["Musicianship.Grade 1.Intervals Aural.Example 3"] = data["Musicianship.Grade 1.Intervals Visual.Example 3"]
-        data["Musicianship.Grade 1.Intervals Aural.Example 4"] = data["Musicianship.Grade 1.Intervals Visual.Example 4"]
+        data["Musicianship.Grade 1.Intervals Aural.Example 1"] = "(72,1) (74,1)"
+        data["Musicianship.Grade 1.Intervals Aural.Example 2"] = "(74,1) (76,1)"
+        data["Musicianship.Grade 1.Intervals Aural.Example 3"] = "(72,1) (76,1)"
+        data["Musicianship.Grade 1.Intervals Aural.Example 4"] = "(65,1) (69,1)"
 
         data["Musicianship.Grade 1.Echo Clap.Example 1"] = data["Musicianship.Grade 1.Playing.Example 1"]
         data["Musicianship.Grade 1.Echo Clap.Example 2"] = data["Musicianship.Grade 1.Playing.Example 2"]
@@ -103,10 +106,21 @@ class ExampleData {
             tuple = tuple.replacingOccurrences(of: ")", with: "")
             let parts = tuple.components(separatedBy: ",")
             if parts.count == 2  {
-                let pitch = Int(parts[0])
-                let value = Double(parts[1]) ?? 1
-                if let pitch = pitch {
-                    result.append(Note(num: pitch, value: value))
+                let notePitch:Int? = Int(parts[0])
+                if let notePitch = notePitch {
+                    //let pitch = Int(parts[0])
+                    let value = Double(parts[1]) ?? 1
+                    //if let pitch = pitch {
+                        result.append(Note(num: notePitch, value: value))
+                    //}
+                }
+                else {
+                    if parts[0] == "TS" {
+                        var ts = TimeSignature(top: 4, bottom: 4)
+                        ts.isCommonTime = true
+                        result.append(result.append(ts))
+                    }
+
                 }
             }
             else {

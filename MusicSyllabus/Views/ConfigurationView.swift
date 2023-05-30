@@ -1,8 +1,10 @@
 import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ConfigurationView: View {
     @Binding var isPresented: Bool
+    
     var body: some View {
         //GeometryReader { geo in //CAUSES ALL CHILDS LEft ALIGNED???
             VStack(alignment: .center) {
@@ -59,7 +61,7 @@ struct ConfigSelectInstrument: View {
 }
 
 struct OptionSelectionView: View {
-    let metro = Metronome.getShared()
+    let metro = Metronome.getMetronomeWithCurrentSettings()
     @Binding var selectedOption: String?
     @Environment(\.presentationMode) var presentationMode
     
@@ -80,55 +82,6 @@ struct OptionSelectionView: View {
             }
         }
         .navigationTitle("Select Instrument")
-    }
-}
-
-// SF2 listing
-
-struct ContentView2: View {
-    //play all instruments in an SF2
-    let numbersArray:[Int] = Array(1...200)
-    let metro = Metronome.getShared()
-    let score = Score(timeSignature: TimeSignature(top: 4,bottom: 4), lines: 5)
-    @State var last = 0
-    
-    init() {
-        for i in 0...0 {
-            let ts = score.addTimeSlice()
-            ts.addNote(n: Note(num: Note.MIDDLE_C + 12 + 2*i))
-        }
-    }
-    
-    var body: some View {
-        ScoreView(score: score)
-        ScrollView {
-            VStack(spacing: 10) {
-                ForEach(numbersArray, id: \.self) { item in
-                    Button(action: {
-                        last = item
-                        metro.soundFontProgram = Int(item)
-                        metro.playScore(score: score)
-                    }) {
-                        Text("num:\(item)")
-//                            .padding()
-//                            .background(Color.gray)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(10)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-
-        Button(action: {
-            metro.stopPlayingScore(note: Note.MIDDLE_C + 12)
-            
-        }) {
-            Text("STOP").padding()
-        }
     }
 
 }

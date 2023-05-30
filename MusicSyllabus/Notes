@@ -35,4 +35,16 @@ Its appears to be that if a view uses a geometry reader any child view that does
 ======================
 
 - Minimum iOS required set to IOS 15, goes back to Sep  2021
-i have an audio recording of a piano playing a simple melody. I need write software to analyse the audio recording to determine when a note was played and what pitch was played. What techniques should I use in my software
+
+METRO
+- should be tick for test #5
+- needs accent on first best
+- what should be the temo the studnets uses for #2 and #3??
+ - should app detect the tempo or should it specify a tempo value (and then should it lead in?)
+ 
+ 
+All playing of notes, melodies, chords etc requires a metronome. The metronome may or may not be visible.
+When its visbile it specifies the tempo as crotched = value
+
+#test1 - metronome displayed only on the answer screen (screen #2), intervals play at 60 BPM
+@test2 - metronome

@@ -2,12 +2,13 @@ import SwiftUI
 import CoreData
 
 struct MetronomeView: View {
-    @ObservedObject var metronome = Metronome.getShared()
+    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
     @State var metronomeIsOn = false
-    @State var tempo:Double = 0.0
-
+    //@State var tempo:Int = 0
+    let imageSize = 60.0
+    
     init () {
-        tempo = metronome.tempo
+        
     }
     
     var body: some View {
@@ -15,35 +16,52 @@ struct MetronomeView: View {
             HStack {
                 Image("metronome")
                     .resizable()
-                    .frame(width: 60, height: 60)
+                    .frame(width: imageSize, height: imageSize)
                     .padding()
                 
-                Button(action: {
-                    metronomeIsOn.toggle()
-                    if metronomeIsOn {
-                        metronome.setTempo(tempo: tempo)
-                        metronome.startTicking()
-                    }
-                    else {
-                        metronome.stopTicking()
-                    }
-                }) {
-                    Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
-                }
-                .padding()
+//                Button(action: {
+//                    metronomeIsOn.toggle()
+//                    if metronomeIsOn {
+//                        metronome.setTempo(tempo: tempo)
+//                        metronome.startTicking()
+//                    }
+//                    else {
+//                        metronome.stopTicking()
+//                    }
+//                }) {
+//                    Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
+//                }
+//                .padding()
+//                .onAppear(perform: {
+//                    tempo = metronome.tempo
+//                })
 
-                VStack {
-                    HStack {
-                        Text("Tempo \(Int(self.tempo))").padding()
-                    }
-                    Text(metronome.tempoName)
-                }
-                .padding()
+                //VStack {
+
+                    Text("Tempo:").padding()
+                    Image("note_transparent")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: imageSize / 3.0)
+                    Text(" =  \(Int(metronome.tempo)) BPM")
                 
-                Slider(value: $tempo, in: 40...220, onEditingChanged: { value in
-                    metronome.setTempo(tempo: tempo)
-                })
-                .padding()
+                Text("  ")
+                Text(metronome.tempoName).padding()
+                //}
+                //.padding()
+                
+                if metronome.allowChangeTempo {
+                    //                Slider(value: $tempo, in: Double(metronome.tempoMinimumSetting)...Double(metronome.tempoMaximumSetting), onEditingChanged: { value in
+                    //                    metronome.setTempo(tempo: tempo)
+                    //                })
+                    Slider(value: Binding<Double>(
+                        get: { Double(metronome.tempo) },
+                        set: {
+                            metronome.setTempo(tempo: Int($0))
+                        }
+                    ), in: Double(metronome.tempoMinimumSetting)...Double(metronome.tempoMaximumSetting), step: 1)
+                    .padding()
+                }
             }
 
         }

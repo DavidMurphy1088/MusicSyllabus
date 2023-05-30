@@ -26,6 +26,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             AVSampleRateKey: 12000,
             AVNumberOfChannelsKey: 1,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+            //USe kAudioFormatLinearPCM to generate .WAV, default is .m4a foramt
         ]
         
         do {

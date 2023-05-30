@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B0E05312A25E84C00CFD554 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */; };
+		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
+		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
 		7B3BA4532A0710D7000246C6 /* Notes in Resources */ = {isa = PBXBuildFile; fileRef = 7B3BA4522A0710D7000246C6 /* Notes */; };
@@ -51,6 +54,7 @@
 		7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */; };
 		7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */; };
 		7BA7487E2A223773001FDDAD /* AudioAnalyserNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA7487D2A223773001FDDAD /* AudioAnalyserNew.swift */; };
+		7BA748822A234167001FDDAD /* ChatGPT in Resources */ = {isa = PBXBuildFile; fileRef = 7BA748812A234167001FDDAD /* ChatGPT */; };
 		7BD73C442A1F61E700EC1232 /* SpeechSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */; };
 		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902542A0CBE47002E977A /* ExampleData.swift */; };
@@ -67,6 +71,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
+		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
 		7B3BA4522A0710D7000246C6 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
@@ -113,6 +120,7 @@
 		7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
 		7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GuitarAcoustic.sf2; sourceTree = "<group>"; };
 		7BA7487D2A223773001FDDAD /* AudioAnalyserNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalyserNew.swift; sourceTree = "<group>"; };
+		7BA748812A234167001FDDAD /* ChatGPT */ = {isa = PBXFileReference; lastKnownFileType = text; path = ChatGPT; sourceTree = "<group>"; };
 		7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSynth.swift; sourceTree = "<group>"; };
 		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF902542A0CBE47002E977A /* ExampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleData.swift; sourceTree = "<group>"; };
@@ -157,6 +165,8 @@
 				7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */,
 				7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */,
 				7B51F0CD2A09C94D00A7ABFA /* Mechanical metronome - Low.aif */,
+				7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */,
+				7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */,
 				7BF9B9CA2A02654100121EBA /* Nice-Steinway-v3.8.sf2 */,
 			);
 			path = Sounds;
@@ -182,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				7B5EEDE22A0133020007FF7E /* Assets.xcassets */,
+				7BA748812A234167001FDDAD /* ChatGPT */,
 				7B55CEBD2A03C870009F9B5D /* GoogleService-Info.plist */,
 				7B5EEDEC2A0133020007FF7E /* Info.plist */,
 				7B5EEDF32A01345D0007FF7E /* Models */,
@@ -230,8 +241,9 @@
 		7B5EEDF32A01345D0007FF7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				7BA7487D2A223773001FDDAD /* AudioAnalyserNew.swift */,
 				7B51F0E12A0A5CB200A7ABFA /* AudioAnalyser.swift */,
+				7BA7487D2A223773001FDDAD /* AudioAnalyserNew.swift */,
+				7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */,
 				7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */,
 				7B5EEDFE2A025EE60007FF7E /* Chord.swift */,
 				7BF9B9D02A03A6EB00121EBA /* ContentSection.swift */,
@@ -326,9 +338,12 @@
 				7B5EEDE62A0133020007FF7E /* Preview Assets.xcassets in Resources */,
 				7B3BA4532A0710D7000246C6 /* Notes in Resources */,
 				7B43C69D2A1354D000BBB027 /* Todo in Resources */,
+				7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */,
 				7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */,
 				7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */,
+				7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
+				7BA748822A234167001FDDAD /* ChatGPT in Resources */,
 				7B51F0CE2A09C94D00A7ABFA /* Mechanical metronome - High.aif in Resources */,
 				7B51F0CF2A09C94D00A7ABFA /* Mechanical metronome - Low.aif in Resources */,
 				7B5EEDE32A0133020007FF7E /* Assets.xcassets in Resources */,
@@ -377,6 +392,7 @@
 				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */,
+				7B0E05312A25E84C00CFD554 /* AudioPlayer.swift in Sources */,
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B3D956C2A10D4AB007CA60D /* StaffView.swift in Sources */,

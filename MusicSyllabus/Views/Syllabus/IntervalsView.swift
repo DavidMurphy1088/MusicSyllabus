@@ -6,14 +6,17 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     let exampleData = ExampleData.shared
     var intervalNotes:[Note] = []
     @ObservedObject private var logger = Logger.logger
-    @State private var selectedIntervalIndex = 0
+    @State private var selectedIntervalIndex:Int = 10//? = nil
     var mode:QuestionMode
-    let metronome = Metronome.getShared()
-
+    let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
+    @State private var selectedOption: String? = nil
+    @State private var scoreWasPlayed = false
+    
     class IntervalName : Hashable {
         var interval: Int
         var name:String
         var explanation:[String]
+        var isIncluded = true
         init(interval:Int, name:String, explanation:[String]) {
             self.interval = interval
             self.name = name
@@ -28,11 +31,16 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     }
     
     let intervals = [IntervalName(interval:2, name: "Second",
-                                explanation: ["A line to a space is a step which is a second interval",
-                                              "A space to a line is a step which is a second interval"]),
-                   IntervalName(interval:3, name: "Third",
-                                explanation: ["A line to a line is a skip which is a third interval",
-                                              "A space to a space is a skip which is a third interval"])]
+                                  //explanation: ["A line to a space is a step which is a second interval",
+                                  //              "A space to a line is a step which is a second interval"]),
+                                  explanation: ["A line to a space is a step",
+                                                "A space to a line is a step"]),
+                     IntervalName(interval:3, name: "Third",
+                                explanation: ["A line to a line is a skip",
+                                              "A space to a space is a skip"]),
+                     IntervalName(interval:4, name: "Major Third",
+                                explanation: ["",""]),
+    ]
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
         return IntervalPresentView(contentSection: contentSection, score:score, answer: answer, mode:mode )
@@ -46,25 +54,62 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         
         self.score.setStaff(num: 0, staff: staff)
-        //print("  IntervalPresentView INIT score:", score.id)
         var chord:Chord = Chord()
         if let entries = exampleData {
             for entry in entries {
                 if entry is Note {
-                    //print("    IntervalPresentView INIT new time slice in ", score.id)
                     let timeSlice = self.score.addTimeSlice()
                     let note = entry as! Note
                     timeSlice.addNote(n: note)
                     intervalNotes.append(note)
                     if mode == .intervalAural {
-                        chord.notes.append(Note(num: note.midiNumber))
+                        chord.notes.append(Note(num: note.midiNumber, value: 2))
                     }
                 }
+                if entry is TimeSignature {
+                    let ts = entry as! TimeSignature
+                    score.timeSignature = ts
+                }
+
             }
         }
         if chord.notes.count > 0 {
             score.addTimeSlice().addChord(c: chord)
         }
+        for interval in intervals {
+            if interval.interval == 3 {
+                interval.isIncluded = mode == .intervalVisual
+            }
+            if interval.interval == 4 {
+                interval.isIncluded = mode == .intervalAural
+            }
+        }
+    }
+    
+    var selectIntervalView : some View {
+        HStack(spacing: 0) {
+            ForEach(Array(intervals.enumerated()), id: \.1) { index, interval in
+                if interval.isIncluded {
+                    Button(action: {
+                        selectedIntervalIndex = index
+                        answer.setState(.answered)
+                        answer.selectedInterval = intervals[index].interval
+                    }) {
+                        Text(interval.name)
+                        //.foregroundColor(.white)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.black, lineWidth: 1)
+                                    .background(selectedIntervalIndex == index ? Color(.systemTeal) : Color.clear)
+                            )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .padding()
+                }
+            }
+        }
+        .padding()
     }
 
     var body: AnyView {
@@ -77,7 +122,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     }
                     else {
                         Button(action: {
-                            metronome.playScore(score: score)
+                            metronome.playScore(score: score, onDone: {self.scoreWasPlayed = true})
                         }) {
                             Text("Hear Interval")
                         }
@@ -90,23 +135,9 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     }
                 }
                 VStack {
+                    Text("Is the interval a second (2nd) or a third (3rd) ?").padding()
                     VStack {
-                        //Text("Please choose the correct interval type").padding()
-                        Picker("Select an option", selection: $selectedIntervalIndex) {
-                            ForEach(0..<intervals.count) { index in
-                                Text(intervals[index].name)
-                            }
-                        }
-                        
-                        .pickerStyle(.segmented)
-                        //.pickerStyle(.inline)
-                        //.pickerStyle(MenuPickerStyle())
-                        
-                        .onChange(of: selectedIntervalIndex) { index in
-                            answer.setState(.answered)
-                            answer.selectedInterval = intervals[index].interval
-                        }
-                        .padding()
+                        selectIntervalView.padding()
                     }
                     .overlay(
                         RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
@@ -114,7 +145,8 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     .background(UIGlobals.backgroundColor)
                     .padding()
                 }
-                
+                .disabled(mode == .intervalAural && scoreWasPlayed == false)
+
                 VStack {
                     if answer.state == .answered {
                         Button(action: {
@@ -139,9 +171,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                         }
                         .padding()
                     }
-                    else {
-                        Text("Please choose the correct interval type").padding()
-                    }
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
@@ -161,11 +190,13 @@ struct IntervalPresentView: View, QuestionPartProtocol {
 
 struct IntervalAnswerView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
+    private var mode:QuestionMode
+
     private var score:Score
     private let imageSize = Double(32)
-    private let metronome = Metronome.getShared()
+    private let metronome = Metronome.getMetronomeWithCurrentSettings()
     private var noteIsSpace:Bool
-
+    
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
         return IntervalAnswerView(contentSection:contentSection, score:score, answer: answer, mode: mode)
     }
@@ -175,14 +206,16 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
         self.score = score
         self.noteIsSpace = true //[Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12, Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
         metronome.speechEnabled = false
+        self.mode = mode
     }
     
     var body: AnyView {
         AnyView(
             VStack {
-                HStack {
+                MetronomeView()
+                //HStack {
                     ScoreView(score: score).padding()
-                }
+                //}
 
                 VStack {
                     HStack {
@@ -198,7 +231,9 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
                     .padding()
                     
                     Text("The interval is a \(answer.correctIntervalName)").padding()
-                    Text(answer.explanation).italic().fixedSize(horizontal: false, vertical: true).padding()
+                    if mode == .intervalVisual {
+                        Text(answer.explanation).italic().fixedSize(horizontal: false, vertical: true).padding()
+                    }
                     
                     Button(action: {
                         metronome.playScore(score: score)

@@ -116,12 +116,16 @@ struct TimeSignatureView: View {
         let timeSignatureFontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
         let padding:Double = Double(lineSpacing) / 3.0
         
-        VStack (spacing: 0) {
-            Text("\(timeSignature.top)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
-            Text("\(timeSignature.bottom)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
+        if timeSignature.isCommonTime {
+            Text("C")
+                .font(.custom("Times New Roman", size: timeSignatureFontSize * 1.1)).bold()
         }
-        //.bold()
-        //.fontWeight(.heavy)
+        else {
+            VStack (spacing: 0) {
+                Text("\(timeSignature.top)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
+                Text("\(timeSignature.bottom)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
+            }
+        }
     }
 }
 

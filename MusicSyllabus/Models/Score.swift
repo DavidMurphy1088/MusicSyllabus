@@ -105,61 +105,132 @@ class Score : ObservableObject {
         //print("\n   ==Score created:", self.id)
     }
     
-    // return the first entry and timeslice index of where the scores differ
-    func GetFirstDifferentTimeSlice(compareScore:Score) -> (Int,Int)? {
-        let compareEntries = compareScore.scoreEntries
-        let compareIndex = 0
-        var result:(Int,Int)? = nil
-        var entryCtr = 0
-        var timeSliceCtr = 0
-        
-        for entry in self.scoreEntries {
-            if !(entry is TimeSlice) {
-                entryCtr += 1
-                continue
+    func getAllTimeSlices() -> [TimeSlice] {
+        var result:[TimeSlice] = []
+        for scoreEntry in self.scoreEntries {
+            if scoreEntry is TimeSlice {
+                let ts = scoreEntry as! TimeSlice
+                result.append(ts)
+            }
+        }
+        return result
+    }
+    
+    //return the first entry and timeslice index of where the scores differ
+    func GetFirstDifferentTimeSlice(compareScore:Score) -> Int? {
+        //let compareEntries = compareScore.scoreEntries
+        var result:Int? = nil
+        var scoreCtr = 0
+
+        let scoreTimeSlices = self.getAllTimeSlices()
+        let compareTimeSlices = compareScore.getAllTimeSlices()
+
+        for scoreTimeSlice in scoreTimeSlices {
+
+            if compareTimeSlices.count <= scoreCtr {
+                result = scoreCtr
+                break
             }
             
-            if compareEntries.count <= compareIndex {
-                result = (entryCtr, timeSliceCtr)
+            let compareEntry = compareTimeSlices[scoreCtr]
+            let compareNotes = compareEntry.getNotes()
+            let scoreNotes = scoreTimeSlice.getNotes()
+
+            if compareNotes == nil || scoreNotes == nil {
+                result = scoreCtr
+                break
+            }
+            if compareNotes?.count == 0 || scoreNotes!.count == 0 {
+                result = scoreCtr
                 break
             }
 
-            let compareEntry = compareEntries[entryCtr]
-            let compareNotes = compareEntry.getNotes()
-            let notes = entry.getNotes()
-            
-            if compareNotes == nil && notes == nil {
-                result = (entryCtr, timeSliceCtr)
-                break
+            if scoreCtr == scoreTimeSlices.count - 1 {
+                //last note just has to be semibreve (1/2 note) or longer, any other note must be an exact note value match
+                if compareNotes![0].value < Note.VALUE_HALF {
+                    result = scoreCtr
+                    break
+                }
+                else {
+                    compareNotes![0].value = scoreNotes![0].value
+                }
             }
-            
-            if notes == nil {
-                result = (entryCtr, timeSliceCtr)
-                break
+            else {
+                if scoreNotes![0].value != compareNotes![0].value {
+                    result = scoreCtr
+                    break
+                }
             }
-            if notes!.count == 0 {
-                result = (entryCtr, timeSliceCtr)
-                break
-            }
-//            if notes![0].midiNumber != compareNotes![0].midiNumber {
-//                result = timeSliceCtr
-//                break
-//            }
-            if notes![0].value != compareNotes![0].value {
-                result = (entryCtr, timeSliceCtr)
-                break
-            }
-            entryCtr += 1
-            timeSliceCtr += 1
+            scoreCtr += 1
         }
-        print("---------------------> Score diff", result, entryCtr, timeSliceCtr)
+        print("---------------------> Score diff", result)
         return result
     }
+
+    // return the first entry and timeslice index of where the scores differ
+//    func GetFirstDifferentTimeSliceOld(compareScore:Score) -> (Int,Int)? {
+//        let compareEntries = compareScore.scoreEntries
+//        let compareIndex = 0
+//        var result:(Int,Int)? = nil
+//        var entryCtr = 0
+//        var timeSliceCtr = 0
+//
+//        for scoreEntry in self.scoreEntries {
+//            if !(scoreEntry is TimeSlice) {
+//                entryCtr += 1
+//                continue
+//            }
+//
+//            if compareEntries.count <= compareIndex {
+//                result = (entryCtr, timeSliceCtr)
+//                break
+//            }
+//
+//            let compareEntry = compareEntries[entryCtr]
+//            let compareNotes = compareEntry.getNotes()
+//            let scoreNotes = scoreEntry.getNotes()
+//
+//            if compareNotes == nil && scoreNotes == nil {
+//                result = (entryCtr, timeSliceCtr)
+//                break
+//            }
+//
+//            if scoreNotes == nil {
+//                result = (entryCtr, timeSliceCtr)
+//                break
+//            }
+//            if scoreNotes!.count == 0 {
+//                result = (entryCtr, timeSliceCtr)
+//                break
+//            }
+////            if notes![0].midiNumber != compareNotes![0].midiNumber {
+////                result = timeSliceCtr
+////                break
+////            }
+//
+//            if timeSliceCtr == self.scoreEntries.count - 1 {
+//                //last note just has to be semibreve (1/2 note) or longer, any other note must be an exact note value match
+//                if compareNotes![0].value < Note.VALUE_HALF {
+//                    result = (entryCtr, timeSliceCtr)
+//                    break
+//                }
+//            }
+//            else {
+//                if scoreNotes![0].value != compareNotes![0].value {
+//                    result = (entryCtr, timeSliceCtr)
+//                    break
+//                }
+//            }
+//            entryCtr += 1
+//            timeSliceCtr += 1
+//        }
+//        print("---------------------> Score first difference", result, entryCtr, timeSliceCtr)
+//        return result
+//    }
     
     func setHiddenStaff(num:Int?) {
         DispatchQueue.main.async {
             self.hiddenStaffNo = num
-            //print("Score set hidden", self.id, self.hiddenStaffNo)
             for staff in self.staff {
                 staff.update()
             }
