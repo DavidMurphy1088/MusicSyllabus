@@ -27,52 +27,42 @@ struct TappingView: View {
         GeometryReader { geometry in
             VStack {
                 ZStack {
-                    Image("drum")
+                    Image("drum_transparent")
                         .resizable()
                         .scaledToFit()
-                        .foregroundColor(invert.invert ? .blue : .red)
-                        .frame(width: geometry.size.width / 4.0)
-                        .border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 2 : 8)
                         .padding()
+                        //.foregroundColor(invert.invert ? .blue : .red)
+                        //.border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 2 : 6)
+                        .border(invert.invert ? Color.accentColor : Color.accentColor, width: invert.invert ? 2 : 6)
+                        .frame(width: geometry.size.width / 4.0)
+                        .position(x: geometry.size.width / 2.0, y: geometry.size.height / 2.0)
+                        //.padding()
                     
-                    if isRecording {
+                    if true && isRecording {
                         if tapRecorder.enableRecordingLight {
-//                            Image(systemName: "stop.circle")
-//                            .resizable()
-//                            //.scaledToFit()
-//                            .foregroundColor(Color.red)
-//                            .frame(width: geometry.size.width / 10.0, height: geometry.size.height / 10.0)
-//                            .scaleEffect(scaleEffect())
-//                            .animation(.easeOut(duration: 1.0).repeatForever(), value: isRecording)
-//                            //.animation(.easeOut(duration: 1.0).repeatForever(), value: test())
-                            
                             Image(systemName: "stop.circle")
                                 .foregroundColor(Color.red)
                                 .font(.system(size: isScaled ? 70 : 50))
-                                .animation(Animation.easeInOut(duration: 1.0).repeatForever()) // Animates forever
+                                //.animation(Animation.easeInOut(duration: 1.0).repeatForever()) // Animates forever
+                                //.position(x: geometry.size.width / 2.0, y: geometry.size.height / 2.0)
                                 .onAppear {
                                     self.isScaled.toggle()
                                 }
                         }
                     }
                 }
-                    
-                }
-            .frame(width: geometry.size.width)
+            }
+            //.frame(width: geometry.size.width)
             .onTapGesture {
                 if isRecording {
                     invert.rev()
                     tapRecorder.makeTap()
                 }
             }
-
-            }
-
-            //.padding()
-            //.border(.red)
-       }
-    
-
+            .padding(.bottom, 0) 
+        }
+        //.border(.red)
+    }
 }
 
 

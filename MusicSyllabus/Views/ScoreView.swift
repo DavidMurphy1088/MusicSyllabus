@@ -27,8 +27,11 @@ struct ScoreView: View {
                                 .padding()
                         }
                         if let feedback = studentFeedback.feedback {
-                            Text(feedback)
-                                .padding()
+                            Text(feedback).padding()
+                                
+                        }
+                        if let tempo = studentFeedback.tempo {
+                            Text("Tempo:\(tempo)").padding()
                         }
                     }
                 }

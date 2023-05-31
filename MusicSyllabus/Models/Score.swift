@@ -61,6 +61,7 @@ class BarLine : ScoreEntry {
 class StudentFeedback { //}: ObservableObject {
     var correct:Bool = false
     var feedback:String? = nil
+    var tempo:Int? = nil
 }
 
 class Score : ObservableObject {

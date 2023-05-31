@@ -54,34 +54,33 @@ struct ConfigSelectInstrument: View {
                 isShowingSelection = true
             }
             .sheet(isPresented: $isShowingSelection) {
-                OptionSelectionView(selectedOption: $selectedOption)
+               // OptionSelectionView(selectedOption: $selectedOption)
             }
        }
     }
 }
 
-struct OptionSelectionView: View {
-    let metro = Metronome.getMetronomeWithCurrentSettings()
-    @Binding var selectedOption: String?
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        List {
-            ForEach(metro.soundFontNames.indices, id: \.self) { index in
-                Button(action: {
-                    metro.samplerFileName = metro.soundFontNames[index].1
-                    //if let presentationMode = presentationMode {
-                                presentationMode.wrappedValue.dismiss()
-                            //}
-                    
-                }) {
-                    VStack(alignment: .leading) {
-                        Text("Index: \(metro.soundFontNames[index].0)")
-                     }
-                }
-            }
-        }
-        .navigationTitle("Select Instrument")
-    }
-
-}
+//struct OptionSelectionView: View {
+//    let metro = Metronome.getMetronomeWithCurrentSettings()
+//    @Binding var selectedOption: String?
+//    @Environment(\.presentationMode) var presentationMode
+//
+//    var body: some View {
+//        List {
+//            ForEach(metro.soundFontNames.indices, id: \.self) { index in
+//                Button(action: {
+//                    metro.samplerFileName = metro.soundFontNames[index].1
+//                    //if let presentationMode = presentationMode {
+//                                presentationMode.wrappedValue.dismiss()
+//                            //}
+//
+//                }) {
+//                    VStack(alignment: .leading) {
+//                        Text("Index: \(metro.soundFontNames[index].0)")
+//                     }
+//                }
+//            }
+//        }
+//        .navigationTitle("Select Instrument")
+//    }
+//}

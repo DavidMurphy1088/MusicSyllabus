@@ -56,7 +56,7 @@ struct ClapTestView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    metronome.startTicking()
+                    //metronome.startTicking()
                 }) {
                     Text("Start Metronome")
                 }

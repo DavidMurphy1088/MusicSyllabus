@@ -66,13 +66,13 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
     
     func setRequiredDecibelChange(change:Int) {
         self.requiredDecibelChange = change
-        print("recorder required dec change changed to: \(change)")
+        //print("recorder required dec change changed to: \(change)")
     }
     
     func setRequiredBufferSize(change:Int) {
         self.requiredBufSize = change
         self.decibelBuffer = []
-        print("recorder required buffer size change changed to: \(change)")
+        //print("recorder required buffer size change changed to: \(change)")
     }
 
     func fmt(_ inx:Double) -> String {
@@ -148,7 +148,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
         captureCtr = 0
         logBuffer = []
         DispatchQueue.global(qos: .background).async {
-            print("Started recording")
+            //print("Started recording")
             self.captureSession.startRunning()
         }
     }

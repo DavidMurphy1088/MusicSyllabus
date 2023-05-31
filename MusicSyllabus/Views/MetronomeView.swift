@@ -4,11 +4,9 @@ import CoreData
 struct MetronomeView: View {
     @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
     @State var metronomeIsOn = false
-    //@State var tempo:Int = 0
     let imageSize = 60.0
     
     init () {
-        
     }
     
     var body: some View {
@@ -19,19 +17,19 @@ struct MetronomeView: View {
                     .frame(width: imageSize, height: imageSize)
                     .padding()
                 
-//                Button(action: {
-//                    metronomeIsOn.toggle()
-//                    if metronomeIsOn {
-//                        metronome.setTempo(tempo: tempo)
-//                        metronome.startTicking()
-//                    }
-//                    else {
-//                        metronome.stopTicking()
-//                    }
-//                }) {
-//                    Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
-//                }
-//                .padding()
+                Button(action: {
+                    metronomeIsOn.toggle()
+                    if metronomeIsOn {
+                        metronome.isTickingWithScorePlay = true
+                    }
+                    else {
+                        metronome.isTickingWithScorePlay = false
+                    }
+                }) {
+                    //Text(metronomeIsOn ? "Stop Metronome" : "Start Metronome")
+                    Text(metronomeIsOn ? "Is On" : "Is Off")
+                }
+                .padding()
 //                .onAppear(perform: {
 //                    tempo = metronome.tempo
 //                })

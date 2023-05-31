@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7B0E05312A25E84C00CFD554 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */; };
+		7B0E05312A25E84C00CFD554 /* AudioSamplerPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */; };
 		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
 		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
@@ -71,7 +71,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSamplerPlayer.swift; sourceTree = "<group>"; };
 		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
 		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
@@ -243,8 +243,8 @@
 			children = (
 				7B51F0E12A0A5CB200A7ABFA /* AudioAnalyser.swift */,
 				7BA7487D2A223773001FDDAD /* AudioAnalyserNew.swift */,
-				7B0E05302A25E84C00CFD554 /* AudioPlayer.swift */,
 				7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */,
+				7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */,
 				7B5EEDFE2A025EE60007FF7E /* Chord.swift */,
 				7BF9B9D02A03A6EB00121EBA /* ContentSection.swift */,
 				7BF902542A0CBE47002E977A /* ExampleData.swift */,
@@ -392,7 +392,7 @@
 				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
 				7B5EEDF72A025E0B0007FF7E /* Score.swift in Sources */,
 				7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */,
-				7B0E05312A25E84C00CFD554 /* AudioPlayer.swift in Sources */,
+				7B0E05312A25E84C00CFD554 /* AudioSamplerPlayer.swift in Sources */,
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B3D956C2A10D4AB007CA60D /* StaffView.swift in Sources */,
