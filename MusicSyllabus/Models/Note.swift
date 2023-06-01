@@ -10,7 +10,7 @@ enum HandType {
     case right
 }
 
-enum BeamType {
+enum QuaverBeamType {
     case none
     case start
     case middle
@@ -40,11 +40,14 @@ class Note : Hashable, Comparable, ObservableObject {
     var isDotted:Bool = false
     var isOnlyRhythmNote = false
     var stemUp:Bool
-    var beamType:BeamType = .none
-    var stemLength:Double = 3.5 //measured in number of staff lines
+
     var sequence:Int = 0 //the note's sequence position 
     var noteTag:NoteTag = .noTag
 
+    var beamType:QuaverBeamType = .none
+    //the note where the quaver beam for this note ends
+    var beamEndNote:Note? = nil
+    
     static func == (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber == rhs.midiNumber
     }

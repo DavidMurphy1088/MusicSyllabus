@@ -1,7 +1,7 @@
 import Foundation
 
 class TimeSignature {
-    var top = 4
+    var top = 1
     var bottom = 4
     var isCommonTime = false
     

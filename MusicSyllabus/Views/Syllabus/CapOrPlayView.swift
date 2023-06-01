@@ -94,6 +94,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         }
         self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
         //print("\n======ClapOrPlayView init name:", contentSection.name, "score ID:", score.id, answer.state)
+        score.addStemCharaceteristics() fix - shuld not be here......
     }
 
     func getInstruction(mode:QuestionMode) -> String {
@@ -341,17 +342,17 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     }
     
     func getFeedback(diffNote:Int?, tempo:Int?) -> StudentFeedback {
-        var s = StudentFeedback()
+        let feedback = StudentFeedback()
         if let diffNote = diffNote {
-            s.feedback = "Mistake at note \(diffNote+1)"
-            s.correct = false
+            feedback.feedback = "Mistake at note \(diffNote+1)"
+            feedback.correct = false
         }
         else {
-            s.correct = true
-            s.feedback = "Good job!"
+            feedback.correct = true
+            feedback.feedback = "Good job!"
         }
-        s.tempo = tempo
-        return s
+        feedback.tempo = tempo
+        return feedback
     }
     
     func analyseRhythm() {

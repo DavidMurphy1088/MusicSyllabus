@@ -56,7 +56,7 @@ class Staff : ObservableObject {
     var staffOffsets:[Int] = []
     var noteStaffPlacement:[NoteStaffPlacement]=[]
     var linesInStaff:Int
-    var beamCounter = StaffQuaverBeamCounter()
+    var notePositions = NotePositions()
     
     init(score:Score, type:StaffType, staffNum:Int, linesInStaff:Int) {
         self.score = score
@@ -109,59 +109,6 @@ class Staff : ObservableObject {
             placement = NoteStaffPlacement(name: "X", offsetFroMidLine: offset)
             noteStaffPlacement[noteValue] = placement
         }
-        //print("     ==Staff created:", self.id)
-        
-//        var noteIdx = 4
-//        var allDone = false
-//        var octaveCtr = 0
-//        var nameCtr = 2
-//        var lastOffset:Int? = nil
-
-//         while !allDone {
-//            for line in offsetsInStaffByKey.noteOffsetByKey {
-//                let sp = StaffPlacementsByKey()
-//                let pairs = line.components(separatedBy: " ")
-//                let octave = ((octaveCtr) / 12) - (self.type == StaffType.treble ? 3 : 1)
-//                octaveCtr += 1
-//                var col = 0
-//
-//                for pair in pairs {
-//                    if pair.isEmpty {
-//                        continue
-//                    }
-//                    let noteParts = pair.trimmingCharacters(in: .whitespaces).components(separatedBy: ",")
-//                    let staffTypeOffset = type == StaffType.treble ? 0 : -2
-//                    let staffOffset = Int(noteParts[0])! + (octave * 7) + ((score.ledgerLineCount - 1) * 2) + staffTypeOffset
-//
-//                    if col == 0 {
-//                        if let lastOffset = lastOffset {
-//                            if staffOffset != lastOffset {
-//                                nameCtr += 1
-//                            }
-//                        }
-//                        lastOffset = staffOffset
-//                    }
-//                    col += 1
-//
-//                    let noteName = Note.staffNoteName(idx: nameCtr)
-//
-//                    let note = NoteStaffPlacement(name: noteName, staffOffset)
-//                    if noteParts.count > 1 {
-//                        note.acc = Int(noteParts[1])!
-//                    }
-//                    sp.staffPlacement.append(note)
-//                }
-//
-//                if noteIdx < noteOffsets.count {
-//                    noteOffsets[noteIdx] = sp
-//                    noteIdx += 1
-//                }
-//                else {
-//                    allDone = true
-//                    break
-//                }
-//            }
-//        }
     }
     
     func keyDescription() -> String {
@@ -179,20 +126,6 @@ class Staff : ObservableObject {
             self.publishUpdate = 0
         }
     }
-
-//    func show(_ lbl:String) {
-//        for n in stride(from: noteOffsets.count-1, to: 0, by: -1) {
-//            let sp = noteOffsets[n]
-//            if sp.staffPlacement.count > 0 {
-//                var acc = ""
-//                if sp.staffPlacement[0].acc == 0 {acc = Score.accFlat}
-//                if sp.staffPlacement[0].acc == 1 {acc = Score.accNatural}
-//                if sp.staffPlacement[0].acc == 2 {acc = Score.accSharp}
-//                print("\(lbl) Note", n,
-//                      "\(sp.staffPlacement[0].offset) \(sp.staffPlacement[0].name) \(acc)")
-//            }
-//        }
-//    }
     
     func keyColumn() -> Int {
         //    Key   C    D♭   D    E♭   E    F    G♭   G    A♭   A    B♭   B
@@ -257,48 +190,5 @@ class Staff : ObservableObject {
         return (offset, "X", ledgerLines)
     }
     
-//    func getNoteViewDataOld(noteValue:Int) -> (Int?, String, [Int]) {
-//        let staffPosition = self.noteOffsets[noteValue]
-//        let keyCol = keyColumn()
-//        let offsetFromBottom = staffPosition.staffPlacement[keyCol].offset
-//        let offsetFromTop = (score.staffLineCount * 2) - offsetFromBottom - 2
-//
-//        var ledgerLines:[Int] = []
-//        if abs(offsetFromBottom) <= score.ledgerLineCount*2 - 2 {
-//            let onSpace = abs(offsetFromBottom) % 2 == 1
-//            var lineOffset = 0
-//            if onSpace {
-//                lineOffset -= 1
-//            }
-//            for _ in 0..<(score.ledgerLineCount - offsetFromBottom/2) + lineOffset {
-//                ledgerLines.append(lineOffset)
-//                lineOffset -= 2
-//            }
-//        }
-//        if abs(offsetFromTop) <= score.ledgerLineCount*2 - 2 {
-//            let onSpace = abs(offsetFromTop) % 2 == 1
-//            var lineOffset = 0
-//            if onSpace {
-//                lineOffset += 1
-//            }
-//            for _ in 0..<(score.ledgerLineCount - offsetFromTop/2) - lineOffset {
-//                ledgerLines.append(lineOffset)
-//                lineOffset += 2
-//            }
-//        }
-//        var acc = ""
-//        switch staffPosition.staffPlacement[keyCol].acc {
-//            case 0:
-//                acc=Score.accFlat
-//            case 1:
-//                acc=Score.accNatural
-//            case 2:
-//                acc=Score.accSharp
-//            default:
-//                acc=""
-//        }
-//        return (offsetFromTop, acc, ledgerLines)
-//    }
-//
 }
  

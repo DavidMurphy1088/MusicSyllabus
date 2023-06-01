@@ -10,6 +10,7 @@
 		7B0E05312A25E84C00CFD554 /* AudioSamplerPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */; };
 		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
 		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
+		7B258C912A285B94003CB91C /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* TestView.swift */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
 		7B3BA4532A0710D7000246C6 /* Notes in Resources */ = {isa = PBXBuildFile; fileRef = 7B3BA4522A0710D7000246C6 /* Notes */; };
@@ -46,8 +47,7 @@
 		7B61A9FF2A19A3810058A090 /* ViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61A9FE2A19A3810058A090 /* ViewProtocol.swift */; };
 		7B61AA012A19A46F0058A090 /* CapOrPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */; };
 		7B61AA032A19D6350058A090 /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA022A19D6350058A090 /* ConfigurationView.swift */; };
-		7B61AA052A1B74F00058A090 /* StaffBeamCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA042A1B74F00058A090 /* StaffBeamCounter.swift */; };
-		7B61AA072A1C812A0058A090 /* CompareRhythmsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */; };
+		7B61AA052A1B74F00058A090 /* NotePositions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA042A1B74F00058A090 /* NotePositions.swift */; };
 		7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B61AA082A1CDA6E0058A090 /* HelpView.swift */; };
 		7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32872A177A67004E2FA6 /* TappingView.swift */; };
 		7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6C32892A177C09004E2FA6 /* TapRecorder.swift */; };
@@ -74,6 +74,7 @@
 		7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSamplerPlayer.swift; sourceTree = "<group>"; };
 		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
 		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
+		7B258C902A285B94003CB91C /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
 		7B3BA4522A0710D7000246C6 /* Notes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Notes; sourceTree = "<group>"; };
@@ -112,8 +113,7 @@
 		7B61A9FE2A19A3810058A090 /* ViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProtocol.swift; sourceTree = "<group>"; };
 		7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapOrPlayView.swift; sourceTree = "<group>"; };
 		7B61AA022A19D6350058A090 /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
-		7B61AA042A1B74F00058A090 /* StaffBeamCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffBeamCounter.swift; sourceTree = "<group>"; };
-		7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareRhythmsView.swift; sourceTree = "<group>"; };
+		7B61AA042A1B74F00058A090 /* NotePositions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotePositions.swift; sourceTree = "<group>"; };
 		7B61AA082A1CDA6E0058A090 /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
 		7B6C32872A177A67004E2FA6 /* TappingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappingView.swift; sourceTree = "<group>"; };
 		7B6C32892A177C09004E2FA6 /* TapRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRecorder.swift; sourceTree = "<group>"; };
@@ -153,7 +153,6 @@
 				7B61AA002A19A46F0058A090 /* CapOrPlayView.swift */,
 				7B519FA22A182BC700A105E9 /* IntervalsView.swift */,
 				7B61A9FE2A19A3810058A090 /* ViewProtocol.swift */,
-				7B61AA062A1C812A0058A090 /* CompareRhythmsView.swift */,
 				7B61AA082A1CDA6E0058A090 /* HelpView.swift */,
 			);
 			path = Syllabus;
@@ -232,6 +231,7 @@
 				7B3D956B2A10D4AB007CA60D /* StaffView.swift */,
 				7B25F8392A0657CC00F9552E /* Syllabus */,
 				7B6C32872A177A67004E2FA6 /* TappingView.swift */,
+				7B258C902A285B94003CB91C /* TestView.swift */,
 				7B519FA42A1837BD00A105E9 /* TopicsNavigationView.swift */,
 				7B43C69E2A138CAE00BBB027 /* UIGlobals.swift */,
 			);
@@ -253,13 +253,13 @@
 				7BF9B9CC2A026DDF00121EBA /* Logger.swift */,
 				7B51F0DC2A0A508B00A7ABFA /* Metronome.swift */,
 				7B5EEDFC2A025EC00007FF7E /* Note.swift */,
+				7B61AA042A1B74F00058A090 /* NotePositions.swift */,
 				7BF9B9CE2A0271E400121EBA /* PianoKeyboard.swift */,
 				7B5EEE042A025F760007FF7E /* Scale.swift */,
 				7B5EEDF62A025E0B0007FF7E /* Score.swift */,
 				7BF9B9C82A02618700121EBA /* SoundGenerator.swift */,
 				7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */,
 				7B5EEE002A025F160007FF7E /* Staff.swift */,
-				7B61AA042A1B74F00058A090 /* StaffBeamCounter.swift */,
 				7B6C32892A177C09004E2FA6 /* TapRecorder.swift */,
 				7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */,
 				7B5EEE022A025F430007FF7E /* TimeSlice.swift */,
@@ -363,17 +363,17 @@
 				7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */,
 				7B61A9FF2A19A3810058A090 /* ViewProtocol.swift in Sources */,
 				7BF9B9C92A02618700121EBA /* SoundGenerator.swift in Sources */,
+				7B258C912A285B94003CB91C /* TestView.swift in Sources */,
 				7B5EEDF92A025E440007FF7E /* Key.swift in Sources */,
 				7BF9B9D12A03A6EB00121EBA /* ContentSection.swift in Sources */,
 				7B5EEE012A025F160007FF7E /* Staff.swift in Sources */,
 				7BD73C442A1F61E700EC1232 /* SpeechSynth.swift in Sources */,
 				7B5EEDE82A0133020007FF7E /* Persistence.swift in Sources */,
-				7B61AA072A1C812A0058A090 /* CompareRhythmsView.swift in Sources */,
 				7B55CEC42A03E480009F9B5D /* ScoreView.swift in Sources */,
 				7B43C69F2A138CAE00BBB027 /* UIGlobals.swift in Sources */,
 				7B55CEB62A03C312009F9B5D /* MusicSyllabusApp.swift in Sources */,
 				7B51F0E22A0A5CB200A7ABFA /* AudioAnalyser.swift in Sources */,
-				7B61AA052A1B74F00058A090 /* StaffBeamCounter.swift in Sources */,
+				7B61AA052A1B74F00058A090 /* NotePositions.swift in Sources */,
 				7B519FA32A182BC700A105E9 /* IntervalsView.swift in Sources */,
 				7B55CEC02A03D052009F9B5D /* ContentSectionView.swift in Sources */,
 				7BF9B9CF2A0271E400121EBA /* PianoKeyboard.swift in Sources */,
@@ -532,7 +532,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
@@ -568,7 +568,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;

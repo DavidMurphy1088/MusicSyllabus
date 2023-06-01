@@ -155,7 +155,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         else {
             tempo = 1
         }
-        print("\ngetTempoFromRecording counts", countDictionary, "Most frequent:", quarterNoteValue, "tempo", tempo)
+        //print("\ngetTempoFromRecording counts", countDictionary, "Most frequent:", quarterNoteValue, "tempo", tempo)
         return tempo
     }
     

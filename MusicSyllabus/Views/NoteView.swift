@@ -41,23 +41,40 @@ struct NoteView: View {
         accidental = pos.1
         ledgerLines = pos.2
     }
-//    func test(_ note:Note) -> Bool {
-//        if note.midiNumber < 60 {
-//            print(note.midiNumber)
-//            return true
-//        }
-//        return false
-//    }
+    
+    func beamPos(noteLayout:NoteLayout, size: CGSize, noteWidth: Double) -> (CGPoint, CGPoint) {
+        let offset = noteWidth / 2.0
+        if noteLayout.note.beamType == .start {
+            //return ((0.5 * width) + offset, width )
+            let p1 = CGPoint(x: (0.5 * size.width) + offset, y: 0)
+            let p2 = CGPoint(x: (1.0 * size.width) + offset, y: noteLayout.quaverBeamAngle)
+            return (p1, p2)
+        }
+        if noteLayout.note.beamType == .middle {
+            let p1 = CGPoint(x: (0.0 * size.width) + offset, y: 0)
+            let p2 = CGPoint(x: (1.0 * size.width) + offset, y: noteLayout.quaverBeamAngle)
+            return (p1, p2)
+        }
+        if noteLayout.note.beamType == .end {
+            let p1 = CGPoint(x: (0.0 * size.width) + offset, y: 0)
+            let p2 = CGPoint(x: (0.5 * size.width) + offset, y: noteLayout.quaverBeamAngle)
+            return (p1, p2)
+        }
+        return (CGPoint(x:0, y:0), CGPoint(x:0, y:0))
+    }
         
     var body: some View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle * lineSpacing) / 2.0
-            let stemDirection:Double = (note.midiNumber < 71 || note.isOnlyRhythmNote) ? -1 : 1
             let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
             let noteValueUnDotted = note.isDotted ? note.value * 2.0/3.0 : note.value
-            
+            let noteLayout = staff.notePositions.getLayout(note: note)
+            let xDirection:Double = -1.0 * Double(noteLayout.stemDirection)
+            let yDirection:Double = -1.0 * Double(noteLayout.stemDirection)
+
             ZStack {
+                //Note ellipse
                 if [Note.VALUE_QUARTER, Note.VALUE_QUAVER].contains(noteValueUnDotted )  {
                     Ellipse()
                         //Closed ellipse
@@ -79,13 +96,24 @@ struct NoteView: View {
                 // stem
                 if noteValueUnDotted != Note.VALUE_WHOLE {
                     //Note this code eventually has to go to the code that draws quaver beams since a quaver beam can shorten/lengthen the note stem
-                    let xOffset:Double = 1.0 * stemDirection
-                    let yOffset:Double = 1.0 * stemDirection
                     Path { path in
-                        path.move(to: CGPoint(x: (noteFrameWidth - (noteWidth * xOffset))/2.0,
+                        path.move(to: CGPoint(x: (noteFrameWidth - (noteWidth * xDirection))/2.0,
                                               y: noteEllipseMidpoint))
-                        path.addLine(to: CGPoint(x: (noteFrameWidth - (noteWidth * xOffset))/2.0,
-                                                 y: noteEllipseMidpoint + (note.stemLength * Double(lineSpacing) * yOffset)))
+                        path.addLine(to: CGPoint(x: (noteFrameWidth - (noteWidth * xDirection))/2.0,
+                                                 //3.5 lines is a full length stem
+                                                 y: noteEllipseMidpoint + (noteLayout.stemLength * Double(lineSpacing) * 3.5 * yDirection)))
+                    }
+                    .stroke(noteColor, lineWidth: 1)
+                }
+                
+                //quaver beam
+                if noteLayout.quaverBeam != .none {
+                    let yStemTop = noteEllipseMidpoint + (noteLayout.stemLength * Double(lineSpacing) * 3.5 * yDirection)
+                    let p1 = beamPos(noteLayout: noteLayout, size: geometry.size, noteWidth: noteWidth).0
+                    let p2 = beamPos(noteLayout: noteLayout, size: geometry.size, noteWidth: noteWidth).1
+                    Path { path in
+                        path.move(to: CGPoint(x: p1.x, y: p1.y + yStemTop))
+                        path.addLine(to: CGPoint(x: p2.x, y: p2.y + yStemTop))
                     }
                     .stroke(noteColor, lineWidth: 1)
                 }

@@ -8,6 +8,8 @@ struct IndexView: View {
     var body: some View {
         TabView {
             if !MusicSyllabusApp.productionMode {
+                TestView() 
+                
                 ClapOrPlayView(
                     mode: QuestionMode.rhythmClap,
                     contentSection: ContentSection(parent: nil,

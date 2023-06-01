@@ -19,10 +19,7 @@ class TimeSlice : ScoreEntry {
         self.notes.append(n)
         if let score = score {
             score.updateStaffs()
-//            if n.midiNumber < 60 {
-//
-//            }
-            score.addStemCharaceteristics()
+            //score.addStemCharaceteristics()
         }
     }
     

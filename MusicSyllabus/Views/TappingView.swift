@@ -32,7 +32,6 @@ struct TappingView: View {
                         .scaledToFit()
                         .padding()
                         //.foregroundColor(invert.invert ? .blue : .red)
-                        //.border(invert.invert ? Color.accentColor : Color.black, width: invert.invert ? 2 : 6)
                         .border(invert.invert ? Color.accentColor : Color.accentColor, width: invert.invert ? 2 : 6)
                         .frame(width: geometry.size.width / 4.0)
                         .position(x: geometry.size.width / 2.0, y: geometry.size.height / 2.0)

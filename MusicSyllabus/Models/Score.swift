@@ -8,9 +8,6 @@ class ScoreEntry : Hashable {
     static func == (lhs: ScoreEntry, rhs: ScoreEntry) -> Bool {
         return lhs.id == rhs.id
     }
-//    init(sequence:Int) {
-//        self.sequence = sequence
-//    }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -23,35 +20,6 @@ class ScoreEntry : Hashable {
         }
         return nil
     }
-}
-
-class Sampler {
-    var sampler:AVAudioUnitSampler = AVAudioUnitSampler()
-    var inited = false
-    
-//    init(sf2File:String) {
-//        guard inited==false else {
-//            return
-//        }
-//        inited = true
-//        engine.attach(sampler)
-//        engine.connect(sampler, to:Score.engine.mainMixerNode, format:Score.engine.mainMixerNode.outputFormat(forBus: 0))
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            do {
-//                //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
-//                if let url = Bundle.main.url(forResource:sf2File, withExtension:"sf2") {
-//                    try self.sampler.loadSoundBankInstrument(at: url, program: 0, bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-//                    Logger.logger.log("loaded SF2 for sampler \(sf2File)")
-//                }
-//                else {
-//                    Logger.logger.reportError("Cant load SF2 for sampler \(sf2File)")
-//                }
-//                
-//            } catch let error {
-//                Logger.logger.reportError("Sampler cant load sound bank for sampler \(sf2File)", error)
-//            }
-//        }
-//    }
 }
 
 class BarLine : ScoreEntry {
@@ -94,16 +62,6 @@ class Score : ObservableObject {
     init(timeSignature:TimeSignature, lines:Int) {
         self.timeSignature = timeSignature
         staffLineCount = lines + (2*ledgerLineCount)
-        //print("----Score init", self.id)
-        //engine.attach(reverb)
-        //reverb.loadFactoryPreset(.largeHall2)
-        //reverb.loadFactoryPreset(
-        //reverb.wetDryMix = 50
-        
-        // Connect the nodes.
-        //engine.connect(sampler, to: reverb, format: nil)
-        //engine.connect(reverb, to: engine.mainMixerNode, format:engine.mainMixerNode.outputFormat(forBus: 0))
-        //print("\n   ==Score created:", self.id)
     }
     
     func getAllTimeSlices() -> [TimeSlice] {
@@ -164,70 +122,9 @@ class Score : ObservableObject {
             }
             scoreCtr += 1
         }
-        print("---------------------> Score diff", result)
+        print("---------------------> Score diff", result ?? 0)
         return result
     }
-
-    // return the first entry and timeslice index of where the scores differ
-//    func GetFirstDifferentTimeSliceOld(compareScore:Score) -> (Int,Int)? {
-//        let compareEntries = compareScore.scoreEntries
-//        let compareIndex = 0
-//        var result:(Int,Int)? = nil
-//        var entryCtr = 0
-//        var timeSliceCtr = 0
-//
-//        for scoreEntry in self.scoreEntries {
-//            if !(scoreEntry is TimeSlice) {
-//                entryCtr += 1
-//                continue
-//            }
-//
-//            if compareEntries.count <= compareIndex {
-//                result = (entryCtr, timeSliceCtr)
-//                break
-//            }
-//
-//            let compareEntry = compareEntries[entryCtr]
-//            let compareNotes = compareEntry.getNotes()
-//            let scoreNotes = scoreEntry.getNotes()
-//
-//            if compareNotes == nil && scoreNotes == nil {
-//                result = (entryCtr, timeSliceCtr)
-//                break
-//            }
-//
-//            if scoreNotes == nil {
-//                result = (entryCtr, timeSliceCtr)
-//                break
-//            }
-//            if scoreNotes!.count == 0 {
-//                result = (entryCtr, timeSliceCtr)
-//                break
-//            }
-////            if notes![0].midiNumber != compareNotes![0].midiNumber {
-////                result = timeSliceCtr
-////                break
-////            }
-//
-//            if timeSliceCtr == self.scoreEntries.count - 1 {
-//                //last note just has to be semibreve (1/2 note) or longer, any other note must be an exact note value match
-//                if compareNotes![0].value < Note.VALUE_HALF {
-//                    result = (entryCtr, timeSliceCtr)
-//                    break
-//                }
-//            }
-//            else {
-//                if scoreNotes![0].value != compareNotes![0].value {
-//                    result = (entryCtr, timeSliceCtr)
-//                    break
-//                }
-//            }
-//            entryCtr += 1
-//            timeSliceCtr += 1
-//        }
-//        print("---------------------> Score first difference", result, entryCtr, timeSliceCtr)
-//        return result
-//    }
     
     func setHiddenStaff(num:Int?) {
         DispatchQueue.main.async {
@@ -317,13 +214,6 @@ class Score : ObservableObject {
     }
     
     func addBarLine() { //atScoreEnd:Bool? = false) {
-//        var barLine:BarLine?
-//        if let atScoreEnd = atScoreEnd {
-//            barLine = (BarLine(atScoreEnd: atScoreEnd))
-//        }
-//        else {
-//            barLine = BarLine(atScoreEnd: false)
-//        }
         let barLine = BarLine()
         barLine.sequence = self.scoreEntries.count
         self.scoreEntries.append(barLine)
@@ -336,11 +226,13 @@ class Score : ObservableObject {
         }
     }
     
-    func addStemCharaceteristics() {
+    func addStemCharaceteristicsOld() {
         var ctr = 0
         var underBeam = false
         var previousNote:Note? = nil
-
+        if self.scoreEntries.count >= 4 {
+            print("TEST", self.scoreEntries.count)
+        }
         for entry in self.scoreEntries {
             if entry is TimeSlice {
                 let ts = (entry as! TimeSlice)
@@ -350,7 +242,7 @@ class Score : ObservableObject {
                 let note = ts.notes[0]
                 note.beamType = .none
                 note.sequence = ctr
-                note.stemLength = 3.5
+                //note.stemLength = 3.5
                 if note.value == Note.VALUE_QUAVER {
                     if !underBeam {
                         note.beamType = .start
@@ -384,6 +276,69 @@ class Score : ObservableObject {
         }
     }
     
+    func addStemCharaceteristics() {
+        var ctr = 0
+        var underBeam = false
+        var previousNote:Note? = nil
+        //if self.scoreEntries.count >= 4 {
+            print("addStemCharaceteristics TEST", self.scoreEntries.count)
+        //}
+        let timeSlices = self.getAllTimeSlices()
+        for timeSlice in timeSlices {
+            if timeSlice.notes.count == 0 {
+                continue
+            }
+            let note = timeSlice.notes[0]
+            note.beamType = .none
+            note.sequence = ctr
+            if note.value == Note.VALUE_QUAVER {
+                if !underBeam {
+                    note.beamType = .start
+                    underBeam = true
+                }
+                else {
+                    note.beamType = .middle
+                }
+            }
+            else {
+                if underBeam {
+                    if let beamEndNote = previousNote {
+                        if beamEndNote.value == Note.VALUE_QUAVER {
+                            beamEndNote.beamType = .end
+                        }
+                        //update the notes in under the quaver beam with the end note of the beam
+                        var idx = ctr - 1
+                        while idx >= 0 {
+                            let prevNote = timeSlices[idx].notes[0]
+                            if prevNote.value != Note.VALUE_QUAVER {
+                                break
+                            }
+                            prevNote.beamEndNote = beamEndNote
+                            idx = idx - 1
+                        }
+     
+                    }
+                    underBeam = false
+                }
+            }
+            previousNote = note
+            ctr += 1
+        }
+        
+//        if underBeam {
+//            if let previous = previousNote {
+//                if previous.value == Note.VALUE_QUAVER {
+//                    previous.beamType = .end
+//                }
+//            }
+//        }
+        for ts in timeSlices {
+            let note = ts.notes[0]
+            print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
+        }
+    }
+    
+
     func playChord(chord: Chord, arpeggio: Bool? = nil) {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             //let t = Score.maxTempo - tempo
@@ -395,16 +350,11 @@ class Score : ObservableObject {
                 //index += 1
                 if let arp = arpeggio {
                     if arp  {
-                        //if t > 0 {
-                            usleep(useconds_t(playTempo * 500000))
-                        //}
+                        usleep(useconds_t(playTempo * 500000))
                     }
                 }
 
             }
-            //usleep(500000)
         }
     }
-    
-
 }

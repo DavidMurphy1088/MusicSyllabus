@@ -15,7 +15,7 @@ class Metronome: ObservableObject {
     let midiNoteEngine = AVAudioEngine()
 
     var allowChangeTempo:Bool = false
-    let tempoMinimumSetting = 60
+    let tempoMinimumSetting = 40
     let tempoMaximumSetting = 120
 
     var clapCnt = 0
@@ -30,12 +30,11 @@ class Metronome: ObservableObject {
     //the shortest note value which is used to set the metronome's thread firing frequency
     private let shortestNoteValue = Note.VALUE_QUAVER
     
-    //private var clapURL:URL? = nil
     private let speech = SpeechSynthesizer.shared
     var speechEnabled = false
     
     static func getMetronomeWithCurrentSettings() -> Metronome {
-        print("** Get Metronome, Current Settings, ID:", Metronome.shared.id, Metronome.shared.tempo)
+        //print("** Get Metronome, Current Settings, ID:", Metronome.shared.id, Metronome.shared.tempo)
         let met = Metronome.shared
         met.isTickingWithScorePlay = false
         return met
@@ -44,7 +43,7 @@ class Metronome: ObservableObject {
     static func getMetronomeWithStandardSettings() -> Metronome {
         let met = Metronome.getMetronomeWithSettings(initialTempo: 60, allowChangeTempo: false)
         met.isTickingWithScorePlay = false
-        print("** Get Metronome, Standard Settings, ID:", met.id, met.tempo)
+        //print("** Get Metronome, Standard Settings, ID:", met.id, met.tempo)
         return met
     }
 
@@ -52,7 +51,7 @@ class Metronome: ObservableObject {
         shared.setTempo(tempo: initialTempo)
         shared.allowChangeTempo = allowChangeTempo
         shared.isTickingWithScorePlay = false
-        print("** Get Metronome, WithSettings, ID:", Metronome.shared.id, Metronome.shared.tempo)
+        //print("** Get Metronome, WithSettings (Specific), ID:", Metronome.shared.id, Metronome.shared.tempo)
         return Metronome.shared
     }
     
@@ -68,32 +67,33 @@ class Metronome: ObservableObject {
         var samplerFileName = soundFontNames[0].1
         
         AppDelegate.startAVAudioSession(category: .playback)
-        //do {
-            midiSampler = AVAudioUnitSampler()
-            midiNoteEngine.attach(midiSampler)
-            midiNoteEngine.connect(midiSampler, to:midiNoteEngine.mainMixerNode, format:midiNoteEngine.mainMixerNode.outputFormat(forBus: 0))
-            //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
-            
-            if let url = Bundle.main.url(forResource:samplerFileName, withExtension:"sf2") {
-                for i in 0..<256 {
-                    do {
-                        try midiSampler.loadSoundBankInstrument(at: url, program: UInt8(i), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
-                        break
-                    }
-                    catch {
-                    }
+        midiSampler = AVAudioUnitSampler()
+        midiNoteEngine.attach(midiSampler)
+        midiNoteEngine.connect(midiSampler, to:midiNoteEngine.mainMixerNode, format:midiNoteEngine.mainMixerNode.outputFormat(forBus: 0))
+        //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
+        
+        if let url = Bundle.main.url(forResource:samplerFileName, withExtension:"sf2") {
+            for i in 0..<256 {
+                do {
+                    try midiSampler.loadSoundBankInstrument(at: url, program: UInt8(i), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+                    break
                 }
+                catch {
+                }
+            }
 
-            }
-            else {
-                Logger.logger.reportError(self, "Cannot loadSoundBankInstrument \(samplerFileName)")
-            }
+        }
+        else {
+            Logger.logger.reportError(self, "Cannot loadSoundBankInstrument \(samplerFileName)")
+        }
+        
         do {
             try midiNoteEngine.start()
         }
         catch let error {
             Logger.logger.reportError(self, "Cant create MIDI sampler \(error.localizedDescription)")
         }
+        
         return midiSampler
     }
     
@@ -140,7 +140,6 @@ class Metronome: ObservableObject {
         if tempo > 200 {
         }
         DispatchQueue.main.async {
-            print(" ** ** Metronome set tempo", tempo)
             self.tempoName = name
             self.tempo = tempo
         }
@@ -171,26 +170,14 @@ class Metronome: ObservableObject {
         setTempo(tempo: self.tempo)
     }
     
-//    func startTicking(numberOfTicks:Int? = nil, onDone: (()->Void)? = nil) {
-//        if !self.isThreadRunning {
-//            //self.startAudio(needMidi: false)
-//            self.startThreadRunning(numberOfTicks: numberOfTicks, onDone: onDone)
-//        }
-//        self.isTicking = true
-//    }
-    
     func stopPlayingScore() {
         self.score = nil
-//        if let note = note {
-//            midiSampler?.stopNote(UInt8(note), onChannel: 0)
-//        }
     }
 
     private func startThreadRunning(audioTicker:AudioSamplerPlayer?, audioSamplerPlayerMIDI:AVAudioUnitSampler?, numberOfTicks:Int? = nil, onDone: (()->Void)? = nil) {
         self.isThreadRunning = true
         
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            var audioPlayerIdx = 0
             var loopCtr = 0
             var keepRunning = true
             var playSynched = false
@@ -221,7 +208,7 @@ class Metronome: ObservableObject {
                 if playSynched {
                     if let score = score {
                         if let timeSlice = nextTimeSlice {
-                            var channel = 0
+                            let channel = 0
                             var noteInChordNum = 0
                             for note in timeSlice.notes {
                                 if currentNoteDuration < note.value {

@@ -54,7 +54,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         
         self.score.setStaff(num: 0, staff: staff)
-        var chord:Chord = Chord()
+        let chord:Chord = Chord()
         if let entries = exampleData {
             for entry in entries {
                 if entry is Note {
@@ -194,7 +194,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
 
     private var score:Score
     private let imageSize = Double(32)
-    private let metronome = Metronome.getMetronomeWithCurrentSettings()
+    private let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
     private var noteIsSpace:Bool
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {

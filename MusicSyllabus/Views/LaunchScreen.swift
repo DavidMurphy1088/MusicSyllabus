@@ -55,6 +55,12 @@ struct LaunchScreenView: View {
         self.durationSeconds = launchTimeSecs
     }
 
+    func appVersion() -> String {
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        return "\(appVersion).\(buildNumber)"
+    }
+    
     @ViewBuilder
     private var image: some View {  // Mark 3
         GeometryReader { geo in
@@ -75,9 +81,11 @@ struct LaunchScreenView: View {
                 }
                 VStack(alignment: .center) {
                     Text("NZMEB Musicianship Trainer")
+                        //.font(.headline)
+                        .font(.title)
                         .position(x: geo.size.width * 0.5, y: geo.size.height * 0.85)
-                        //.font(.title)
                         .opacity(self.opacity.imageOpacity)
+                    Text("Version \(appVersion())")
                 }
             }
         }
