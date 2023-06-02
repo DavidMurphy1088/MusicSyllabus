@@ -2,7 +2,6 @@ import SwiftUI
 import CoreData
 import MessageUI
 
-
 struct StaffLinesView: View {
     @ObservedObject var staff:Staff
     var lineSpacing:Int
@@ -120,89 +119,114 @@ struct StaffView: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
-        ZStack (alignment: .leading) {
-            
+        ZStack { // The staff lines view and everything else on the staff share the same space
             StaffLinesView(staff: staff, lineSpacing: lineSpacing)
-
-            HStack(spacing: 0) {
-                //clefs
-                
-                HStack {
-                    if staff.linesInStaff != 1 {
-                        HStack {
-                            if staff.type == StaffType.treble {
-                                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
-                            }
-                            else {
-                                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
-                            }
-                        }
-                        .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
-                        .frame(width: clefWidth())
-                        //.border(Color.green)
-                    
-                        //Key signature
-                        if score.key.keySig.accidentalCount > 0 {
-                            GeometryReader { geometry in
-                                let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
-                                Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
-                                    .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
-                                //.border(Color.blue)
-                            }
-                        }
-                    }
-                }
-                
+            HStack(spacing: 0)  {
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
-                  //.border(Color.red)
-
-                ForEach(score.scoreEntries, id: \.self) { entry in
-                    ZStack {
-                        if entry is TimeSlice {
-                            ForEach(getNotes(entry: entry), id: \.self) { note in
-                                VStack {
-                                    GeometryReader { geoforNote in
-                                        if note.staff == nil || note.staff == staff.staffNum {
-                                            NoteView(staff: staff,
-                                                     note: note,
-                                                     noteWidth: Double(lineSpacing) * 1.2,
-                                                     lineSpacing: lineSpacing)
-                                        }
-                                    }
-                                }
-                            }
-                            if let tag = (entry as! TimeSlice).tag {
-                                if staff.staffNum == 0 {
-                                    VStack {
-                                        Spacer()
-                                        Text(tag)
-                                            //.fontDesign(.serif)
-                                            .font(.custom("Times New Roman", size: Double(lineSpacing) * 2.0)).bold()//.foregroundColor(.blue).padding()
-                                    }
-                                }
-                            }
-                       }
-                    }
-
-                    if entry is BarLine {
-                        BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
-                    }
-                }
-                
-                //Space between last time slice and the end of the staff
-                VStack {
-                    Text("")
-                }
-                .frame(width: Double(lineSpacing) * 1.0)
                 //.border(Color.red)
+                NoteStemsView(score: score, staff: staff, lineSpacing: Double(lineSpacing) * 1.2)
             }
-            .coordinateSpace(name: "Staff1")
-        }
-        //.coordinateSpace(name: "Staff3")
-        //.border(Color.orange)
         }
     }
+    
+//    var body1: some View {
+//        GeometryReader { geometry in
+//        ZStack (alignment: .leading) { // The staff lines view and everything else on the staff share the same space
+//            
+//            StaffLinesView(staff: staff, lineSpacing: lineSpacing)
+//
+//            HStack(spacing: 0) {
+//                //clefs
+//                
+//                HStack {
+//                    if staff.linesInStaff != 1 {
+//                        HStack {
+//                            if staff.type == StaffType.treble {
+//                                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+//                            }
+//                            else {
+//                                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+//                            }
+//                        }
+//                        .padding(.bottom, staff.type == .treble ? Double(lineSpacing) * 1.3 : Double(lineSpacing) * 0.8)
+//                        .frame(width: clefWidth())
+//                        //.border(Color.green)
+//
+//                        //Key signature
+//                        if score.key.keySig.accidentalCount > 0 {
+//                            GeometryReader { geometry in
+//                                let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
+//                                Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
+//                                    .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
+//                                //.border(Color.blue)
+//                            }
+//                        }
+//                    }
+//                }
+//                
+//                TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
+//                  //.border(Color.red)
+//
+//                ZStack { // The sequence of notes view and the stem drawing view share the same space
+//                    let frameWidth = (geometry.size.width * 0.75) / Double(score.scoreEntries.count)
+//                    
+//                    HStack(spacing: 0) { // Each timeslice entry lays out in an HStack, spacing:0 ensures no space between the note view frames
+//                        ForEach(score.scoreEntries, id: \.self) { entry in
+//                            if entry is TimeSlice {
+//                                ZStack { // Each note frame in the timeslice shares the same same space
+//                                    ForEach(getNotes(entry: entry), id: \.self) { note in
+//                                        //VStack {
+//                                            //GeometryReader { geoforNote in
+//                                                if note.staff == nil || note.staff == staff.staffNum {
+//                                                    NoteView(staff: staff,
+//                                                             note: note,
+//                                                             noteWidth: Double(lineSpacing) * 1.2,
+//                                                             lineSpacing: lineSpacing)
+//                                                }
+//                                            //}
+//                                            //.padding(.all, 0)
+//                                        //}
+//                                    }
+//                                    if let tag = (entry as! TimeSlice).tag {
+//                                        if staff.staffNum == 0 {
+//                                            VStack {
+//                                                Spacer()
+//                                                Text(tag)
+//                                                //.fontDesign(.serif)
+//                                                    .font(.custom("Times New Roman", size: Double(lineSpacing) * 2.0)).bold()//.foregroundColor(.blue).padding()
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                .border(Color.green)
+//                            }
+//
+//                            if entry is BarLine {
+//                                BarLineView(entry:entry, staff: staff, lineSpacing: lineSpacing)
+//                                //.border(Color.red)
+//                            }
+//                        }
+//                        .frame(width: frameWidth) //, height: 150)
+//                        .padding(.all, 0)
+//                        .border(Color.green)
+//                    }
+//                    
+//                    NoteStemsView(score: score, frameWidth: frameWidth)
+//                }
+//                
+//                //Space between last time slice and the end of the staff
+//                VStack {
+//                    Text("e ")
+//                }
+//                //.frame(width: Double(lineSpacing) * 1.0)
+//                //.border(Color.red)
+//            }
+//            .coordinateSpace(name: "Staff1")
+//        }
+//        //.coordinateSpace(name: "Staff3")
+//        //.border(Color.orange)
+//        }
+//    }
         
 }
 

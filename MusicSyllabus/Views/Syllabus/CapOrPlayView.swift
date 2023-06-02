@@ -94,7 +94,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         }
         self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
         //print("\n======ClapOrPlayView init name:", contentSection.name, "score ID:", score.id, answer.state)
-        score.addStemCharaceteristics() fix - shuld not be here......
     }
 
     func getInstruction(mode:QuestionMode) -> String {

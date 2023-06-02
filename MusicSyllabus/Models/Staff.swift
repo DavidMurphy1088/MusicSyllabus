@@ -178,7 +178,8 @@ class Staff : ObservableObject {
      }
     
     //Tell a note how to display itself
-    func getNoteViewData(noteValue:Int) -> (Int, String, [Int]) {
+    //func getNoteViewData(noteValue:Int) -> (Int, String, [Int]) {
+    func getNoteViewData(noteValue:Int) -> (Int, [Int]) {
         var offset = 0
         if self.type == .treble {
             offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
@@ -187,7 +188,7 @@ class Staff : ObservableObject {
             offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
         }
         var ledgerLines:[Int] = []
-        return (offset, "X", ledgerLines)
+        return (offset, ledgerLines)
     }
     
 }

@@ -38,7 +38,7 @@ struct TestView: View {
     var body: some View {
         //GeometryReader { geometry in
         VStack {
-            Text("Test")
+            Text("--Test View--")
             ScoreView(score: score)
         }
         //}
