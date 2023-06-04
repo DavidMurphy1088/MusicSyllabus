@@ -4,6 +4,45 @@ import AVFoundation
 
 //https://mammothmemory.net/music/sheet-music/reading-music/treble-clef-and-bass-clef.html
 
+//used to record view positions of notes as they are drawn so that a 2nd pass can draw quaver beams to the right points
+class NoteLayoutPositions: ObservableObject {
+    @Published var positions:[Note: CGRect] = [:]
+    @Published var updated = 0
+    var id = 0
+    
+    static private let shared = NoteLayoutPositions()
+    static var nextId = 0
+
+    static func reset() {
+        DispatchQueue.main.async {
+            shared.positions = [:]
+        }
+    }
+    
+    static func getShared() -> NoteLayoutPositions {
+        let np = NoteLayoutPositions()
+        np.id = nextId
+        nextId += 1
+        return np
+    }
+    
+    func storePosition(note: Note, rect: CGRect, cord:String) {
+        if note.beamType != .none {
+            let rectCopy = CGRect(origin: CGPoint(x: rect.minX, y: rect.minY), size: CGSize(width: rect.size.width, height: rect.size.height))
+            DispatchQueue.main.async {
+                sleep(UInt32(0.25))
+                self.positions[note] = rectCopy //rect
+                self.updated += 1
+                print("---------->NoteLayoutPositions id", self.id, "updated noteSeq", note.sequence, "beam", note.beamType,
+                      "count", self.positions.count, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))//, "\t\t", rect.size.width, rect.size.height)
+//                for k in self.positions.keys {
+//                    print("  key", k.id, k.sequence)
+//                }
+            }
+        }
+    }
+}
+
 enum StaffType {
     case treble
     case bass
@@ -46,6 +85,8 @@ class NoteOffsetsInStaffByKey {
 
 class Staff : ObservableObject {
     let id = UUID()
+    @ObservedObject var noteLayoutPositions:NoteLayoutPositions = NoteLayoutPositions.getShared()
+
     @Published var publishUpdate = 0
     let score:Score
     var type:StaffType
@@ -56,7 +97,6 @@ class Staff : ObservableObject {
     var staffOffsets:[Int] = []
     var noteStaffPlacement:[NoteStaffPlacement]=[]
     var linesInStaff:Int
-    var notePositions = NotePositions()
     
     init(score:Score, type:StaffType, staffNum:Int, linesInStaff:Int) {
         self.score = score

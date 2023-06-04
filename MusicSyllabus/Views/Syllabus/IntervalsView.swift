@@ -84,6 +84,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                 interval.isIncluded = mode == .intervalAural
             }
         }
+        score.addStemCharaceteristics()
     }
     
     var selectIntervalView : some View {
@@ -97,14 +98,13 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     }) {
                         Text(interval.name)
                         //.foregroundColor(.white)
-                            .padding()
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.black, lineWidth: 1)
                                     .background(selectedIntervalIndex == index ? Color(.systemTeal) : Color.clear)
                             )
                     }
-                    .buttonStyle(PlainButtonStyle())
                     .padding()
                 }
             }
@@ -125,12 +125,13 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                             metronome.playScore(score: score, onDone: {self.scoreWasPlayed = true})
                         }) {
                             Text("Hear Interval")
+                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                         }
                         .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                        )
-                        .background(UIGlobals.backgroundColor)
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+//                        )
+//                        .background(UIGlobals.backgroundColor)
                         .padding()
                     }
                 }
@@ -139,10 +140,10 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     VStack {
                         selectIntervalView.padding()
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                    )
-                    .background(UIGlobals.backgroundColor)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+//                    )
+//                    .background(UIGlobals.backgroundColor)
                     .padding()
                 }
                 .disabled(mode == .intervalAural && scoreWasPlayed == false)
@@ -168,6 +169,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                             }
                         }) {
                             Text("Check Your Answer")
+                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                         }
                         .padding()
                     }
@@ -239,6 +241,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
                         metronome.playScore(score: score)
                     }) {
                         Text("Hear Interval")
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                     }
                     .padding()
                 }

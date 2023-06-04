@@ -4,7 +4,7 @@ import MessageUI
  
 struct ScoreView: View {
     @ObservedObject var score:Score
-    let lineSpacing:Int = UIDevice.current.userInterfaceIdiom == .phone ? 10 : 16 //was 10 , TODO dont hard code
+    let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : 16.0 //was 10 , TODO dont hard code
 
     var body: some View {
         VStack {
@@ -37,7 +37,7 @@ struct ScoreView: View {
             ForEach(score.getStaff(), id: \.self.type) { staff in
                 if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
                     StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
-                        .frame(height: CGFloat(Double(score.staffLineCount * lineSpacing)))  //fixed size of height for all staff lines + ledger lines
+                        .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing))  //fixed size of height for all staff lines + ledger lines
                 }
             }
             .padding(.vertical, CGFloat(lineSpacing) * 2.0)

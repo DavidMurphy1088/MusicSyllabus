@@ -10,7 +10,7 @@
 		7B0E05312A25E84C00CFD554 /* AudioSamplerPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */; };
 		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
 		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
-		7B1CF50A2A293F8B00A8BD46 /* NoteStemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1CF5092A293F8B00A8BD46 /* NoteStemsView.swift */; };
+		7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */; };
 		7B258C912A285B94003CB91C /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* TestView.swift */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
@@ -75,7 +75,7 @@
 		7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSamplerPlayer.swift; sourceTree = "<group>"; };
 		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
 		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
-		7B1CF5092A293F8B00A8BD46 /* NoteStemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteStemsView.swift; sourceTree = "<group>"; };
+		7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffNotesView.swift; sourceTree = "<group>"; };
 		7B258C902A285B94003CB91C /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
@@ -230,13 +230,13 @@
 				7B25F8372A04D57D00F9552E /* NoteView.swift */,
 				7B6E6F3C2A03B2B0001723C7 /* PianoView.swift */,
 				7B55CEC32A03E480009F9B5D /* ScoreView.swift */,
+				7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */,
 				7B3D956B2A10D4AB007CA60D /* StaffView.swift */,
 				7B25F8392A0657CC00F9552E /* Syllabus */,
 				7B6C32872A177A67004E2FA6 /* TappingView.swift */,
 				7B258C902A285B94003CB91C /* TestView.swift */,
 				7B519FA42A1837BD00A105E9 /* TopicsNavigationView.swift */,
 				7B43C69E2A138CAE00BBB027 /* UIGlobals.swift */,
-				7B1CF5092A293F8B00A8BD46 /* NoteStemsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -365,7 +365,7 @@
 				7B5EEDFB2A025E870007FF7E /* KeySignature.swift in Sources */,
 				7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */,
 				7B61A9FF2A19A3810058A090 /* ViewProtocol.swift in Sources */,
-				7B1CF50A2A293F8B00A8BD46 /* NoteStemsView.swift in Sources */,
+				7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */,
 				7BF9B9C92A02618700121EBA /* SoundGenerator.swift in Sources */,
 				7B258C912A285B94003CB91C /* TestView.swift in Sources */,
 				7B5EEDF92A025E440007FF7E /* Key.swift in Sources */,

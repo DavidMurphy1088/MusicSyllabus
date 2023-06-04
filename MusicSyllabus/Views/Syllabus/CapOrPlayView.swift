@@ -93,6 +93,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             }
         }
         self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
+        score.addStemCharaceteristics()
         //print("\n======ClapOrPlayView init name:", contentSection.name, "score ID:", score.id, answer.state)
     }
 
@@ -131,12 +132,8 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 metronome.playScore(score: score, onDone: {self.rhythmHeard = true})
                             }) {
                                 Text("Hear the rhythm")
-                                    .padding()
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                             }
-                            .overlay(
-                                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                            )
-                            .background(UIGlobals.backgroundColor)
                             .padding()
                         }
                         else {
@@ -149,23 +146,24 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                         .padding()
                             
                             if answer.state != .recording {
-                                Button(action: {
-                                    answer.setState(.recording)
-                                    if mode == .rhythmClap || mode == .rhythmEchoClap {
-                                        self.isTapping = true
-                                        isTapping = true
-                                        tapRecorder.startRecording(timeSignature: score.timeSignature, metronomeLeadIn: false)
-                                    } else {
-                                        audioRecorder.startRecording()
-                                    }
-                                }) {
-                                    Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
-                                        .onAppear() {
-                                            tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
+                                if rhythmHeard {
+                                    Button(action: {
+                                        answer.setState(.recording)
+                                        if mode == .rhythmClap || mode == .rhythmEchoClap {
+                                            self.isTapping = true
+                                            isTapping = true
+                                            tapRecorder.startRecording(timeSignature: score.timeSignature, metronomeLeadIn: false)
+                                        } else {
+                                            audioRecorder.startRecording()
                                         }
+                                    }) {
+                                        Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
+                                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius).padding()
+                                            .onAppear() {
+                                                tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
+                                            }
+                                    }
                                 }
-                                .padding()
-                                .disabled(!self.rhythmHeard)
                             }
                             if answer.state == .recording {
                                 Button(action: {
@@ -180,6 +178,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                     }
                                 }) {
                                     Text("Stop Recording")
+                                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
                                 }.padding()
                             }
   
@@ -187,8 +186,8 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 tappingView.padding()
                             }
 
-                          
                             //if answer.state == .recorded {
+                            if answer.state == .recorded {
                                 Button(action: {
                                     answer.setState(.submittedAnswer)
                                     score.setHiddenStaff(num: nil)
@@ -197,10 +196,11 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 }) {
                                     //Stop the UI jumping around when answer.state changes state
                                     Text(answer.state == .recorded ? "Check Your Answer" : "")
-                                        .padding()
+                                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
                                 }
                                 .padding()
-                                Text("  ").padding()
+                            }
+                            Text("  ").padding()
                             //}
                         }
                         .overlay(
@@ -291,6 +291,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                         metronome.stopPlayingScore()
                     }) {
                         Text("Stop Playing")
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                         Image(systemName: "stop.circle")
                             .resizable()
                             .frame(width: 24, height: 24)
@@ -299,7 +300,8 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                 }
                 else {
                     Text("Hear the Correct \((mode == .rhythmClap || mode == .rhythmEchoClap)  ? "Rhythm" : "Playing")")
-                        .buttonStyle(DefaultButtonStyle())
+                        //.buttonStyle(DefaultButtonStyle())
+                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                 }
             }
             .padding()
@@ -324,6 +326,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                         metronome.stopPlayingScore()
                     }) {
                         Text("Stop Playing")
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                         Image(systemName: "stop.circle")
                             .resizable()
                             .frame(width: 24, height: 24)
@@ -332,7 +335,8 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                 }
                 else {
                     Text("Hear Your \((mode == .rhythmClap || mode == .rhythmEchoClap) ? "Rhythm" : "Playing")")
-                        .font(.system(.body))
+                        //.font(.system(.body))
+                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                 }
             }
             .padding()
@@ -435,7 +439,6 @@ struct ClapOrPlayView: View {
         self.contentSection = contentSection
         presentQuestionView = ClapOrPlayPresentView(contentSection: contentSection, score: self.score, answer: answer, mode: mode)
         answerQuestionView = ClapOrPlayAnswerView(contentSection: contentSection, score: score, answer: answer, mode: mode)
-        //print("\n======QuestionAndAnswerView init name:", contentSection.name, "self ID", id, "score ID:", score.id)
     }
 
     var body: some View {

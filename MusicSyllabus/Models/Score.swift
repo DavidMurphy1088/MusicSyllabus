@@ -225,57 +225,7 @@ class Score : ObservableObject {
             staff.clear()
         }
     }
-    
-    func addStemCharaceteristicsOld() {
-        var ctr = 0
-        var underBeam = false
-        var previousNote:Note? = nil
-        if self.scoreEntries.count >= 4 {
-            print("TEST", self.scoreEntries.count)
-        }
-        for entry in self.scoreEntries {
-            if entry is TimeSlice {
-                let ts = (entry as! TimeSlice)
-                if ts.notes.count == 0 {
-                    continue
-                }
-                let note = ts.notes[0]
-                note.beamType = .none
-                note.sequence = ctr
-                //note.stemLength = 3.5
-                if note.value == Note.VALUE_QUAVER {
-                    if !underBeam {
-                        note.beamType = .start
-                        underBeam = true
-                    }
-                    else {
-                        note.beamType = .middle
-                    }
-                }
-                else {
-                    if underBeam {
-                        if let previous = previousNote {
-                            if previous.value == Note.VALUE_QUAVER {
-                                previous.beamType = .end
-                            }
-                        }
-                        underBeam = false
-                    }
-                }
-                previousNote = note
-                ctr += 1
-                //print("  ===Score", note.sequence, note.midiNumber, note.beamType)
-            }
-        }
-        if underBeam {
-            if let previous = previousNote {
-                if previous.value == Note.VALUE_QUAVER {
-                    previous.beamType = .end
-                }
-            }
-        }
-    }
-    
+
     func addStemCharaceteristics() {
         var ctr = 0
         var underBeam = false
@@ -334,7 +284,7 @@ class Score : ObservableObject {
 //        }
         for ts in timeSlices {
             let note = ts.notes[0]
-            print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
+            //print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
         }
     }
     

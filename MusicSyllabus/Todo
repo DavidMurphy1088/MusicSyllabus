@@ -1,13 +1,23 @@
 --TODO
-Echo Clap.Example 4 - no quavers
-Check Trello
-why is build 1.0.9 and on Test Flight 1.0.11
-intermittent - quaver beams not on student rhythm
-do a simple example to understand geometry
 
+spurios beams?
+- NO BEAMS IN CLAP ANSER MODE FOR STUDENT, 2 scoer viw using the same Layout static - fucked
+  
+Playing example
+- bass cleff shows rhythm notes for all but last bar. BE CARFUL - unles some notes are shown in this cleff the alignment is wrecked
+- last slice has a chord in the treble
+
+Metronome button???
+  
+REMOVE ALL border colors
+
+score.addStemCharaceteristics() disaster - this function should not be called by exmaples code but currenlty is requied. Calling as each note is added screws up beams
+
+why is build 1.0.9 and on Test Flight 1.0.11
+do a simple example to understand geometry
+make a view builder that can render all text in buttons in one style
 G Major triad wont display top D in base cleff
-minims more horz space on staff - good idea?
-make a grade #8 clap example?
+make a grade #5,8 clap example?
 
 --MID
 onDone score playing not called if metroom running with the playing

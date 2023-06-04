@@ -39,7 +39,6 @@ class Note : Hashable, Comparable, ObservableObject {
     var value:Double = Note.VALUE_QUARTER
     var isDotted:Bool = false
     var isOnlyRhythmNote = false
-    var stemUp:Bool
 
     var sequence:Int = 0 //the note's sequence position 
     var noteTag:NoteTag = .noTag
@@ -49,7 +48,8 @@ class Note : Hashable, Comparable, ObservableObject {
     var beamEndNote:Note? = nil
     
     static func == (lhs: Note, rhs: Note) -> Bool {
-        return lhs.midiNumber == rhs.midiNumber
+        //return lhs.midiNumber == rhs.midiNumber
+        return lhs.id == rhs.id
     }
     static func < (lhs: Note, rhs: Note) -> Bool {
         return lhs.midiNumber < rhs.midiNumber
@@ -68,7 +68,6 @@ class Note : Hashable, Comparable, ObservableObject {
             //self.value = Note.VALUE_HALF //NO NO
             self.isDotted = true
         }
-        self.stemUp = true
     }
     
     func setHilite(hilite: Bool) {
@@ -132,4 +131,43 @@ class Note : Hashable, Comparable, ObservableObject {
         }
         return closest
     }
+    
+    func getBeamStartNote(score:Score) -> Note {
+        let endNote = self
+        if endNote.beamType != .end {
+            return endNote
+        }
+        var result:Note? = nil
+        var idx = score.scoreEntries.count - 1
+        var foundEnd = false
+        while idx>=0 {
+            let ts = score.scoreEntries[idx]
+            if ts is TimeSlice {
+                let notes = ts.getNotes()
+                if let notes = notes {
+                    if notes.count > 0 {
+                        let note = notes[0]
+                        if note.sequence == endNote.sequence {
+                            foundEnd = true
+                        }
+                        else {
+                            if foundEnd && note.beamType == .start {
+                                result = note
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+            idx = idx - 1
+        }
+        if result == nil {
+            return endNote
+        }
+        else {
+            //print("===Start", note.sequence, "back to", result?.sequence)
+            return result!
+        }
+    }
+
 }

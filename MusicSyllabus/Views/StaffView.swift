@@ -4,7 +4,7 @@ import MessageUI
 
 struct StaffLinesView: View {
     @ObservedObject var staff:Staff
-    var lineSpacing:Int
+    var lineSpacing:Double
 
     var body: some View {
         GeometryReader { geometry in
@@ -12,7 +12,7 @@ struct StaffLinesView: View {
                 if staff.linesInStaff > 1 {
                     ForEach(-2..<3) { row in
                         Path { path in
-                            let y:Double = (geometry.size.height / 2.0) + Double(row * lineSpacing)
+                            let y:Double = (geometry.size.height / 2.0) + Double(row) * lineSpacing
                             path.move(to: CGPoint(x: 0, y: y))
                             path.addLine(to: CGPoint(x: geometry.size.width, y: y))
                         }
@@ -54,17 +54,9 @@ struct StaffLinesView: View {
 struct TimeSignatureView: View {
     @ObservedObject var staff:Staff
     var timeSignature:TimeSignature
-    var lineSpacing:Int
+    var lineSpacing:Double
     var clefWidth:Double
     
-//    func calculateFontSize(for size: CGSize) -> CGFloat {
-//        let width = size.width
-//        let height = size.height
-//
-//        // Calculate font size based on your desired logic
-//        let fontSize = min(width, height) * 0.2 // Adjust the multiplier to fit your needs
-//        return fontSize
-//    }
     var body: some View {
         let timeSignatureFontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
         let padding:Double = Double(lineSpacing) / 3.0
@@ -82,18 +74,52 @@ struct TimeSignatureView: View {
     }
 }
 
+struct CleffView: View {
+    @ObservedObject var staff:Staff
+    var lineSpacing:Double
+
+    var body: some View {
+        HStack {
+            if staff.type == StaffType.treble {
+                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+            }
+            else {
+                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
+            }
+        }
+    }
+}
+
+struct KeySignatureView: View {
+    @ObservedObject var score:Score
+    var lineSpacing:Double
+
+    var body: some View {
+        //if score.key.keySig.accidentalCount > 0 {
+        GeometryReader { geometry in
+            VStack {
+                let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
+                Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
+                    .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
+            }
+            //.border(Color.blue)
+        }
+        .frame(width: lineSpacing * 1.5)
+    }
+}
+
 struct StaffView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
 
-    var lineSpacing:Int
+    var lineSpacing:Double
     @State private var rotationId: UUID = UUID()
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var position: CGPoint = .zero
     var entryPositions:[Double] = []
     var totalDuration = 0.0
 
-    init (score:Score, staff:Staff, lineSpacing:Int) {
+    init (score:Score, staff:Staff, lineSpacing:Double) {
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
@@ -121,10 +147,17 @@ struct StaffView: View {
     var body: some View {
         ZStack { // The staff lines view and everything else on the staff share the same space
             StaffLinesView(staff: staff, lineSpacing: lineSpacing)
-            HStack(spacing: 0)  {
+            
+            HStack(spacing: 0) {
+                if staff.linesInStaff != 1 {
+                    CleffView(staff: staff, lineSpacing: lineSpacing)
+                    KeySignatureView(score: score, lineSpacing: lineSpacing)
+                }
+                
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
-                //.border(Color.red)
-                NoteStemsView(score: score, staff: staff, lineSpacing: Double(lineSpacing) * 1.2)
+                //    .border(Color.red)
+
+                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing) //// * 1.2)
             }
         }
     }
