@@ -16,7 +16,7 @@ struct BarLineView: View {
                 .fill(Color.black)
                 .frame(width: 1.0, height: 4.0 * Double(lineSpacing))
                 .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                .border(Color.green)
+                //.border(Color.green)
         }
         .frame(maxWidth: Double(lineSpacing)  * 1.0)
         //.border(Color.red)
@@ -35,14 +35,14 @@ struct NoteView: View {
         self.staff = staff
         self.note = note
         self.noteWidth = noteWidth
-        self.color = Color.black //Color.blue
+        self.color = Color.black 
         self.lineSpacing = lineSpacing
         self.offsetFromStaffMiddle = offsetFromStaffMiddle
     }
     
-    func log() {
-        print ("----->NoteView", note.midiNumber, note.staffNum, "staff", staff.type)
-    }
+//    func log() {
+//       // print ("----->NoteView", note.midiNumber, note.staffNum, "staff", staff.type)
+//    }
     
     //cause notes that are set for specifc staff to be tranparent on other staffs
     func color(note:Note) -> Color {

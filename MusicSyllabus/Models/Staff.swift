@@ -4,71 +4,32 @@ import AVFoundation
 
 //https://mammothmemory.net/music/sheet-music/reading-music/treble-clef-and-bass-clef.html
 
-//used to record view positions of notes as they are drawn so that a 2nd pass can draw quaver beams to the right points
+//used to record view positions of notes as they are drawn by a view so that a 2nd drwing pass can draw quaver beams to the right points
 class NoteLayoutPositions: ObservableObject {
     @Published var positions:[Note: CGRect] = [:]
-    @Published var updated = 0
+    //@Published var updated = 0
     var id:Int
-    
-    static private var shared:[NoteLayoutPositions] = []
-    
-    static private var shared0 = NoteLayoutPositions(id: 0)
-    static private var shared1 = NoteLayoutPositions(id: 1)
-    static private var shared2 = NoteLayoutPositions(id: 2)
-    static private var shared3 = NoteLayoutPositions(id: 3)
-
     static var nextId = 0
     
-    static func setup() {
-        for i in 0...20 {
-            shared.append(NoteLayoutPositions(id: i))
-        }
-    }
-
     init(id:Int) {
         self.id = id
     }
     
     static func getShared() -> NoteLayoutPositions {
-        print("======================>NoteLayoutPositions getShared()", nextId)
-        var lp:NoteLayoutPositions?
-        switch nextId % 4 {
-        case 0:
-            lp = shared0
-        case 1:
-            lp = shared0
-        case 2:
-            lp = shared0
-        case 3:
-            lp = shared0
-
-        default:
-            print("======================>NoteLayoutPositions NO POSTIONS, EXITING")
-            exit(0)
-        }
+        //print("======================>NoteLayoutPositions getShared()", nextId)
+        let lp = NoteLayoutPositions(id: nextId)
         nextId += 1
-        return lp!
-    }
-    
-    static func reset() {
-        DispatchQueue.main.async {
-            print("======================>NoteLayoutPositions Reset id", shared1.id)
-            shared1.positions = [:]
-        }
+        return lp
     }
     
     func storePosition(note: Note, rect: CGRect, cord:String) {
         if note.beamType != .none {
             let rectCopy = CGRect(origin: CGPoint(x: rect.minX, y: rect.minY), size: CGSize(width: rect.size.width, height: rect.size.height))
-            print("---------->NoteLayoutPositions::storePosition Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count, "\tbeam:", note.beamType, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))
+//            print("---------->NoteLayoutPositions::storePosition Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count, "\tbeam:", note.beamType, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))
             DispatchQueue.main.async {
-                sleep(UInt32(2.25))
+                sleep(UInt32(0.25))
                 self.positions[note] = rectCopy //rect
-                self.updated += 1
-                print("  ---------->NoteLayoutPositions::storePosition published Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count)
-//                for k in self.positions.keys {
-//                    print("  key", k.id, k.sequence)
-//                }
+                //print("  ---------->NoteLayoutPositions::storePosition published Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count)
             }
         }
     }
@@ -118,6 +79,8 @@ class Staff : ObservableObject {
     let id = UUID()
     //@Published var noteLayoutPositions:NoteLayoutPositions = NoteLayoutPositions.getShared()
     @Published var publishUpdate = 0
+    @Published var noteLayoutPositions = NoteLayoutPositions.getShared()
+
     let score:Score
     var type:StaffType
     var staffNum:Int
@@ -251,6 +214,9 @@ class Staff : ObservableObject {
     func getNoteViewData(noteValue:Int) -> (Int, [Int]) {
         var offset = 0
         if self.type == .treble {
+            if noteValue >= noteStaffPlacement.count {
+                
+            }
             offset = noteStaffPlacement[noteValue].offsetFromStaffMidline
         }
         else {

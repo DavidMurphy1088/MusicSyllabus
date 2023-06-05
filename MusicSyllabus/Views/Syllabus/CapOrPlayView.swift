@@ -94,7 +94,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         }
         self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
         score.addStemCharaceteristics()
-        //print("\n======ClapOrPlayView init name:", contentSection.name, "score ID:", score.id, answer.state)
     }
 
     func getInstruction(mode:QuestionMode) -> String {
@@ -361,8 +360,11 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     func analyseRhythm() {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         tappingScore = rhythmAnalysis.0
+        
+        
         let tempo = rhythmAnalysis.1
         if let tappingScore = tappingScore {
+            tappingScore.addStemCharaceteristics()
             let difference = score.GetFirstDifferentTimeSlice(compareScore: tappingScore)
             if let diff = difference {
                 if tappingScore.scoreEntries.count > 0 {

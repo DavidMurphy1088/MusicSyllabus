@@ -101,7 +101,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                             .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.black, lineWidth: 1)
+                                    .stroke(scoreWasPlayed ? Color.black : Color.clear, lineWidth: 1)
                                     .background(selectedIntervalIndex == index ? Color(.systemTeal) : Color.clear)
                             )
                     }

@@ -1,15 +1,12 @@
 --TODO
 
-spurios beams?
-- NO BEAMS IN CLAP ANSER MODE FOR STUDENT, 2 scoer viw using the same Layout static - fucked
-- No Beams if > 1 score
-          ---> score1.addStemCharaceteristics()
+FIX ---> score1.addStemCharaceteristics()
           
 Metronome button???
-  
-REMOVE ALL border colors
 
-score.addStemCharaceteristics() disaster - this function should not be called by exmaples code but currenlty is requied. Calling as each note is added screws up beams
+Mistake at note 3 - can be better
+
+intervals visuak remove exampel with no data
 
 why is build 1.0.9 and on Test Flight 1.0.11
 do a simple example to understand geometry

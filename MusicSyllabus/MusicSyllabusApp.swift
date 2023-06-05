@@ -42,12 +42,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct MusicSyllabusApp: App {
     @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    static let productionMode = false
+    static let productionMode = true
     static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
     var launchTimeSecs = 2.5
     
     init() {
-        NoteLayoutPositions.setup()
+        //NoteLayoutPositions.setup()
     }
     
     var body: some Scene {

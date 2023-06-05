@@ -44,7 +44,6 @@ struct TopicsNavigationView: View {
                         }
                     }
                 }
-
             }
         }
         else {

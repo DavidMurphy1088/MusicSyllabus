@@ -3,7 +3,7 @@ import CoreData
 
 struct TestView: View {
     var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
-    //var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
+    var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
 
     init () {
@@ -11,14 +11,14 @@ struct TestView: View {
         let exampleData = data.get(contentSection: ContentSection(parent: nil, type: .example, name: "test"))
 
         let staff1 = Staff(score: score1, type: .treble, staffNum: 0, linesInStaff: 5)
-        //let staff1B = Staff(score: score1, type: .bass, staffNum: 1, linesInStaff: 5)
+        let staff1B = Staff(score: score1, type: .bass, staffNum: 1, linesInStaff: 5)
 
-        //let staff2 = Staff(score: score2, type: .treble, staffNum: 0, linesInStaff: 5)
+        let staff2 = Staff(score: score2, type: .treble, staffNum: 0, linesInStaff: 5)
         
         self.score1.setStaff(num: 0, staff: staff1)
-        //self.score1.setStaff(num: 1, staff: staff1B)
+        self.score1.setStaff(num: 1, staff: staff1B)
 
-        //self.score2.setStaff(num: 0, staff: staff2)
+        self.score2.setStaff(num: 0, staff: staff2)
         
         if let entries = exampleData {
             for entry in entries {
@@ -28,9 +28,14 @@ struct TestView: View {
                     if note.midiNumber == Note.MIDDLE_C {
                         note.staffNum = 1
                     }
-                    //note.isOnlyRhythmNote = true
+                    note.isOnlyRhythmNote = true
                     timeSlice.addNote(n: note)
                     
+//                    var timeSlice2 = self.score2.addTimeSlice()
+//                    var n = Note(num:72, value: note.value)
+//                    //n.isOnlyRhythmNote = true
+//                    timeSlice2.addNote(n: n)
+
                 }
                 if entry is TimeSignature {
                     let ts = entry as! TimeSignature
@@ -45,20 +50,21 @@ struct TestView: View {
                 }
             }
         }
-        
-//        var timeSlice2 = self.score2.addTimeSlice()
-//        timeSlice2.addNote(n: Note(num:76, value: 1.0))
-//        timeSlice2 = self.score2.addTimeSlice()
-//        timeSlice2.addNote(n: Note(num:76, value: 0.5))
-//        timeSlice2 = self.score2.addTimeSlice()
-//        timeSlice2.addNote(n: Note(num:77, value: 0.5))
-//        timeSlice2 = self.score2.addTimeSlice()
-//        timeSlice2.addNote(n: Note(num:79, value: 1.0))
-//        timeSlice2 = self.score2.addTimeSlice()
-//        timeSlice2.addNote(n: Note(num:81, value: 1.0))
+
+        var ts = self.score1.addTimeSlice()
+        ts.addNote(n: Note(num: 48, value: 3.0))
+        ts.addNote(n: Note(num: 52, value: 3.0))
+        ts.addNote(n: Note(num: 55, value: 3.0))
+
+        for i in 0...26 {
+            var timeSlice2 = self.score2.addTimeSlice()
+            var n = Note(num:67 + (i % 4)*2, value: i % 3 != 0 ? 0.5 : 1.0)
+            //n.isOnlyRhythmNote = true
+            //timeSlice2.addNote(n: n)
+        }
 
         score1.addStemCharaceteristics()
-        //score2.addStemCharaceteristics()
+        score2.addStemCharaceteristics()
     }
     
     var body: some View {
@@ -68,7 +74,7 @@ struct TestView: View {
             MetronomeView()
             ScoreView(score: score1)
             Text(" ")
-            //ScoreView(score: score2)
+            ScoreView(score: score2)
         }
 
     }

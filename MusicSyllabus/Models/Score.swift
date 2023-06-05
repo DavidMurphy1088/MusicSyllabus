@@ -282,10 +282,10 @@ class Score : ObservableObject {
 //                }
 //            }
 //        }
-        for ts in timeSlices {
-            let note = ts.notes[0]
-            //print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
-        }
+//        for ts in timeSlices {
+//            let note = ts.notes[0]
+//            //print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
+//        }
     }
     
 

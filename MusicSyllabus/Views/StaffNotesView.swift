@@ -19,19 +19,15 @@ struct StemView: View {
             return note.midiNumber < 71 ? -1.0 : 1.0
         }
     }
-    
+
     var body: some View {
         GeometryReader { geo in
             VStack {
                 let startNote = note.getBeamStartNote(score: score, np: notePositionLayout)
-
-                if note.value != Note.VALUE_WHOLE {
+                if startNote.value != Note.VALUE_WHOLE {
                     //Note this code eventually has to go adjust the stem length for notes under a quaver beam
                     //3.5 lines is a full length stem
-                    let stemDirection = stemDirection(note: note)
-                    if stemDirection < 0 {
-                        
-                    }
+                    let stemDirection = stemDirection(note: startNote)
                     let midX = geo.size.width / 2.0 + (stemDirection * -1.0 * noteWidth / 2.0)
                     let midY = geo.size.height / 2.0
                     let offsetY = Double(offsetFromStaffMiddle) * 0.5 * lineSpacing
@@ -49,12 +45,10 @@ struct StemView: View {
 struct StaffNotesView: View {
     @State var score:Score
     @State var staff:Staff
+    @ObservedObject var noteLayoutPositions:NoteLayoutPositions
     @State var lineSpacing:Double
     @State var first:Int? = nil
     @State var last:Int? = nil
-    
-    // for some unknwon reason must be shared since otherwise updates to it dont refresh the beams view
-    @ObservedObject var noteLayoutPositions = NoteLayoutPositions.getShared()
     
     func getNotes(entry:ScoreEntry) -> [Note] {
         if entry is TimeSlice {
@@ -71,6 +65,7 @@ struct StaffNotesView: View {
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
+        self.noteLayoutPositions = staff.noteLayoutPositions
     }
     
     func getNote(entry:ScoreEntry) -> Note? {
@@ -85,8 +80,13 @@ struct StaffNotesView: View {
     }
 
     func noteOffsetFromMiddle(staff:Staff, note:Note) -> Int {
-        let noteData = staff.getNoteViewData(noteValue: note.midiNumber)
-        return noteData.0
+        if note.isOnlyRhythmNote {
+            return 0
+        }
+        else {
+            let noteData = staff.getNoteViewData(noteValue: note.midiNumber)
+            return noteData.0
+        }
     }
         
     func getBeamLine(endNote:Note, noteWidth:Double, startNote:Note, stemLength:Double) -> (CGPoint, CGPoint)? {
@@ -95,7 +95,7 @@ struct StaffNotesView: View {
             stemDirection = -1.0
         }
         else {
-            stemDirection = endNote.midiNumber < 71 ? -1.0 : 1.0
+            stemDirection = startNote.midiNumber < 71 ? -1.0 : 1.0
         }
         //end note
         let endNotePos = noteLayoutPositions.positions[endNote]
@@ -125,8 +125,32 @@ struct StaffNotesView: View {
         return nil
     }
     
-    func log(ctx:String) {
-        print("-->StaffNotesView::Body ctx:", ctx, "StaffCount:", score.staff.count, "StaffNum:", staff.staffNum, "PosId:", noteLayoutPositions.id, "PosCount:", noteLayoutPositions.positions.count)
+//    func log(ctx:String, entry:ScoreEntry) {
+//        print("-->StaffNotesView::Body ctx:", ctx, "StaffCount:", score.staff.count, "StaffNum:", staff.staffNum,
+//              "PosId:", noteLayoutPositions.id, "PosCount:", noteLayoutPositions.positions.count)
+//    }
+
+    func highestNote(entry:ScoreEntry) -> Note? {
+        let notes = entry.getNotes()
+        if notes != nil {
+            if notes!.count == 1 {
+                return notes![0]
+            }
+            else {
+                let staffNotes:[Note]
+                if staff.type == .treble {
+                    staffNotes = notes!.filter { $0.midiNumber >= Note.MIDDLE_C}
+                }
+                else {
+                    staffNotes = notes!.filter { $0.midiNumber < Note.MIDDLE_C}
+                }
+                if staffNotes.count > 0 {
+                    let sorted = staffNotes.sorted { $0.midiNumber > $1.midiNumber }
+                    return sorted[0]
+                }
+            }
+        }
+        return nil
     }
     
     var body: some View {
@@ -150,23 +174,22 @@ struct StaffNotesView: View {
                                             .background(GeometryReader { geometry in
                                                 Color.clear
                                                     .onAppear {
-                                                        if noteLayoutPositions.id == 1 {
-                                                            
-                                                        }
                                                         if staff.staffNum == 0 {
-                                                            let log = log(ctx: "Report Pos Midi:\(note.midiNumber)")
-                                                            noteLayoutPositions.storePosition(note: note, rect: geometry.frame(in: .named("HStack")), cord: "HStack")
+                                                            //let log = log(ctx: "Report Pos Midi:\(note.midiNumber)")
+                                                            noteLayoutPositions.storePosition(note: note,
+                                                                                              rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
                                                     }
                                             })
                                         }
                                     }
                                 }
-                                if let note = getNote(entry: entry) {
-                                    //the note ellipses in the notes HStack set the alignment of each not so no need to display stems for notes
-                                    //excluded from this staff's view
-                                    if note.staffNum == nil || note.staffNum == staff.staffNum {
-                                        StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions, note: note, offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note),
+                                if let highestNote = highestNote(entry: entry) {
+                                    //log(ctx:"test", entry)
+                                    if highestNote.staffNum == nil || highestNote.staffNum == staff.staffNum {
+                                        StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
+                                                 note: highestNote,
+                                                 offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: highestNote),
                                                  lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
                                     }
                                 }
@@ -190,8 +213,8 @@ struct StaffNotesView: View {
                 GeometryReader { geo in
                     ZStack {
                         ZStack {
-                            let log = log(ctx: "Show Beams ")
-                            Text("PubUdateId:\(noteLayoutPositions.id) PubUdateCtr:\(noteLayoutPositions.updated)")
+                            //let log = log(ctx: "Show Beams ")
+                            //Text("PubUdateId:\(noteLayoutPositions.id) PubUdateCtr:\(noteLayoutPositions.updated)")
                             ForEach(noteLayoutPositions.positions.sorted(by: { $0.key.sequence < $1.key.sequence }), id: \.key) {
                                 endNote, endNotePos in
                                 if endNote.beamType == .end {
@@ -202,99 +225,26 @@ struct StaffNotesView: View {
                                             path.move(to: CGPoint(x: line.0.x, y: line.0.y))
                                             path.addLine(to: CGPoint(x: line.1.x, y: line.1.y))
                                         }
-                                        .stroke(Color.blue, lineWidth: 2)
+                                        .stroke(Color.black, lineWidth: 2)
                                     }
                                 }
                             }
                         }
-                        .border(Color .blue)
+                        //.border(Color .blue)
                         .padding(.horizontal, 0)
                     }
-                    .border(Color .orange)
+                    //.border(Color .orange)
                     .padding(.horizontal, 0)
                 }
                 .padding(.horizontal, 0)
-                .border(Color .green)
+                //.border(Color .green)
             }
         }
         .coordinateSpace(name: "ZStack0")
         .onDisappear() {
-            NoteLayoutPositions.reset()
+           // NoteLayoutPositions.reset()
         }
     }
     
 }
 
-//    func showGeoProxy(place:String, geo:GeometryProxy, note: Note){
-//        if note.sequence >= 2 {
-//            return
-//        }
-//        //We use the frame(in:) method on the GeometryProxy to obtain the frame of the parent view in the global coordinate space.
-//        print ("\n====> ", place, "Seq", note.sequence, "\tGEO Size", geo.size, "\tFrame", geo.frame) //, geo.frame )
-//        //print (geometry.frame(in: .global))
-//        var parentFrame = geo.frame(in: .global)
-//        print("   Parent Location: GLOBAL \(parentFrame.origin)")
-//        let cgrect = parentFrame.origin
-//        //let parentFrame1:CGRect = geo.frame(in: .local)
-//        //print("   Parent Location: LOCAL \(parentFrame.origin)")
-//
-//        print("   Parent Location: ZStack0\t", geo.frame(in: .named("ZStack0")))
-//        print("   Parent Location: ZStack00t", geo.frame(in: .named("ZStack00")))
-//        print("   Parent Location: ZStack001t", geo.frame(in: .named("ZStack001")))
-//
-//        print("   Parent Location: ZStack01\t", geo.frame(in: .named("ZStack10")))
-//        print("   Parent Location: ZStack010\t", geo.frame(in: .named("ZStack11")))
-//    }
-
-//                    ForEach(score.scoreEntries, id: \.self) { entry in
-//                        if entry is TimeSlice {
-//                            if let note = getNote(entry: entry) {
-//                                if note.beamType == .end {
-//                                    let startNote = noteDrawDimensions.getBeamStartNote(score: score, note: note)
-//                                    let stemDirection:Double = startNote.midiNumber < 71 ? -1.0 : 1.0
-//                                    let xOffset = frameWidth //* 0.45
-//                                    let noteMidx = (frameWidth * Double(note.sequence)) + (frameWidth / 2.0) + xOffset
-//
-//                                    let noteMidy = geo.size.height/2.0 - Double(noteOffsetFromMiddle(note: note)) * lineSpacing / 2.0
-//                                    let stemLength = (Double(lineSpacing) * 3.5 * stemDirection)
-//
-//                                    let startNoteMidx = (frameWidth / 1.0 * Double(startNote.sequence)) + (frameWidth / 2.0) + xOffset
-//                                    let startNoteMidy = geo.size.height/2.0 - Double(noteOffsetFromMiddle(note: startNote)) * lineSpacing / 2.0
-//                                    let xNoteOffset = stemDirection * -1.0 * noteWidth / 2.0
-//
-//                                    ForEach(positionStore.positions.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
-//                                        Ellipse()
-//                                            .stroke(Color.red, lineWidth: 4)
-//                                            .frame(width: 6, height: 6)
-//                                            .position(x: value.origin.x, y: 0.0)
-//                                    }
-//
-////                                    if positionStore.positions.count > 1 {
-////                                        for i in 0..<2 {
-////                                            Ellipse()
-////                                                .stroke(Color.red, lineWidth: 4)
-////                                                .frame(width: 6, height: 6)
-////                                                .position(x: positionStore.positions[i]!.origin.x, y: 0.0)
-////                                        }
-////                                    }
-////                                    //let pos = positionStore.positions[note.sequence] //x,y,width, height
-//                                    //                                Ellipse()
-//                                    //                                //Open ellipse
-//                                    //                                    .stroke(Color.red, lineWidth: 4)
-//                                    //                                    .frame(width: 6, height: 6)
-//                                    //                                    .position(x: noteMidx, y: noteMidy)
-//                                    //                                Path { path in
-//                                    //                                    path.move(to: CGPoint(x: noteMidx, y: noteMidy + stemLength))
-//                                    //                                    path.addLine(to: CGPoint(x: startNoteMidx, y: startNoteMidy + stemLength))
-//                                    //                                }
-//                                    //                                .stroke(Color.black, lineWidth: 4)
-//                                    //                                .onAppear {
-//                                    //                                    //showGeoProxy(place:"Beam", geo: geo, note:note)
-//                                    //                                    print("On Appear", self.positionStore.positions)
-//                                    //                                }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .coordinateSpace(name: "ZStack010")
-  

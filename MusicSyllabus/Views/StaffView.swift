@@ -111,6 +111,7 @@ struct KeySignatureView: View {
 struct StaffView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
+    //@ObservedObject var noteLayoutPositions:NoteLayoutPositions
 
     var lineSpacing:Double
     @State private var rotationId: UUID = UUID()
@@ -157,7 +158,8 @@ struct StaffView: View {
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
                 //    .border(Color.red)
 
-                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing) 
+                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing)
+                Text("      ")
             }
         }
     }

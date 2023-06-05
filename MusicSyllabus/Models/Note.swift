@@ -168,7 +168,7 @@ class Note : Hashable, Comparable, ObservableObject {
             return endNote
         }
         else {
-            print("===Note::Start getBeamStartNote", "PosId", np.id, "seq:", endNote.sequence, "mid:", endNote.midiNumber, "back to", result?.sequence)
+            //print("===Note::Start getBeamStartNote", "PosId", np.id, "seq:", endNote.sequence, "mid:", endNote.midiNumber, "back to", result?.sequence)
             return result!
         }
     }
