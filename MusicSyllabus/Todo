@@ -2,11 +2,9 @@
 
 spurios beams?
 - NO BEAMS IN CLAP ANSER MODE FOR STUDENT, 2 scoer viw using the same Layout static - fucked
-  
-Playing example
-- bass cleff shows rhythm notes for all but last bar. BE CARFUL - unles some notes are shown in this cleff the alignment is wrecked
-- last slice has a chord in the treble
-
+- No Beams if > 1 score
+          ---> score1.addStemCharaceteristics()
+          
 Metronome button???
   
 REMOVE ALL border colors
@@ -32,6 +30,10 @@ longer recordings get an error - still true?
 handle ledger lines for all notes (now its just middle C)
 quaver beam processing inefficient - casues lag on lots of notes
 check audio perms asked for properly, orderly
+
+---LONG TERM
+The notes view should only be called once per score view (not per staff) and update both staffs in one pass. The offset for notes dispays should be Middle C
+
 
 --- Questions
 //layout of plying example 1 with low middle C ruins layout relative to staff enclsoing border

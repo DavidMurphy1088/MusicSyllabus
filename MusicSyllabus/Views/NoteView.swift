@@ -39,13 +39,31 @@ struct NoteView: View {
         self.lineSpacing = lineSpacing
         self.offsetFromStaffMiddle = offsetFromStaffMiddle
     }
-            
+    
+    func log() {
+        print ("----->NoteView", note.midiNumber, note.staffNum, "staff", staff.type)
+    }
+    
+    //cause notes that are set for specifc staff to be tranparent on other staffs
+    func color(note:Note) -> Color {
+        if note.noteTag == .inError {
+            return Color(.red)
+        }
+        if note.staffNum == nil {
+            return Color(.black)
+        }
+        else {
+            return Color(note.staffNum == staff.staffNum ? .black : .clear)
+        }
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle) * lineSpacing / 2.0
-            let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
+            //let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
             let noteValueUnDotted = note.isDotted ? note.value * 2.0/3.0 : note.value
+            //let log = log()
             //let noteLayout = staff.notePositions.getLayout(note: note)
 //            let xDirection:Double = -1.0 * Double(noteLayout.stemDirection)
 //            let yDirection:Double = -1.0 * Double(noteLayout.stemDirection)
@@ -56,28 +74,26 @@ struct NoteView: View {
                     Ellipse()
                         //Closed ellipse
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
-                        .foregroundColor(noteColor)
+                        .foregroundColor(color(note: note))
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
                         .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
-                        //.foregroundColor(noteColor)
                 }
                 if noteValueUnDotted  == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
-                            .stroke(noteColor, lineWidth: 2)
+                            .stroke(color(note: note), lineWidth: 2)
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
                             .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
-                            //.frame(width:6) //trying to have minim have more horz space
                 }
                                                 
                 //dotted
                 if note.isDotted {
                     Ellipse()
                         //Open ellipse
-                        .stroke(Color.black, lineWidth: 2)
+                        .stroke(color(note: note), lineWidth: 2)
                         .frame(width: noteWidth/4.0, height: noteWidth/4.0)
                         .position(x: noteFrameWidth/2 + noteWidth/1.0, y: noteEllipseMidpoint)
-                        .foregroundColor(noteColor)
+                        .foregroundColor(color(note: note))
                         //.border(Color .red)
                 }
 
@@ -89,7 +105,7 @@ struct NoteView: View {
                             path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
                             path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))
                         }
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(color(note: note), lineWidth: 1)
                     }
                 }
                 

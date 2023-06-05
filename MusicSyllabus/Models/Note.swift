@@ -34,8 +34,11 @@ class Note : Hashable, Comparable, ObservableObject {
     static let VALUE_WHOLE = 4.0
 
     let id = UUID()
+    
     var midiNumber:Int
-    var staff:Int?
+    
+    var staffNum:Int? //Narrow the display of the note to just one staff
+    
     var value:Double = Note.VALUE_QUARTER
     var isDotted:Bool = false
     var isOnlyRhythmNote = false
@@ -59,9 +62,9 @@ class Note : Hashable, Comparable, ObservableObject {
         return (note1 % 12) == (note2 % 12)
     }
     
-    init(num:Int, value:Double = Note.VALUE_QUARTER, staff:Int? = nil, isDotted:Bool = false) {
+    init(num:Int, value:Double = Note.VALUE_QUARTER, staffNum:Int? = nil, isDotted:Bool = false) {
         self.midiNumber = num
-        self.staff = staff
+        self.staffNum = staffNum
         self.value = value
         self.isDotted = isDotted
         if value == 3.0 {
@@ -132,7 +135,7 @@ class Note : Hashable, Comparable, ObservableObject {
         return closest
     }
     
-    func getBeamStartNote(score:Score) -> Note {
+    func getBeamStartNote(score:Score, np: NoteLayoutPositions) -> Note {
         let endNote = self
         if endNote.beamType != .end {
             return endNote
@@ -165,7 +168,7 @@ class Note : Hashable, Comparable, ObservableObject {
             return endNote
         }
         else {
-            //print("===Start", note.sequence, "back to", result?.sequence)
+            print("===Note::Start getBeamStartNote", "PosId", np.id, "seq:", endNote.sequence, "mid:", endNote.midiNumber, "back to", result?.sequence)
             return result!
         }
     }

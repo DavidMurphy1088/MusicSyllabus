@@ -8,33 +8,64 @@ import AVFoundation
 class NoteLayoutPositions: ObservableObject {
     @Published var positions:[Note: CGRect] = [:]
     @Published var updated = 0
-    var id = 0
+    var id:Int
     
-    static private let shared = NoteLayoutPositions()
-    static var nextId = 0
+    static private var shared:[NoteLayoutPositions] = []
+    
+    static private var shared0 = NoteLayoutPositions(id: 0)
+    static private var shared1 = NoteLayoutPositions(id: 1)
+    static private var shared2 = NoteLayoutPositions(id: 2)
+    static private var shared3 = NoteLayoutPositions(id: 3)
 
-    static func reset() {
-        DispatchQueue.main.async {
-            shared.positions = [:]
+    static var nextId = 0
+    
+    static func setup() {
+        for i in 0...20 {
+            shared.append(NoteLayoutPositions(id: i))
         }
+    }
+
+    init(id:Int) {
+        self.id = id
     }
     
     static func getShared() -> NoteLayoutPositions {
-        let np = NoteLayoutPositions()
-        np.id = nextId
+        print("======================>NoteLayoutPositions getShared()", nextId)
+        var lp:NoteLayoutPositions?
+        switch nextId % 4 {
+        case 0:
+            lp = shared0
+        case 1:
+            lp = shared0
+        case 2:
+            lp = shared0
+        case 3:
+            lp = shared0
+
+        default:
+            print("======================>NoteLayoutPositions NO POSTIONS, EXITING")
+            exit(0)
+        }
         nextId += 1
-        return np
+        return lp!
+    }
+    
+    static func reset() {
+        DispatchQueue.main.async {
+            print("======================>NoteLayoutPositions Reset id", shared1.id)
+            shared1.positions = [:]
+        }
     }
     
     func storePosition(note: Note, rect: CGRect, cord:String) {
         if note.beamType != .none {
             let rectCopy = CGRect(origin: CGPoint(x: rect.minX, y: rect.minY), size: CGSize(width: rect.size.width, height: rect.size.height))
+            print("---------->NoteLayoutPositions::storePosition Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count, "\tbeam:", note.beamType, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))
             DispatchQueue.main.async {
-                sleep(UInt32(0.25))
+                sleep(UInt32(2.25))
                 self.positions[note] = rectCopy //rect
                 self.updated += 1
-                print("---------->NoteLayoutPositions id", self.id, "updated noteSeq", note.sequence, "beam", note.beamType,
-                      "count", self.positions.count, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))//, "\t\t", rect.size.width, rect.size.height)
+                print("  ---------->NoteLayoutPositions::storePosition published Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count)
 //                for k in self.positions.keys {
 //                    print("  key", k.id, k.sequence)
 //                }
@@ -85,8 +116,7 @@ class NoteOffsetsInStaffByKey {
 
 class Staff : ObservableObject {
     let id = UUID()
-    @ObservedObject var noteLayoutPositions:NoteLayoutPositions = NoteLayoutPositions.getShared()
-
+    //@Published var noteLayoutPositions:NoteLayoutPositions = NoteLayoutPositions.getShared()
     @Published var publishUpdate = 0
     let score:Score
     var type:StaffType
@@ -108,7 +138,6 @@ class Staff : ObservableObject {
         middleNoteValue = type == StaffType.treble ? 71 : Note.MIDDLE_C - Note.OCTAVE + 2
 
         //Determine the staff placement for each note pitch
-        //var noteOffsetEntries:[String] = []
         var noteOffsets:[Int] = []
         for line in NoteOffsetsInStaffByKey().noteOffsetByKey {
             let f = String(line.components(separatedBy: " ")[0])
@@ -119,13 +148,14 @@ class Staff : ObservableObject {
         }
         
         for noteValue in 0...highestNoteValue {
-            var placement = NoteStaffPlacement(name: "X", offsetFroMidLine: 0)
+            //Hack - set the note off the staff (i.e invisible) if its pitch is not mapped to the staff lines
+            //Fix - make sure both staff types have offset set for their full pitch ranges
+            //Fix - longer - offset should be from middle C, notes should be displayed on both staffs from a single traversal of the score's timeslices
+            
+            var placement = NoteStaffPlacement(name: "X", offsetFroMidLine: 100)
             noteStaffPlacement.append(placement)
             if noteValue <= middleNoteValue - 12 || noteValue >= middleNoteValue + 12 {
-            //if noteValue <= middleNoteValue - 12 - 4 || noteValue >= middleNoteValue + 12 + 4 {
                 continue
-            }
-            if noteValue == 69 || noteValue == 72 || noteValue == 74 { //70 is A
             }
             var diff = noteValue - middleNoteValue
             var noteOffsetInScale = 0
@@ -137,7 +167,6 @@ class Staff : ObservableObject {
                 if diff >= n {
                     diff = diff - 12
                 }
-                //noteOffsetInScale = noteOffsets[noteOffsets.count + diff - 1]
                 noteOffsetInScale = noteOffsets[n]
                 noteOffsetInScale =  noteOffsetInScale - 7
             }

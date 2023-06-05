@@ -33,7 +33,7 @@ class Chord : Identifiable {
         let result = Chord()
         var desiredPitch = Note.MIDDLE_C - Note.OCTAVE
         let baseNote = Note.getClosestOctave(note: self.notes[0].midiNumber, toPitch: desiredPitch)
-        result.notes.append(Note(num: baseNote, staff: 1))
+        result.notes.append(Note(num: baseNote, staffNum: 1))
         let voiceGap = Note.OCTAVE/2 // + 3
         
         //choose the tenor as triad note 1 or 2
@@ -51,7 +51,7 @@ class Chord : Identifiable {
                 tenorNote = closest
             }
         }
-        result.notes.append(Note(num: tenorNote, staff: 1))
+        result.notes.append(Note(num: tenorNote, staffNum: 1))
         
         //choose the alto
         desiredPitch = tenorNote + voiceGap
@@ -72,7 +72,7 @@ class Chord : Identifiable {
                 altoNote = closest
             }
         }
-        result.notes.append(Note(num: altoNote, staff: 0))
+        result.notes.append(Note(num: altoNote, staffNum: 0))
 
         //choose the soprano
         desiredPitch = altoNote + voiceGap
@@ -91,7 +91,7 @@ class Chord : Identifiable {
                 sopranoNote = closest
             }
         }
-        result.notes.append(Note(num: sopranoNote, staff: 0))
+        result.notes.append(Note(num: sopranoNote, staffNum: 0))
         return result
     }
 
@@ -151,7 +151,7 @@ class Chord : Identifiable {
         
         let resultChord = Chord()
         for n in 0..<result.count {
-            resultChord.notes.append(Note(num: result[n], staff: n < 2 ? 1 : 0))
+            resultChord.notes.append(Note(num: result[n], staffNum: n < 2 ? 1 : 0))
         }
         return resultChord
     }
@@ -216,7 +216,7 @@ class Chord : Identifiable {
             }
             if bestPitch > 0 {
                 let bestNote = Note(num: bestPitch)
-                bestNote.staff = notes[fromIdx].staff
+                bestNote.staffNum = notes[fromIdx].staffNum
                 result.notes.append(bestNote)
             }
             done.append(fromIdx)
@@ -255,7 +255,7 @@ class Chord : Identifiable {
             }
             let note = Note(num: bestPitch)
             if [0,1].contains(voice) {
-                note.staff = 1
+                note.staffNum = 1
             }
             result.notes.append(note)
             if voice == 1 {

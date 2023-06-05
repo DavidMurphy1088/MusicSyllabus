@@ -157,7 +157,7 @@ struct StaffView: View {
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
                 //    .border(Color.red)
 
-                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing) //// * 1.2)
+                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing) 
             }
         }
     }

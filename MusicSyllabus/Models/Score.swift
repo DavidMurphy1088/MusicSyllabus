@@ -231,7 +231,7 @@ class Score : ObservableObject {
         var underBeam = false
         var previousNote:Note? = nil
         //if self.scoreEntries.count >= 4 {
-            print("addStemCharaceteristics TEST", self.scoreEntries.count)
+        //print("addStemCharaceteristics TEST", self.scoreEntries.count)
         //}
         let timeSlices = self.getAllTimeSlices()
         for timeSlice in timeSlices {

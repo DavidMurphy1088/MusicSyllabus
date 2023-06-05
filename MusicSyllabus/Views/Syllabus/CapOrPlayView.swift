@@ -60,7 +60,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 if entry is Note {
                     let timeSlice = score.addTimeSlice()
                     let note = entry as! Note
-                    note.staff = 0
+                    note.staffNum = 0
                     note.setIsOnlyRhythm(way: mode == .rhythmClap || mode == .rhythmEchoClap ? true : false)
                     timeSlice.addNote(n: note)
                     lastTS = timeSlice
@@ -81,14 +81,14 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 let isDotted = lastNote!.isDotted
                 lastTS?.tag = "I"
                 if score.key.keySig.accidentalCount > 0 { //G Major
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote!.value, staff:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote!.value, staff:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote!.value, staff:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
                 }
                 else {
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote!.value, staff:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote!.value, staff:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote!.value, staff:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote!.value, staffNum:1, isDotted: isDotted))
                 }
             }
         }
