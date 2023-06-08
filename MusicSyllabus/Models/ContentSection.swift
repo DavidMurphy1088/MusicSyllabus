@@ -7,6 +7,7 @@ import AVFoundation
 class ContentSection: Identifiable {
     let id = UUID()
     var name: String = ""
+    var title: String
     var subSections:[ContentSection] = []
     var sectionType:SectionType
     var parent:ContentSection?
@@ -19,7 +20,7 @@ class ContentSection: Identifiable {
         case example
     }
     
-    init(parent:ContentSection?, type:SectionType, name:String, isActive:Bool = false) {
+    init(parent:ContentSection?, type:SectionType, name:String, title:String? = nil, isActive:Bool = false) {
         self.parent = parent
         self.sectionType = type
         self.name = name
@@ -29,6 +30,12 @@ class ContentSection: Identifiable {
         while par != nil {
             level += 1
             par = par!.parent
+        }
+        if let title = title {
+            self.title = title
+        }
+        else {
+            self.title = name
         }
         
         if level == 0 {
@@ -40,27 +47,44 @@ class ContentSection: Identifiable {
             }
         }
         if level == 1 {
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural"))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual", title:"Recognizing Visual Intervals", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping", title:"Tapping At Sight", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing", title: "Playing At Sight", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural", title:"Recognizing Aural Intervals")) 
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Echo Clap"))
         }
         if level == 2 {
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 1", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 2", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 3", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 4", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 5", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 6", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 7", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 8", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 9", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 10", isActive: true))
+            for i in 1...32 {
+                addExample(exampleNum:i)
+            }
         }
-        if level == 0 {
-            
+//        if level == 22 {
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 1", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 2", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 3", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 4", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 5", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 6", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 7", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 8", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 9", isActive: true))
+//            subSections.append(ContentSection(parent: self, type: SectionType.example, name:"Example 10", isActive: true))
+//        }
+    }
+    
+    //Add an example number if the data for it exists
+    func addExample(exampleNum:Int) {
+        let exampleName = "Example \(exampleNum)"
+        var key = self.name+"."+exampleName
+        if parent != nil {
+            key = "Musicianship."+parent!.name+"."+key
+            //parent = parent?.parent
         }
+        let exampleData = ExampleData.shared.getData(key: key, warnNotFound: false)
+        if exampleData == nil {
+            return
+        }
+        subSections.append(ContentSection(parent: self, type: SectionType.example, name:exampleName, isActive: true))
     }
 }
 

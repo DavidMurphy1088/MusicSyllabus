@@ -8,9 +8,6 @@ struct BarLineView: View {
     var lineSpacing:Double
 
     var body: some View {
-//        VStack {
-//            Text("B")
-//        }
         GeometryReader { geometry in
             Rectangle()
                 .fill(Color.black)
@@ -61,12 +58,7 @@ struct NoteView: View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle) * lineSpacing / 2.0
-            //let noteColor = note.noteTag == .inError ? Color(.red) : Color(.black)
             let noteValueUnDotted = note.isDotted ? note.value * 2.0/3.0 : note.value
-            //let log = log()
-            //let noteLayout = staff.notePositions.getLayout(note: note)
-//            let xDirection:Double = -1.0 * Double(noteLayout.stemDirection)
-//            let yDirection:Double = -1.0 * Double(noteLayout.stemDirection)
 
             ZStack {
                 //Note ellipse
@@ -88,11 +80,13 @@ struct NoteView: View {
                                                 
                 //dotted
                 if note.isDotted {
+                    //the dot needs to be moved off the note center to move the dot off a staff line
+                    let yOffset = offsetFromStaffMiddle % 2 == 0 ? lineSpacing / 3.0 : 0
                     Ellipse()
                         //Open ellipse
-                        .stroke(color(note: note), lineWidth: 2)
-                        .frame(width: noteWidth/4.0, height: noteWidth/4.0)
-                        .position(x: noteFrameWidth/2 + noteWidth/1.0, y: noteEllipseMidpoint)
+                        //.stroke(color(note: note), lineWidth: 2)
+                        .frame(width: noteWidth/3.0, height: noteWidth/3.0)
+                        .position(x: noteFrameWidth/2 + noteWidth/1.0, y: noteEllipseMidpoint - yOffset)
                         .foregroundColor(color(note: note))
                         //.border(Color .red)
                 }
@@ -100,7 +94,7 @@ struct NoteView: View {
                  //ledger line hack - totally not generalized :(
                 if staff.type == .treble {
                     if note.midiNumber <= Note.MIDDLE_C {
-                        let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : 0
+                        let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : noteFrameWidth / 6.0
                         Path { path in
                             path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
                             path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))

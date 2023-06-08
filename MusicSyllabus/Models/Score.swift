@@ -28,6 +28,7 @@ class BarLine : ScoreEntry {
 
 class StudentFeedback { //}: ObservableObject {
     var correct:Bool = false
+    var indexInError:Int? = nil
     var feedback:String? = nil
     var tempo:Int? = nil
 }
@@ -75,7 +76,7 @@ class Score : ObservableObject {
         return result
     }
     
-    //return the first entry and timeslice index of where the scores differ
+    //return the first timeslice index of where the scores differ
     func GetFirstDifferentTimeSlice(compareScore:Score) -> Int? {
         //let compareEntries = compareScore.scoreEntries
         var result:Int? = nil
@@ -230,9 +231,6 @@ class Score : ObservableObject {
         var ctr = 0
         var underBeam = false
         var previousNote:Note? = nil
-        //if self.scoreEntries.count >= 4 {
-        //print("addStemCharaceteristics TEST", self.scoreEntries.count)
-        //}
         let timeSlices = self.getAllTimeSlices()
         for timeSlice in timeSlices {
             if timeSlice.notes.count == 0 {
@@ -256,7 +254,7 @@ class Score : ObservableObject {
                         if beamEndNote.value == Note.VALUE_QUAVER {
                             beamEndNote.beamType = .end
                         }
-                        //update the notes in under the quaver beam with the end note of the beam
+                        //update the notes under the quaver beam with the end note of the beam
                         var idx = ctr - 1
                         while idx >= 0 {
                             let prevNote = timeSlices[idx].notes[0]
@@ -266,7 +264,6 @@ class Score : ObservableObject {
                             prevNote.beamEndNote = beamEndNote
                             idx = idx - 1
                         }
-     
                     }
                     underBeam = false
                 }

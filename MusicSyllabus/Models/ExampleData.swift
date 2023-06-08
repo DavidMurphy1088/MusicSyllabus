@@ -90,11 +90,13 @@ class ExampleData {
     
     //func get_old(grade:String, testType:String, exampleKey: String) -> [Any]! {
     
-    func getData(key:String) -> [Any]! {
+    func getData(key:String, warnNotFound:Bool=true) -> [Any]! {
         //let key = grade+"."+testType+"."+exampleKey
         let data = data[key]
         guard data != nil else {
-            Logger.logger.reportError(self, "No data for \(key)")
+            if warnNotFound {
+                Logger.logger.reportError(self, "No data for \(key)")
+            }
             return nil
         }
         //data = data!.replacingOccurrences(of: " ", with: "")
@@ -137,6 +139,7 @@ class ExampleData {
                 }
             }
         }
+        //Logger.logger.log(self, "Entry count for \(key) is \(result.count)")
         return result
     }
 }

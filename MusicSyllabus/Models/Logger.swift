@@ -29,6 +29,7 @@ class Logger : ObservableObject {
     
     func publish(_ msg:String, _ isErr:Bool) {
         DispatchQueue.global(qos: .background).async {
+            //print(msg)
             self.status = msg
             self.isError = isErr
         }

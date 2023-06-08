@@ -14,7 +14,7 @@ struct TopicsNavigationView: View {
                 //The 2nd NavigationView below (for iPhone without split nav) will present the topics on the first screen the user sees
                 List(topic.subSections) { contentSection in
                     NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
-                        Text(contentSection.name)
+                        Text(contentSection.title)
                     }
                     .disabled(!contentSection.isActive)
                 }
@@ -22,12 +22,13 @@ struct TopicsNavigationView: View {
                 List(topic.subSections) { contentSection in
                     NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
                         VStack {
-                            Text(contentSection.name).padding()
-                        }                    }
+                            Text(contentSection.title).padding()
+                        }
+                    }
                     .disabled(!contentSection.isActive)
                     //.navigationViewStyle(DoubleColumnNavigationViewStyle())
                     //the font that shows on the scrolling list of links
-                    .navigationTitle(topic.name)//.font(.caption)
+                    .navigationTitle(topic.title)//.font(.caption)
                     //.navigationBarTitleDisplayMode(.inline)
 
                 }
@@ -51,7 +52,7 @@ struct TopicsNavigationView: View {
                 List(topic.subSections) { contentSection in
                     NavigationLink(destination: ContentSectionView(contentSection: contentSection)) {
                         VStack {
-                            Text(contentSection.name).padding()
+                            Text(contentSection.title).padding()
                         }
                     }
                     .disabled(!contentSection.isActive)

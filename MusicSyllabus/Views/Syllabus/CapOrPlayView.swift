@@ -93,7 +93,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             }
         }
         self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
-        score.addStemCharaceteristics()
+        //score.addStemCharaceteristics()
     }
 
     func getInstruction(mode:QuestionMode) -> String {
@@ -102,13 +102,13 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             
         case .rhythmClap:
             //result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
-            result += "tap your rhythm on the drum."
+            result += "tap your rhythm on the drum. (In the exam you can clap OR tap.)"
 
         case .rhythmPlay:
             result += "play the melody and the final chord."
             
         case .rhythmEchoClap:
-            result += "tap your rhythm on the drum."
+            result += "tap your rhythm on the drum. (In the exam you can clap OR tap.)"
             
         default:
             result = ""
@@ -121,8 +121,10 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             GeometryReader { geometry in
                 VStack {
                     VStack {
-                        if mode != .rhythmClap {
-                            MetronomeView()
+                        if UIDevice.current.userInterfaceIdiom != .phone {
+                            if mode != .rhythmClap {
+                                MetronomeView()
+                            }
                         }
 
                         if mode == .rhythmEchoClap {
@@ -343,10 +345,22 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         .padding()
     }
     
-    func getFeedback(diffNote:Int?, tempo:Int?) -> StudentFeedback {
+    func getFeedback(timeSliceNumber:Int?, tempo:Int?, exampleScore:Score) -> StudentFeedback {
         let feedback = StudentFeedback()
-        if let diffNote = diffNote {
-            feedback.feedback = "Mistake at note \(diffNote+1)"
+        if let timeSliceNumber = timeSliceNumber {
+            let exampleTimeSlices = exampleScore.getAllTimeSlices()
+            let exampleTimeSlice = exampleTimeSlices[timeSliceNumber]
+            let exampleNote = exampleTimeSlice.getNotes()?[0]
+            if let exampleNote = exampleNote {
+                let studentTimeSlice = self.tappingScore?.getAllTimeSlices()[timeSliceNumber]
+                let studentNote = studentTimeSlice?.getNotes()?[0]
+                if let studentNote = studentNote {
+                    //feedback.feedback = "Mistake at note \(studentNote.sequence)."
+                    feedback.feedback = "The example rhythm was a \(exampleNote.getNoteValueName()). "
+                    feedback.feedback! += "Your rhythm was a \(studentNote.getNoteValueName())."
+                    feedback.indexInError = studentNote.sequence
+                }
+            }
             feedback.correct = false
         }
         else {
@@ -361,27 +375,25 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         tappingScore = rhythmAnalysis.0
         
-        
         let tempo = rhythmAnalysis.1
         if let tappingScore = tappingScore {
-            tappingScore.addStemCharaceteristics()
+            //tappingScore.addStemCharaceteristics()
             let difference = score.GetFirstDifferentTimeSlice(compareScore: tappingScore)
             if let diff = difference {
                 if tappingScore.scoreEntries.count > 0 {
                     let tappingTimeSlices = tappingScore.getAllTimeSlices()
                     let tappingTimeSlice = tappingTimeSlices[diff < tappingTimeSlices.count ? diff : tappingTimeSlices.count - 1]
                     if tappingTimeSlice.notes.count > 0 {
-                        tappingTimeSlice.notes[0].noteTag = .inError
+                        let mistakeNote = tappingTimeSlice.notes[0]
+                        mistakeNote.noteTag = .inError
+                        tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(timeSliceNumber:diff, tempo: tempo, exampleScore:score))
                     }
-                    tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: diff, tempo: tempo))
                 }
             }
             else {
-                tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(diffNote: nil, tempo: tempo))
-                //if mode != .rhythmEchoClap {
+                tappingScore.setStudentFeedback(studentFeedack: self.getFeedback(timeSliceNumber:nil, tempo: tempo, exampleScore:score))
                 //Play at students tempo if they got it correct, but otherise at example tempo
                 metronome.setTempo(tempo: tempo)
-                //}
             }
         }
          tappingScore?.label = "Your Rhythm"
@@ -391,7 +403,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         AnyView(
             GeometryReader { geometry in
                 VStack {
-                    MetronomeView()
+                    if UIDevice.current.userInterfaceIdiom != .phone {
+                        MetronomeView()
+                    }
                     VStack {
                         ScoreView(score: score).padding()
                         if tappingScore != nil {

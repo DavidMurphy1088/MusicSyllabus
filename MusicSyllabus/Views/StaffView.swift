@@ -58,17 +58,17 @@ struct TimeSignatureView: View {
     var clefWidth:Double
     
     var body: some View {
-        let timeSignatureFontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
         let padding:Double = Double(lineSpacing) / 3.0
-        
+        let fontSize1:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
+
         if timeSignature.isCommonTime {
             Text(" C")
-                .font(.custom("Times New Roman", size: timeSignatureFontSize * 1.1)).bold()
+                .font(.custom("Times New Roman", size: fontSize1 * 1.1)).bold()
         }
         else {
             VStack (spacing: 0) {
-                Text(" \(timeSignature.top)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
-                Text(" \(timeSignature.bottom)").font(.system(size: timeSignatureFontSize)).padding(.vertical, -padding)
+                Text(" \(timeSignature.top)").font(.system(size: fontSize1 * 1.1)).padding(.vertical, -padding)
+                Text(" \(timeSignature.bottom)").font(.system(size: fontSize1  * 1.1)).padding(.vertical, -padding)
             }
         }
     }
@@ -81,12 +81,18 @@ struct CleffView: View {
     var body: some View {
         HStack {
             if staff.type == StaffType.treble {
-                Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+                VStack {
+                    Text("\u{1d11e}").font(.system(size: CGFloat(lineSpacing * 10)))
+                        .padding(.top, 0.0)
+                        .padding(.bottom, lineSpacing * 1.0)
+                }
+                //.border(Color.red)
             }
             else {
                 Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing) * 5.5)))
             }
         }
+        //.border(Color.green)
     }
 }
 
@@ -152,12 +158,15 @@ struct StaffView: View {
             HStack(spacing: 0) {
                 if staff.linesInStaff != 1 {
                     CleffView(staff: staff, lineSpacing: lineSpacing)
-                    KeySignatureView(score: score, lineSpacing: lineSpacing)
+                    if score.key.keySig.accidentalCount != 0 {
+                        KeySignatureView(score: score, lineSpacing: lineSpacing)
+                        
+                    }
                 }
-                
+                    
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing, clefWidth: clefWidth()/1.0)
                 //    .border(Color.red)
-
+                
                 StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing)
                 Text("      ")
             }

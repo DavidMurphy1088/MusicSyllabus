@@ -8,10 +8,8 @@ struct ScoreView: View {
 
     var body: some View {
         VStack {
+            
             HStack {
-                if let label = score.label {
-                    Text(label).padding()
-                }
                 if let studentFeedback = score.studentFeedback {
                     if studentFeedback.correct {
                         Image(systemName: "checkmark.circle")
@@ -25,15 +23,24 @@ struct ScoreView: View {
                             .foregroundColor(Color.red)
                             .padding()
                     }
-                    if let feedback = studentFeedback.feedback {
-                        Text(feedback).padding()
-                            
+                    if let index = studentFeedback.indexInError {
+                            Text("Wrong rhythm at note: \(index)").padding()
                     }
+
                     if let tempo = studentFeedback.tempo {
-                        Text("Tempo:\(tempo)").padding()
+                        Text("Your Tempo:\(tempo)").padding()
                     }
                 }
             }
+            if let studentFeedback = score.studentFeedback {
+                if let feedback = studentFeedback.feedback {
+                    VStack {
+                        Text(feedback)
+                            .lineLimit(nil)
+                    }
+                }
+            }
+
             ForEach(score.getStaff(), id: \.self.type) { staff in
                 if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
                     StaffView(score: score, staff: staff, lineSpacing: lineSpacing)

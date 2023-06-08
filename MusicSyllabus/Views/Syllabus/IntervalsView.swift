@@ -84,7 +84,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                 interval.isIncluded = mode == .intervalAural
             }
         }
-        score.addStemCharaceteristics()
     }
     
     var selectIntervalView : some View {
@@ -214,7 +213,9 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
     var body: AnyView {
         AnyView(
             VStack {
-                MetronomeView()
+                //if UIDevice.current.userInterfaceIdiom != .phone {
+                    //MetronomeView()
+                //}
                 //HStack {
                     ScoreView(score: score).padding()
                 //}
@@ -237,13 +238,15 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
                         Text(answer.explanation).italic().fixedSize(horizontal: false, vertical: true).padding()
                     }
                     
-                    Button(action: {
-                        metronome.playScore(score: score)
-                    }) {
-                        Text("Hear Interval")
-                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                    if mode == .intervalAural {
+                        Button(action: {
+                            metronome.playScore(score: score)
+                        }) {
+                            Text("Hear Interval")
+                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                        }
+                        .padding()
                     }
-                    .padding()
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)

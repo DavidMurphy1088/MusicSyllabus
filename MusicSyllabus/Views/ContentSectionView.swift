@@ -26,7 +26,7 @@ struct ContentSectionView: View {
                     List(contentSection.subSections) { subtopic in
                         NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
                             VStack {
-                                Text(subtopic.name).padding()
+                                Text(subtopic.title).padding()
                                 //Text("___")
                                 //.navigationBarTitle("Title").font(.largeTitle)
                                 //.navigationBarTitleDisplayMode(.inline)

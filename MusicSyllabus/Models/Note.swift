@@ -79,6 +79,19 @@ class Note : Hashable, Comparable, ObservableObject {
         }
     }
     
+    func getNoteValueName() -> String {
+        switch self.value {
+        case 0.50 :
+            return "Quaver"
+        case 1.0 :
+            return "Crotchet"
+        case 2.0 :
+            return "Minimum"
+        default :
+            return "Whole Note"
+        }
+    }
+    
     func setIsOnlyRhythm(way: Bool) {
         self.isOnlyRhythmNote = way
         if self.isOnlyRhythmNote {

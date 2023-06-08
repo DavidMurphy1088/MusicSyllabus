@@ -22,7 +22,8 @@ class AudioSamplerPlayer {
         self.timeSignature = timeSignature
         //https://samplefocus.com/samples/short-ambient-clap-one-shot
         audioPlayersLow = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
-        audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - High", ext: "aif")
+        //audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - High", ext: "aif")
+        audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
         //open-clap_F_minor, 404543__inspectorj__clap-single-16
     }
     
@@ -53,8 +54,7 @@ class AudioSamplerPlayer {
     
     func play(noteValue:Double?=nil) {
         let nextAudioPlayer = newBar ? audioPlayersHigh[nextPlayer] : audioPlayersLow[nextPlayer]
-        //nextAudioPlayer.volume = soft ? 0.5 : 1.0
-        //nextAudioPlayer.
+        nextAudioPlayer.volume = newBar ? 1.0 : 0.50
         nextAudioPlayer.play()
         nextPlayer += 1
         if nextPlayer > numAudioPlayers - 1 {

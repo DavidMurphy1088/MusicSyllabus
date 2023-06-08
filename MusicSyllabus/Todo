@@ -1,18 +1,13 @@
 --TODO
 
-FIX ---> score1.addStemCharaceteristics()
-          
 Metronome button???
+start new instument/ voice
+content to cloud
+make a grade #2,8 clap example?
 
-Mistake at note 3 - can be better
-
-intervals visuak remove exampel with no data
-
-why is build 1.0.9 and on Test Flight 1.0.11
 do a simple example to understand geometry
 make a view builder that can render all text in buttons in one style
 G Major triad wont display top D in base cleff
-make a grade #5,8 clap example?
 
 --MID
 onDone score playing not called if metroom running with the playing
@@ -25,17 +20,13 @@ longer recordings get an error - still true?
 
 --LOW
 handle ledger lines for all notes (now its just middle C)
-quaver beam processing inefficient - casues lag on lots of notes
-check audio perms asked for properly, orderly
 
 ---LONG TERM
 The notes view should only be called once per score view (not per staff) and update both staffs in one pass. The offset for notes dispays should be Middle C
 
-
 --- Questions
 //layout of plying example 1 with low middle C ruins layout relative to staff enclsoing border
 record volume too soft
-review  proposal
 
 
 --DONE
@@ -50,3 +41,8 @@ turn on/off voice
   hilight on correct staff notes where students rhythm matches
 tap analyse return true/false for correct
 do test #5
+
+1.0.13
+various bug and UI fixes
+remove metronome on iPhone
+

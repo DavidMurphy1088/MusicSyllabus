@@ -181,18 +181,24 @@ struct StaffNotesView: View {
                                                         }
                                                     }
                                             })
+                                            
+                                            StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
+                                                     note: note,
+                                                     offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note),
+                                                     lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
+
                                         }
                                     }
                                 }
-                                if let highestNote = highestNote(entry: entry) {
-                                    //log(ctx:"test", entry)
-                                    if highestNote.staffNum == nil || highestNote.staffNum == staff.staffNum {
-                                        StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
-                                                 note: highestNote,
-                                                 offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: highestNote),
-                                                 lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
-                                    }
-                                }
+//                                if let highestNote = highestNote(entry: entry) {
+//                                    //log(ctx:"test", entry)
+//                                    if highestNote.staffNum == nil || highestNote.staffNum == staff.staffNum {
+//                                        StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
+//                                                 note: highestNote,
+//                                                 offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: highestNote),
+//                                                 lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
+//                                    }
+//                                }
                             }
                         }
                         if entry is BarLine {
