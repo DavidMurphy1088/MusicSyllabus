@@ -35,11 +35,19 @@ struct NoteView: View {
         self.color = Color.black 
         self.lineSpacing = lineSpacing
         self.offsetFromStaffMiddle = offsetFromStaffMiddle
+        log()
     }
     
-//    func log() {
-//       // print ("----->NoteView", note.midiNumber, note.staffNum, "staff", staff.type)
-//    }
+    func log() {
+        if noteWidth == 0 {
+            
+        }
+        if note.sequence == 7 {
+            
+        }
+        let val = note.isDotted ? note.getValue() * 2.0/3.0 : note.getValue()
+        print ("----->NoteView", note.midiNumber, note.staffNum, "noteWidth", noteWidth, "value", note.getValue(), "seq", note.sequence, "VAL", val)
+    }
     
     //cause notes that are set for specifc staff to be tranparent on other staffs
     func color(note:Note) -> Color {
@@ -58,7 +66,7 @@ struct NoteView: View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle) * lineSpacing / 2.0
-            let noteValueUnDotted = note.isDotted ? note.value * 2.0/3.0 : note.value
+            let noteValueUnDotted = note.isDotted ? note.getValue() * 2.0/3.0 : note.getValue()
 
             ZStack {
                 //Note ellipse
@@ -70,7 +78,7 @@ struct NoteView: View {
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
                         .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
                 }
-                if noteValueUnDotted  == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
+                if noteValueUnDotted == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
                             .stroke(color(note: note), lineWidth: 2)
@@ -92,14 +100,16 @@ struct NoteView: View {
                 }
 
                  //ledger line hack - totally not generalized :(
-                if staff.type == .treble {
-                    if note.midiNumber <= Note.MIDDLE_C {
-                        let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : noteFrameWidth / 6.0
-                        Path { path in
-                            path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
-                            path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))
+                if !note.isOnlyRhythmNote {
+                    if staff.type == .treble {
+                        if note.midiNumber <= Note.MIDDLE_C {
+                            let xOffset:Double = UIDevice.current.userInterfaceIdiom == .phone ? -Double(lineSpacing) / 2.0 : noteFrameWidth / 6.0
+                            Path { path in
+                                path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
+                                path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))
+                            }
+                            .stroke(color(note: note), lineWidth: 1)
                         }
-                        .stroke(color(note: note), lineWidth: 1)
                     }
                 }
                 

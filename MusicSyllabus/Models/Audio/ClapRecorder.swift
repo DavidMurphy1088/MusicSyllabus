@@ -2,17 +2,11 @@ import SwiftUI
 import CoreData
 import AVFoundation
 
-class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, ObservableObject {
+//Record a student clapping
+
+class ClapRecorder: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, ObservableObject {
     //http://www.mirbsd.org/~tg/soundfont/
     //https://sites.google.com/site/soundfonts4u/
-    
-    //var sampler:Sampler = Sampler(sf2File: "Metronom")
-    
-    //var sampler:Sampler = Sampler(sf2File: "gm")
-    //var sampler:Sampler = Sampler(sf2File: "PNS Drum Kit")
-    //var sampler:Sampler = Sampler(sf2File: "Nice-Steinway-v3.8")
-    //var sampler:Sampler = Sampler(sf2File: "Nice-Bass-Plus-Drums-v5.3")
-    //var tempo: Double = 1000
     
     var captureSession:AVCaptureSession = AVCaptureSession()
     var captureCtr = 0
@@ -31,6 +25,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
     var clapCnt = 0
     @Published var clapCounter = 0
 
+    //Record a decibel level at a specified time for logging
     class DecibelBufferRow: Encodable {
         static private var startTime:TimeInterval = 0
         private var ctr:Int
@@ -78,44 +73,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
     func fmt(_ inx:Double) -> String {
         return String(format: "%.4f", inx)
     }
-    
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let channel = connection.audioChannels.first else { return }
-        //print("audio channel count", connection.audioChannels.count)
-        //TODO processBuffer(sampleBuffer: sampleBuffer)
-        let decibels = Double(channel.averagePowerLevel)
-        //let peak = channel.peakHoldLevel
-        //print("AVCaptureOutput - didOutput...", captureCtr, "Decibels", decibels, "buf size", buf.count)
-
-        var sumDecibels = 0.0 //decibelBuffer.reduce(0, +)
-        for r in decibelBuffer {
-            sumDecibels += r.decibels
-        }
-        let avgLastDecibels = sumDecibels / Double(decibelBuffer.count)
         
-        logBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-
-        if decibelBuffer.count < requiredBufSize {
-            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-            return
-        }
-       
-        if Int(decibels - avgLastDecibels) > requiredDecibelChange {
-            clapCnt += 1
-            logBuffer[logBuffer.count-1].clap = true
-            DispatchQueue.main.async {
-                self.clapCounter += 1
-            }
-            decibelBuffer = []
-            //print(captureCtr, "Claps", clapCnt, "Average", fmt(avgDec), "Dec", fmt(decibels), "buf Size", buf.count)
-        }
-        else {
-            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-            decibelBuffer.removeFirst()
-        }
-        captureCtr += 1
-    }
-    
     func startRecording() {
         self.captureSession = AVCaptureSession()
         let captureDevice = AVCaptureDevice.default(for: AVMediaType.audio)
@@ -136,7 +94,6 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
             Logger.logger.reportError(self, "ClapRecorder:add Input")
         }
         
-        //audioOutput = AVCaptureAudioFileOutput()
         let audioOutput = AVCaptureAudioDataOutput()
         audioOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "audioQueue"))
         
@@ -146,7 +103,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
             Logger.logger.reportError(self, "ClapRecorder:add output")
         }
         captureCtr = 0
-        logBuffer = []
+        //logBuffer = []
         DispatchQueue.global(qos: .background).async {
             //print("Started recording")
             self.captureSession.startRunning()
@@ -158,11 +115,7 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
         for row in logBuffer {
             print(row.getRow())
             c += 1
-//            if c > 400 {
-//                break
-//            }
         }
-        //FirestorePersistance.shared.saveClaps(data: decibelBuffer)
     }
     
     func stopRecording() {
@@ -173,3 +126,39 @@ class AudioAnalyser: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obs
         }
     }
 }
+
+
+//    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+//        guard let channel = connection.audioChannels.first else { return }
+//        let decibels = Double(channel.averagePowerLevel)
+//        //let peak = channel.peakHoldLevel
+//        //print("AVCaptureOutput - didOutput...", captureCtr, "Decibels", decibels, "buf size", buf.count)
+//
+//        var sumDecibels = 0.0 //decibelBuffer.reduce(0, +)
+//        for r in decibelBuffer {
+//            sumDecibels += r.decibels
+//        }
+//        let avgLastDecibels = sumDecibels / Double(decibelBuffer.count)
+//
+//        logBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
+//
+//        if decibelBuffer.count < requiredBufSize {
+//            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
+//            return
+//        }
+//
+//        if Int(decibels - avgLastDecibels) > requiredDecibelChange {
+//            clapCnt += 1
+//            logBuffer[logBuffer.count-1].clap = true
+//            DispatchQueue.main.async {
+//                self.clapCounter += 1
+//            }
+//            decibelBuffer = []
+//            //print(captureCtr, "Claps", clapCnt, "Average", fmt(avgDec), "Dec", fmt(decibels), "buf Size", buf.count)
+//        }
+//        else {
+//            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
+//            decibelBuffer.removeFirst()
+//        }
+//        captureCtr += 1
+//    }

@@ -78,7 +78,7 @@ struct ContentSectionView: View {
              }
         }
         //.navigationTitle("XX").foregroundColor(.red)
-        .navigationBarTitle(contentSection.name, displayMode: .inline)//.font(.title)
+        .navigationBarTitle(contentSection.title, displayMode: .inline)//.font(.title)
     }
 }
 

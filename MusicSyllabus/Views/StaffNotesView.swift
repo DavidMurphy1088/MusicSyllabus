@@ -24,7 +24,7 @@ struct StemView: View {
         GeometryReader { geo in
             VStack {
                 let startNote = note.getBeamStartNote(score: score, np: notePositionLayout)
-                if startNote.value != Note.VALUE_WHOLE {
+                if startNote.getValue() != Note.VALUE_WHOLE {
                     //Note this code eventually has to go adjust the stem length for notes under a quaver beam
                     //3.5 lines is a full length stem
                     let stemDirection = stemDirection(note: startNote)

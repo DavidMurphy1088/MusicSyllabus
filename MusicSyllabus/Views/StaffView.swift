@@ -99,14 +99,17 @@ struct CleffView: View {
 struct KeySignatureView: View {
     @ObservedObject var score:Score
     var lineSpacing:Double
-
+    var staffOffset:Int
+    
     var body: some View {
         //if score.key.keySig.accidentalCount > 0 {
         GeometryReader { geometry in
             VStack {
-                let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(4 * lineSpacing) / 2.0
-                Text("#").font(.system(size: Double(lineSpacing) * 2.3)).bold()
-                    .position(CGPoint(x: geometry.size.width/2.0, y: noteEllipseMidpoint))
+                Image("sharp")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: lineSpacing)
+                    .position(CGPoint(x: geometry.size.width/2.0, y: geometry.size.height/2.0 - Double(staffOffset) * lineSpacing / 2.0))
             }
             //.border(Color.blue)
         }
@@ -158,9 +161,9 @@ struct StaffView: View {
             HStack(spacing: 0) {
                 if staff.linesInStaff != 1 {
                     CleffView(staff: staff, lineSpacing: lineSpacing)
+                    //.border(Color.red)
                     if score.key.keySig.accidentalCount != 0 {
-                        KeySignatureView(score: score, lineSpacing: lineSpacing)
-                        
+                        KeySignatureView(score: score, lineSpacing: lineSpacing, staffOffset: staff.type == .treble ? 4 : 2)
                     }
                 }
                     

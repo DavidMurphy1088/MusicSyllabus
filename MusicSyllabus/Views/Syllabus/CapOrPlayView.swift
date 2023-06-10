@@ -81,14 +81,14 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 let isDotted = lastNote!.isDotted
                 lastTS?.tag = "I"
                 if score.key.keySig.accidentalCount > 0 { //G Major
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
                 }
                 else {
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote!.value, staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote!.value, staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote!.value, staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
+                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
                 }
             }
         }
@@ -217,7 +217,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     }
                 }
                 .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
-                .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
+                //.navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
             }
         )
     }

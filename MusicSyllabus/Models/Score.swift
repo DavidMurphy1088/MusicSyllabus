@@ -107,16 +107,16 @@ class Score : ObservableObject {
 
             if scoreCtr == scoreTimeSlices.count - 1 {
                 //last note just has to be semibreve (1/2 note) or longer, any other note must be an exact note value match
-                if compareNotes![0].value < Note.VALUE_HALF {
+                if compareNotes![0].getValue() < Note.VALUE_HALF {
                     result = scoreCtr
                     break
                 }
                 else {
-                    compareNotes![0].value = scoreNotes![0].value
+                    compareNotes![0].setValue(value: scoreNotes![0].getValue())
                 }
             }
             else {
-                if scoreNotes![0].value != compareNotes![0].value {
+                if scoreNotes![0].getValue() != compareNotes![0].getValue() {
                     result = scoreCtr
                     break
                 }
@@ -239,7 +239,7 @@ class Score : ObservableObject {
             let note = timeSlice.notes[0]
             note.beamType = .none
             note.sequence = ctr
-            if note.value == Note.VALUE_QUAVER {
+            if note.getValue() == Note.VALUE_QUAVER {
                 if !underBeam {
                     note.beamType = .start
                     underBeam = true
@@ -251,14 +251,14 @@ class Score : ObservableObject {
             else {
                 if underBeam {
                     if let beamEndNote = previousNote {
-                        if beamEndNote.value == Note.VALUE_QUAVER {
+                        if beamEndNote.getValue() == Note.VALUE_QUAVER {
                             beamEndNote.beamType = .end
                         }
                         //update the notes under the quaver beam with the end note of the beam
                         var idx = ctr - 1
                         while idx >= 0 {
                             let prevNote = timeSlices[idx].notes[0]
-                            if prevNote.value != Note.VALUE_QUAVER {
+                            if prevNote.getValue() != Note.VALUE_QUAVER {
                                 break
                             }
                             prevNote.beamEndNote = beamEndNote

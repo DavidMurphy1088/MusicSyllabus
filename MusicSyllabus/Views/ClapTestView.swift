@@ -5,13 +5,13 @@ import AVFoundation
 struct ClapTestView: View {
     let synthesizer = AVSpeechSynthesizer()
     //https://dolby.io/blog/recording-audio-on-ios-with-examples/
-    @State private var requiredDecibelChange:Double = Double(AudioAnalyser.requiredDecibelChangeInitial)
-    @State private var requiredBufferSize = Double(AudioAnalyser.requiredBufSizeInitial)
+    @State private var requiredDecibelChange:Double = Double(ClapRecorder.requiredDecibelChangeInitial)
+    @State private var requiredBufferSize = Double(ClapRecorder.requiredBufSizeInitial)
 
     @State private var tempo = Double(1000)
     
     @State private var isRecording = false
-    @ObservedObject var clapRecorder:AudioAnalyser = AudioAnalyser()
+    @ObservedObject var clapRecorder:ClapRecorder = ClapRecorder()
     @ObservedObject var metronome:Metronome = Metronome.getMetronomeWithCurrentSettings()
 
     private class CompletionHandler: NSObject, AVSpeechSynthesizerDelegate {

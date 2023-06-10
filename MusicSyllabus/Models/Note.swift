@@ -39,7 +39,7 @@ class Note : Hashable, Comparable, ObservableObject {
     
     var staffNum:Int? //Narrow the display of the note to just one staff
     
-    var value:Double = Note.VALUE_QUARTER
+    private var value:Double = Note.VALUE_QUARTER
     var isDotted:Bool = false
     var isOnlyRhythmNote = false
 
@@ -68,11 +68,22 @@ class Note : Hashable, Comparable, ObservableObject {
         self.value = value
         self.isDotted = isDotted
         if value == 3.0 {
-            //self.value = Note.VALUE_HALF //NO NO
             self.isDotted = true
         }
     }
     
+    func getValue() -> Double {
+        return self.value
+    }
+    
+    func setValue(value:Double) {
+        self.value = value
+        if value == 3.0 {
+            self.isDotted = true
+        }
+
+    }
+
     func setHilite(hilite: Bool) {
         DispatchQueue.main.async {
             self.hilite = hilite
@@ -80,16 +91,20 @@ class Note : Hashable, Comparable, ObservableObject {
     }
     
     func getNoteValueName() -> String {
+        var name = self.isDotted ? "dotted " : ""
         switch self.value {
         case 0.50 :
-            return "Quaver"
+            name += "quaver"
         case 1.0 :
-            return "Crotchet"
+            name += "crotchet"
         case 2.0 :
-            return "Minimum"
+            name += "minum"
+        case 3.0 :
+            name += "minum"
         default :
-            return "Whole Note"
+            name += "whole Note"
         }
+        return name
     }
     
     func setIsOnlyRhythm(way: Bool) {

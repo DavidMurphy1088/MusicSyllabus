@@ -2,11 +2,11 @@ import Foundation
 import Accelerate
 import AVFoundation
 
-class AudioAnalyserNew {
-    init() {
-        //var fftSetup = vDSP_DFT_zop_CreateSetup(nil, vDSP_Length(fftSize), vDSP_DFT_Direction.FORWARD)
-    }
-    
+//class AudioAnalyserNew {
+//    init() {
+//        //var fftSetup = vDSP_DFT_zop_CreateSetup(nil, vDSP_Length(fftSize), vDSP_DFT_Direction.FORWARD)
+//    }
+//
 //    func test() {
 //
 //
@@ -65,4 +65,4 @@ class AudioAnalyserNew {
 //        }
 //
 //    }
-}
+//}

@@ -2,6 +2,8 @@ import SwiftUI
 import CoreData
 import AVFoundation
 
+// Record and then play audio of a student playing
+
 class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, ObservableObject {
     static let shared = AudioRecorder()
     var recordingSession: AVAudioSession!

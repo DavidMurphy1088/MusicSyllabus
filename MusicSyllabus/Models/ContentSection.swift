@@ -47,10 +47,10 @@ class ContentSection: Identifiable {
             }
         }
         if level == 1 {
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual", title:"Recognizing Visual Intervals", isActive: true))
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Visual", title:"Recognising Visual Intervals", isActive: true))
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Clapping", title:"Tapping At Sight", isActive: true))
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Playing", title: "Playing At Sight", isActive: true))
-            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural", title:"Recognizing Aural Intervals")) 
+            subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Intervals Aural", title:"Recognising Aural Intervals")) 
             subSections.append(ContentSection(parent: self, type: SectionType.testType, name:"Echo Clap"))
         }
         if level == 2 {

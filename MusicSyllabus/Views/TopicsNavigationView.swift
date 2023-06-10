@@ -6,6 +6,7 @@ struct TopicsNavigationView: View {
     @State private var isShowingConfiguration = false
 
     var body: some View {
+        
         if UIDevice.current.userInterfaceIdiom == .pad {
             
             NavigationView {
@@ -28,14 +29,16 @@ struct TopicsNavigationView: View {
                     .disabled(!contentSection.isActive)
                     //.navigationViewStyle(DoubleColumnNavigationViewStyle())
                     //the font that shows on the scrolling list of links
+                    //.navigationTitle(topic.title)//.font(.caption)
                     .navigationTitle(topic.title)//.font(.caption)
-                    //.navigationBarTitleDisplayMode(.inline)
+ //.navigationBarTitleDisplayMode(.inline)
 
                 }
                 .sheet(isPresented: $isShowingConfiguration) {
                     ConfigurationView(isPresented: $isShowingConfiguration)
                 }
                 .navigationTitle(topic.name)
+                
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {

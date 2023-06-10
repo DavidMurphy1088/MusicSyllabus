@@ -3,143 +3,17 @@ import CoreData
 import AVFoundation
 import Accelerate
 
-class ATest {
-    
-    // Function to perform Fourier Transform on an array of numbers
-    func performFourierTransform(input: [Double]) -> [Double] {
-        let length = vDSP_Length(input.count)
-        let log2n = vDSP_Length(log2(Double(length)))
-
-        // Setup the input/output buffers
-        var realPart = [Double](input)
-        var imaginaryPart = [Double](repeating: 0.0, count: input.count)
-        var splitComplex = DSPDoubleSplitComplex(realp: &realPart, imagp: &imaginaryPart)
-
-        // Create and initialize the FFT setup
-        guard let fftSetup = vDSP_create_fftsetupD(log2n, FFTRadix(kFFTRadix2)) else {
-            fatalError("Failed to create FFT setup")
-        }
-
-        // Perform the Fourier Transform
-        vDSP_fft_zipD(
-            fftSetup,
-            &splitComplex,
-            1,
-            log2n,
-            FFTDirection(FFT_FORWARD)
-        )
-
-        // Release the FFT setup
-        vDSP_destroy_fftsetupD(fftSetup)
-
-        return realPart
-    }
-    
-    func convertWavToM4A(inputURL: URL, outputURL: URL?) {
-        let asset = AVURLAsset(url: inputURL)
-        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A)
-
-        exportSession?.outputFileType = .m4a
-        exportSession?.outputURL = outputURL
-
-        exportSession?.exportAsynchronously(completionHandler: {
-            switch exportSession?.status {
-            case .completed:
-                print("Conversion completed successfully.")
-            case .failed:
-                print("Conversion failed: \(exportSession?.error?.localizedDescription ?? "")")
-            case .cancelled:
-                print("Conversion cancelled.")
-            default:
-                break
-            }
-        })
-    }
-    
-    func segmentWavFile(url: URL, segmentLength: TimeInterval) -> [[Float]]? {
-        do {
-            let file = try AVAudioFile(forReading: url)
-            let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: file.fileFormat.sampleRate, channels: file.fileFormat.channelCount, interleaved: false)
-            
-            let segmentSampleLength = AVAudioFrameCount(segmentLength * file.fileFormat.sampleRate)
-            let totalSampleCount = file.length
-            let totalSegmentCount = Int(totalSampleCount / Int64(segmentSampleLength))
-            
-            var segments: [[Float]] = []
-            
-            for segmentIndex in 0..<totalSegmentCount {
-                let startSample = AVAudioFramePosition(segmentIndex) * AVAudioFramePosition(segmentSampleLength)
-                let segmentBuffer = AVAudioPCMBuffer(pcmFormat: format!, frameCapacity: segmentSampleLength)!
-                
-                try file.read(into: segmentBuffer)
-                
-                let floatChannelData = segmentBuffer.floatChannelData!
-                let channelCount = Int(segmentBuffer.format.channelCount)
-                
-                var segmentData: [Float] = []
-                for frame in 0..<Int(segmentSampleLength) {
-                    let sample = floatChannelData.pointee[frame * channelCount]
-                    segmentData.append(sample)
-                }
-                
-                segments.append(segmentData)
-            }
-            
-            return segments
-        } catch {
-            print("Error loading file: \(error.localizedDescription)")
-            return nil
-        }
-    }
-
-    func test() {
-//        guard let url = Bundle.main.url(forResource:"simplemelodypiano1", withExtension:".m4a") else {
-//            return
-//        }
-        guard let fileURL = Bundle.main.url(forResource: "simplemelodypiano1", withExtension: "wav") else {
-            print("File  not found in the app bundle.")
-            return
-        }
-        //typically 10-50 milliseconds.
-        let segmentLength: TimeInterval = 0.002
-        
-        if let segments = segmentWavFile(url: fileURL, segmentLength: segmentLength) {
-            print("Segments", segments.count)
-            for segmentIndex in 0..<segments.count {
-                let segmentData = segments[segmentIndex]
-                let sum = segmentData.reduce(0, +)
-                let average = (Double(sum) / Double(segmentData.count)) * 1000
-                //print("Segment \(segmentIndex + 1): \(segmentData)")
-                if segmentIndex % 10 == 0 {
-                    if segmentIndex == 0 {
-                        print("Segment Size", segmentData.count)
-                    }
-                    //print(" time:\t", String(format: "%.2f", Double(segmentIndex) * segmentLength),  "\tAvg:\t", String(format: "%.2f", average))
-                    print(String(format: "%.2f", average))
-                }
-            }
-        }
-
-        do {
-            let fileData = try Data(contentsOf: fileURL)
-            print("total file bytes", fileData.count)
-        } catch {
-            print("Error loading file: \(error.localizedDescription)")
-        }
-        let inputSignal = [1.0, 2.0, 3.0, 4.0, 5.0] // Array of numbers
-        let result = performFourierTransform(input: inputSignal)
-        
-        print("Input signal: \(inputSignal)")
-        print("Fourier Transform result: \(result)")
-    }
-}
-
 struct TestView: View {
     var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
-    let test = ATest()
+    //let dataPoints: [CGFloat] = [0, 20, 10, 30, 25, 40, 30, 50] // Example data points
+    @ObservedObject var test = SoundWaveSegmenter()
     
+    //typically 10-50 milliseconds.
+    @State private var segmentLengthSecondsMilliSec: Double = 0.25
+    @State private var noteOnsetSliceWidthPercent: Double = 0.005
+
     init () {
         let data = ExampleData.shared
         let exampleData = data.get(contentSection: ContentSection(parent: nil, type: .example, name: "test"))
@@ -202,21 +76,38 @@ struct TestView: View {
     }
     
     var body: some View {
-        //GeometryReader { geometry in
-        VStack {
-            Text("--Test View--")
-            //MetronomeView()
-            //ScoreView(score: score1)
-//            ScoreView(score: score2)
-            
-            Text("  ")
-            Button(action: {
-                test.test()
-            }) {
-                Text("Test")
+        //GeometryReader { geo in
+            VStack {
+                Button(action: {
+                    test.sampleSoundWave(segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
+                }) {
+                    Text("Segment Audio")
+                }
+                .padding()
+                
+                Button(action: {
+                    test.detectNotes(segmentAverages: test.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
+                }) {
+                    Text("Detect Notes")
+                }
+                .padding()
+                HStack {
+                    Text("Segment Length:\(String(format: "%.2f", self.segmentLengthSecondsMilliSec)) ms")
+                    .padding()
+                    Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.01...0.5)
+                }
+                HStack {
+                    Text("NoteOnset slice size:\(String(format: "%.3f", self.noteOnsetSliceWidthPercent)) ms")
+                    Slider(value: self.$noteOnsetSliceWidthPercent, in: 0.001...0.020)
+                }
+                .padding()
+                
+                LineChartView(dataPoints: test.segmentAverages)
+                    .border(Color.indigo)
+                    .padding()
+                    //.frame(height: geo.size.height / 0.5)
             }
-        }
-            
+        //}
     }
 }
 

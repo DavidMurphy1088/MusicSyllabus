@@ -158,7 +158,7 @@ class Metronome: ObservableObject {
                 let next = score.scoreEntries[0] as! TimeSlice
                 if next.notes.count > 0 {
                     self.nextTimeSlice = next
-                    currentNoteDuration = nextTimeSlice!.notes[0].value
+                    currentNoteDuration = nextTimeSlice!.notes[0].getValue()
                 }
             }
         }
@@ -211,7 +211,7 @@ class Metronome: ObservableObject {
                             let channel = 0
                             var noteInChordNum = 0
                             for note in timeSlice.notes {
-                                if currentNoteDuration < note.value {
+                                if currentNoteDuration < note.getValue() {
                                     //note only plays once even though it might spans > 1 tick
                                     continue
                                 }
@@ -222,7 +222,7 @@ class Metronome: ObservableObject {
                                 }
                                 if note.isOnlyRhythmNote  {
                                     if let audioTicker = audioTicker {
-                                        audioTicker.play(noteValue: note.value)
+                                        audioTicker.play(noteValue: note.getValue())
                                     }
                                 }
                                 else {
@@ -230,7 +230,7 @@ class Metronome: ObservableObject {
                                         audioPlayer.startNote(UInt8(note.midiNumber), withVelocity:64, onChannel:UInt8(channel))
                                     }
                                 }
-                                if noteInChordNum == 0 && note.value < 1.0 {
+                                if noteInChordNum == 0 && note.getValue() < 1.0 {
                                     noteValueSpeechWord = "and"
                                 }
                                 noteInChordNum += 1
@@ -247,7 +247,7 @@ class Metronome: ObservableObject {
                                         nextTimeSlice = entry as! TimeSlice
                                         if nextTimeSlice!.notes.count > 0 {
                                             nextScoreIndex += 1
-                                            currentNoteDuration = nextTimeSlice!.notes[0].value
+                                            currentNoteDuration = nextTimeSlice!.notes[0].getValue()
                                             break
                                         }
                                         else {

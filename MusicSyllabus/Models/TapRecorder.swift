@@ -78,6 +78,9 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         if inValueAtTempo < 2.5 {
             return 2.0
         }
+        if inValueAtTempo < 3.5 {
+            return 3.0
+        }
         return 4.0
     }
     
@@ -112,9 +115,9 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
                 if i == self.tapValues.count - 1 {
 //                    //The last tap value is when the studnet endeded the recording. So instead, let the last note value be the last question note value
                     if lastQuestionNote != nil {
-                        if value > lastQuestionNote!.value {
+                        if value > lastQuestionNote!.getValue(){
                             //the student delayed the end of recording
-                            value = lastQuestionNote!.value
+                            value = lastQuestionNote!.getValue()
                         }
                     }
                 }
@@ -162,7 +165,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
     //From the recording of the first tick, calculate the tempo the rhythm was tapped at
     func getTempoFromRecordingStart(tapValues:[Double], questionScore: Score) -> Int {
         let scoreTimeSlices = questionScore.getAllTimeSlices()
-        let firstNoteValue = scoreTimeSlices[0].notes[0].value
+        let firstNoteValue = scoreTimeSlices[0].notes[0].getValue()
         if self.tapValues.count == 0 {
             return 60
         }

@@ -7,6 +7,8 @@ enum TickType {
     case handclap
 }
 
+// Provide sampled audio as ticks for metronome
+
 class AudioSamplerPlayer {
     private var timeSignature:TimeSignature
     
@@ -54,7 +56,7 @@ class AudioSamplerPlayer {
     
     func play(noteValue:Double?=nil) {
         let nextAudioPlayer = newBar ? audioPlayersHigh[nextPlayer] : audioPlayersLow[nextPlayer]
-        nextAudioPlayer.volume = newBar ? 1.0 : 0.50
+        nextAudioPlayer.volume = newBar ? 1.0 : 0.33
         nextAudioPlayer.play()
         nextPlayer += 1
         if nextPlayer > numAudioPlayers - 1 {

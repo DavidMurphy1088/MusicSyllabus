@@ -184,7 +184,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                 }
 
         }
-        .navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
+        //.navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
         )
     }
 }
