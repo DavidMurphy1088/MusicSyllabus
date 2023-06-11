@@ -46,7 +46,7 @@ struct NoteView: View {
             
         }
         let val = note.isDotted ? note.getValue() * 2.0/3.0 : note.getValue()
-        print ("----->NoteView", note.midiNumber, note.staffNum, "noteWidth", noteWidth, "value", note.getValue(), "seq", note.sequence, "VAL", val)
+//        print ("----->NoteView", note.midiNumber, note.staffNum, "noteWidth", noteWidth, "value", note.getValue(), "seq", note.sequence, "VAL", val)
     }
     
     //cause notes that are set for specifc staff to be tranparent on other staffs

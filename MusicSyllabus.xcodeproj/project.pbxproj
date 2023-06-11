@@ -11,6 +11,10 @@
 		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
 		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
 		7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */; };
+		7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B1E1C512A35940600C87DF1 /* Example 1.wav */; };
+		7B1E1C542A35DE1E00C87DF1 /* Fourier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */; };
+		7B1E1C572A35E49C00C87DF1 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7B1E1C562A35E49C00C87DF1 /* AudioKit */; };
+		7B1E1C592A36089900C87DF1 /* Example 5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B1E1C582A36089900C87DF1 /* Example 5.wav */; };
 		7B258C912A285B94003CB91C /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* TestView.swift */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
@@ -32,7 +36,7 @@
 		7B55CEC42A03E480009F9B5D /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC32A03E480009F9B5D /* ScoreView.swift */; };
 		7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */; };
 		7B56419D2A31C70200DEC01C /* AudioNotes in Resources */ = {isa = PBXBuildFile; fileRef = 7B56419C2A31C70200DEC01C /* AudioNotes */; };
-		7B5641A72A33FA1300DEC01C /* SoundWaveSegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5641A62A33FA1300DEC01C /* SoundWaveSegmenter.swift */; };
+		7B5641A72A33FA1300DEC01C /* NoteOnsetAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5641A62A33FA1300DEC01C /* NoteOnsetAnalyser.swift */; };
 		7B5641A92A345C1300DEC01C /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5641A82A345C1300DEC01C /* LineChartView.swift */; };
 		7B5641AB2A346DC200DEC01C /* NoteOnsetDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5641AA2A346DC200DEC01C /* NoteOnsetDetector.swift */; };
 		7B5641B32A34926400DEC01C /* simplemelodypiano.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B5641B22A34926400DEC01C /* simplemelodypiano.wav */; };
@@ -81,6 +85,9 @@
 		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
 		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
 		7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffNotesView.swift; sourceTree = "<group>"; };
+		7B1E1C512A35940600C87DF1 /* Example 1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 1.wav"; sourceTree = "<group>"; };
+		7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fourier.swift; sourceTree = "<group>"; };
+		7B1E1C582A36089900C87DF1 /* Example 5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 5.wav"; sourceTree = "<group>"; };
 		7B258C902A285B94003CB91C /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
@@ -102,7 +109,7 @@
 		7B55CEC32A03E480009F9B5D /* ScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreView.swift; sourceTree = "<group>"; };
 		7B55CEC52A04C3AF009F9B5D /* TimeSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
 		7B56419C2A31C70200DEC01C /* AudioNotes */ = {isa = PBXFileReference; lastKnownFileType = text; path = AudioNotes; sourceTree = "<group>"; };
-		7B5641A62A33FA1300DEC01C /* SoundWaveSegmenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundWaveSegmenter.swift; sourceTree = "<group>"; };
+		7B5641A62A33FA1300DEC01C /* NoteOnsetAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteOnsetAnalyser.swift; sourceTree = "<group>"; };
 		7B5641A82A345C1300DEC01C /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
 		7B5641AA2A346DC200DEC01C /* NoteOnsetDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteOnsetDetector.swift; sourceTree = "<group>"; };
 		7B5641B22A34926400DEC01C /* simplemelodypiano.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = simplemelodypiano.wav; sourceTree = "<group>"; };
@@ -148,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B1E1C572A35E49C00C87DF1 /* AudioKit in Frameworks */,
 				7BF9B9D82A03AA3C00121EBA /* FirebaseDatabaseSwift in Frameworks */,
 				7BF9B9DA2A03AA3C00121EBA /* FirebaseFirestore in Frameworks */,
 				7BF9B9D62A03AA3C00121EBA /* FirebaseDatabase in Frameworks */,
@@ -173,6 +181,8 @@
 		7B51F0DE2A0A52EA00A7ABFA /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				7B1E1C582A36089900C87DF1 /* Example 5.wav */,
+				7B1E1C512A35940600C87DF1 /* Example 1.wav */,
 				7B5641B22A34926400DEC01C /* simplemelodypiano.wav */,
 				7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */,
 				7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */,
@@ -191,9 +201,10 @@
 				7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */,
 				7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */,
 				7BA7487D2A223773001FDDAD /* AudioAnalyserUnused.swift */,
-				7B5641A62A33FA1300DEC01C /* SoundWaveSegmenter.swift */,
+				7B5641A62A33FA1300DEC01C /* NoteOnsetAnalyser.swift */,
 				7B5641A82A345C1300DEC01C /* LineChartView.swift */,
 				7B5641AA2A346DC200DEC01C /* NoteOnsetDetector.swift */,
+				7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -315,6 +326,7 @@
 				7BF9B9D72A03AA3C00121EBA /* FirebaseDatabaseSwift */,
 				7BF9B9D92A03AA3C00121EBA /* FirebaseFirestore */,
 				7BF9B9DB2A03AA3C00121EBA /* FirebaseStorage */,
+				7B1E1C562A35E49C00C87DF1 /* AudioKit */,
 			);
 			productName = MusicSyllabus;
 			productReference = 7B5EEDDB2A0133000007FF7E /* MusicSyllabus.app */;
@@ -346,6 +358,7 @@
 			mainGroup = 7B5EEDD22A0132FF0007FF7E;
 			packageReferences = (
 				7BF9B9D22A03AA3C00121EBA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				7B1E1C552A35E49C00C87DF1 /* XCRemoteSwiftPackageReference "AudioKit" */,
 			);
 			productRefGroup = 7B5EEDDC2A0133000007FF7E /* Products */;
 			projectDirPath = "";
@@ -369,7 +382,9 @@
 				7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */,
 				7B5641B32A34926400DEC01C /* simplemelodypiano.wav in Resources */,
 				7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */,
+				7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
+				7B1E1C592A36089900C87DF1 /* Example 5.wav in Resources */,
 				7B56419D2A31C70200DEC01C /* AudioNotes in Resources */,
 				7BA748822A234167001FDDAD /* ChatGPT in Resources */,
 				7B51F0CE2A09C94D00A7ABFA /* Mechanical metronome - High.aif in Resources */,
@@ -427,12 +442,13 @@
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B3D956C2A10D4AB007CA60D /* StaffView.swift in Sources */,
+				7B1E1C542A35DE1E00C87DF1 /* Fourier.swift in Sources */,
 				7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */,
 				7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */,
 				7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */,
 				7B61AA032A19D6350058A090 /* ConfigurationView.swift in Sources */,
 				7BA7487E2A223773001FDDAD /* AudioAnalyserUnused.swift in Sources */,
-				7B5641A72A33FA1300DEC01C /* SoundWaveSegmenter.swift in Sources */,
+				7B5641A72A33FA1300DEC01C /* NoteOnsetAnalyser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,7 +505,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -545,7 +561,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				NEW_SETTING = "";
@@ -569,6 +585,7 @@
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSyllabus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Music Syllabus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This application does not use the camera";
@@ -578,7 +595,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -605,6 +622,7 @@
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSyllabus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Music Syllabus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This application does not use the camera";
@@ -614,7 +632,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -653,6 +671,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7B1E1C552A35E49C00C87DF1 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		7BF9B9D22A03AA3C00121EBA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -664,6 +690,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7B1E1C562A35E49C00C87DF1 /* AudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7B1E1C552A35E49C00C87DF1 /* XCRemoteSwiftPackageReference "AudioKit" */;
+			productName = AudioKit;
+		};
 		7BF9B9D32A03AA3C00121EBA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7BF9B9D22A03AA3C00121EBA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

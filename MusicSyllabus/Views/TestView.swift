@@ -8,11 +8,12 @@ struct TestView: View {
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
     //let dataPoints: [CGFloat] = [0, 20, 10, 30, 25, 40, 30, 50] // Example data points
-    @ObservedObject var test = SoundWaveSegmenter()
+    @ObservedObject var test = NoteOnsetAnalyser()
     
     //typically 10-50 milliseconds.
-    @State private var segmentLengthSecondsMilliSec: Double = 0.25
+    @State private var segmentLengthSecondsMilliSec: Double = 0.5
     @State private var noteOnsetSliceWidthPercent: Double = 0.005
+    @State private var FFTWindowSize: Double = 4096.0
 
     init () {
         let data = ExampleData.shared
@@ -76,38 +77,67 @@ struct TestView: View {
     }
     
     var body: some View {
-        //GeometryReader { geo in
+        GeometryReader { geo in
             VStack {
-                Button(action: {
-                    test.sampleSoundWave(segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
-                }) {
-                    Text("Segment Audio")
+                HStack {
+                    Button(action: {
+                        test.processFile(fileName: "Example 5", segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
+                    }) {
+                        Text("Segment Audio")
+                    }
+                    .padding()
+                    
+                    Button(action: {
+                        test.detectNotes(segmentAverages: test.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec, FFTWindowSize:Int(FFTWindowSize))
+                    }) {
+                        Text("Detect Notes")
+                    }
+                    .padding()
+                    
+                    Button(action: {
+                        //Fourier().RhythmAndPitch()
+                    }) {
+                        Text("Fourier")
+                    }
+                    .padding()
                 }
-                .padding()
                 
-                Button(action: {
-                    test.detectNotes(segmentAverages: test.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
-                }) {
-                    Text("Detect Notes")
-                }
-                .padding()
                 HStack {
                     Text("Segment Length:\(String(format: "%.2f", self.segmentLengthSecondsMilliSec)) ms")
                     .padding()
-                    Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.01...0.5)
+                    Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.05...2.0)
                 }
                 HStack {
                     Text("NoteOnset slice size:\(String(format: "%.3f", self.noteOnsetSliceWidthPercent)) ms")
                     Slider(value: self.$noteOnsetSliceWidthPercent, in: 0.001...0.020)
                 }
                 .padding()
-                
-                LineChartView(dataPoints: test.segmentAverages)
+                HStack {
+                    Text("FFT Window:\(String(format: "%.0f", self.FFTWindowSize)) ms")
+                    Slider(value: self.$FFTWindowSize, in: 2000.0...100000.0)
+                }
+                .padding()
+
+                Text("Status:\(test.status)")
+                .padding()                
+
+//                LineChartView(dataPoints: test.segmentAverages)
+//                    .border(Color.indigo)
+//                    .padding()
+                LineChartView(dataPoints: test.fourierValues)
                     .border(Color.indigo)
-                    .padding()
+                    //.frame(maxWidth: .infinity)
+                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
+                    //.padding()
+                    //.frame(maxWidth: .infinity)
+                    //.frame(height: geo.size.height / 0.5)
+                LineChartView(dataPoints: test.fourierTransformValues)
+                    .border(Color.green)
+                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
+                    //.padding()
                     //.frame(height: geo.size.height / 0.5)
             }
-        //}
+        }
     }
 }
 

@@ -155,7 +155,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                             isTapping = true
                                             tapRecorder.startRecording(timeSignature: score.timeSignature, metronomeLeadIn: false)
                                         } else {
-                                            audioRecorder.startRecording()
+                                            audioRecorder.startRecording(outputFileName: contentSection.name)
                                         }
                                     }) {
                                         Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")

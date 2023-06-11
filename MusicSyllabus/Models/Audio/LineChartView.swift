@@ -26,7 +26,7 @@ struct LineChartView: View {
                     }
                     .stroke(Color.blue, lineWidth: 2) // Customize the line appearance
                 }
-                .aspectRatio(1, contentMode: .fit)
+                //.aspectRatio(1, contentMode: .fit)
             }
         }
     }

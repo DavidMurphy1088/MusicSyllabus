@@ -18,18 +18,42 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
         }
     }
     
-    func startRecording()  {
+    func startRecording(outputFileName:String)  {
+        let documentsDirectory = URL.documentsDirectory
+
+        // Compare to this
+        let documentsDirectory1 = try? FileManager.default.url(
+            for: .documentDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false)
+        print(documentsDirectory)
+        UserDefaults.standard.set("Hello, World!", forKey: "Greeting")
+        UserDefaults.standard.set("data \(documentsDirectory)", forKey: "data")
+
         recordingSession = AVAudioSession.sharedInstance()
-        audioFilename = getDocumentsDirectory().appendingPathComponent("recording.m4a")
+        audioFilename = getDocumentsDirectory().appendingPathComponent("\(outputFileName).wav")
+
+        print(audioFilename)
         AppDelegate.startAVAudioSession(category: .record)
         
-        let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 12000,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-            //USe kAudioFormatLinearPCM to generate .WAV, default is .m4a foramt
+//        let settings = [ //.m4a format
+//            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+//            AVSampleRateKey: 12000,
+//            AVNumberOfChannelsKey: 1,
+//            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+//            //USe kAudioFormatLinearPCM to generate .WAV, default is .m4a foramt
+//        ]
+        // .wav format
+        let settings: [String: Any] = [
+            AVFormatIDKey: kAudioFormatLinearPCM,
+            AVSampleRateKey: 44100.0,
+            AVNumberOfChannelsKey: 2,
+            AVLinearPCMBitDepthKey: 16,
+            AVLinearPCMIsBigEndianKey: false,
+            AVLinearPCMIsFloatKey: false
         ]
+
         
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename!, settings: settings)
@@ -103,6 +127,9 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        for p in paths {
+            print(p)
+        }
         return paths[0]
     }
 }
