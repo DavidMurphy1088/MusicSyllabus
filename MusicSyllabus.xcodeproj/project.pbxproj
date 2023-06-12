@@ -12,7 +12,7 @@
 		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
 		7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */; };
 		7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B1E1C512A35940600C87DF1 /* Example 1.wav */; };
-		7B1E1C542A35DE1E00C87DF1 /* Fourier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */; };
+		7B1E1C542A35DE1E00C87DF1 /* AudioPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1E1C532A35DE1E00C87DF1 /* AudioPlayerTest.swift */; };
 		7B1E1C572A35E49C00C87DF1 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7B1E1C562A35E49C00C87DF1 /* AudioKit */; };
 		7B1E1C592A36089900C87DF1 /* Example 5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B1E1C582A36089900C87DF1 /* Example 5.wav */; };
 		7B258C912A285B94003CB91C /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* TestView.swift */; };
@@ -65,6 +65,10 @@
 		7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = 7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */; };
 		7BA7487E2A223773001FDDAD /* AudioAnalyserUnused.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA7487D2A223773001FDDAD /* AudioAnalyserUnused.swift */; };
 		7BA748822A234167001FDDAD /* ChatGPT in Resources */ = {isa = PBXBuildFile; fileRef = 7BA748812A234167001FDDAD /* ChatGPT */; };
+		7BD375002A37248F00958D62 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD374FF2A37248F00958D62 /* TunerView.swift */; };
+		7BD375032A37252C00958D62 /* AudioKitEX in Frameworks */ = {isa = PBXBuildFile; productRef = 7BD375022A37252C00958D62 /* AudioKitEX */; };
+		7BD375062A3725A600958D62 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7BD375052A3725A600958D62 /* SoundpipeAudioKit */; };
+		7BD375092A3727F900958D62 /* AudioKitUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7BD375082A3727F900958D62 /* AudioKitUI */; };
 		7BD73C442A1F61E700EC1232 /* SpeechSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */; };
 		7BF902532A0B696F002E977A /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902522A0B696F002E977A /* MetronomeView.swift */; };
 		7BF902552A0CBE47002E977A /* ExampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF902542A0CBE47002E977A /* ExampleData.swift */; };
@@ -86,7 +90,7 @@
 		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
 		7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffNotesView.swift; sourceTree = "<group>"; };
 		7B1E1C512A35940600C87DF1 /* Example 1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 1.wav"; sourceTree = "<group>"; };
-		7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fourier.swift; sourceTree = "<group>"; };
+		7B1E1C532A35DE1E00C87DF1 /* AudioPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerTest.swift; sourceTree = "<group>"; };
 		7B1E1C582A36089900C87DF1 /* Example 5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 5.wav"; sourceTree = "<group>"; };
 		7B258C902A285B94003CB91C /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 		7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GuitarAcoustic.sf2; sourceTree = "<group>"; };
 		7BA7487D2A223773001FDDAD /* AudioAnalyserUnused.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioAnalyserUnused.swift; sourceTree = "<group>"; };
 		7BA748812A234167001FDDAD /* ChatGPT */ = {isa = PBXFileReference; lastKnownFileType = text; path = ChatGPT; sourceTree = "<group>"; };
+		7BD374FF2A37248F00958D62 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
 		7BD73C432A1F61E700EC1232 /* SpeechSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSynth.swift; sourceTree = "<group>"; };
 		7BF902522A0B696F002E977A /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		7BF902542A0CBE47002E977A /* ExampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleData.swift; sourceTree = "<group>"; };
@@ -156,6 +161,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7B1E1C572A35E49C00C87DF1 /* AudioKit in Frameworks */,
+				7BD375092A3727F900958D62 /* AudioKitUI in Frameworks */,
+				7BD375032A37252C00958D62 /* AudioKitEX in Frameworks */,
+				7BD375062A3725A600958D62 /* SoundpipeAudioKit in Frameworks */,
 				7BF9B9D82A03AA3C00121EBA /* FirebaseDatabaseSwift in Frameworks */,
 				7BF9B9DA2A03AA3C00121EBA /* FirebaseFirestore in Frameworks */,
 				7BF9B9D62A03AA3C00121EBA /* FirebaseDatabase in Frameworks */,
@@ -198,13 +206,14 @@
 			isa = PBXGroup;
 			children = (
 				7B51F0E12A0A5CB200A7ABFA /* ClapRecorder.swift */,
+				7BD374FF2A37248F00958D62 /* TunerView.swift */,
 				7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */,
 				7B51F0E32A0A6DD900A7ABFA /* AudioRecorder.swift */,
 				7BA7487D2A223773001FDDAD /* AudioAnalyserUnused.swift */,
 				7B5641A62A33FA1300DEC01C /* NoteOnsetAnalyser.swift */,
 				7B5641A82A345C1300DEC01C /* LineChartView.swift */,
 				7B5641AA2A346DC200DEC01C /* NoteOnsetDetector.swift */,
-				7B1E1C532A35DE1E00C87DF1 /* Fourier.swift */,
+				7B1E1C532A35DE1E00C87DF1 /* AudioPlayerTest.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -327,6 +336,9 @@
 				7BF9B9D92A03AA3C00121EBA /* FirebaseFirestore */,
 				7BF9B9DB2A03AA3C00121EBA /* FirebaseStorage */,
 				7B1E1C562A35E49C00C87DF1 /* AudioKit */,
+				7BD375022A37252C00958D62 /* AudioKitEX */,
+				7BD375052A3725A600958D62 /* SoundpipeAudioKit */,
+				7BD375082A3727F900958D62 /* AudioKitUI */,
 			);
 			productName = MusicSyllabus;
 			productReference = 7B5EEDDB2A0133000007FF7E /* MusicSyllabus.app */;
@@ -359,6 +371,9 @@
 			packageReferences = (
 				7BF9B9D22A03AA3C00121EBA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				7B1E1C552A35E49C00C87DF1 /* XCRemoteSwiftPackageReference "AudioKit" */,
+				7BD375012A37252C00958D62 /* XCRemoteSwiftPackageReference "AudioKitEX" */,
+				7BD375042A3725A600958D62 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
+				7BD375072A3727F900958D62 /* XCRemoteSwiftPackageReference "AudioKitUI" */,
 			);
 			productRefGroup = 7B5EEDDC2A0133000007FF7E /* Products */;
 			projectDirPath = "";
@@ -433,6 +448,7 @@
 				7B5EEDFD2A025EC00007FF7E /* Note.swift in Sources */,
 				7B6C32882A177A67004E2FA6 /* TappingView.swift in Sources */,
 				7B51F0DD2A0A508B00A7ABFA /* Metronome.swift in Sources */,
+				7BD375002A37248F00958D62 /* TunerView.swift in Sources */,
 				7B5EEDFF2A025EE60007FF7E /* Chord.swift in Sources */,
 				7B61AA012A19A46F0058A090 /* CapOrPlayView.swift in Sources */,
 				7B6C328A2A177C09004E2FA6 /* TapRecorder.swift in Sources */,
@@ -442,7 +458,7 @@
 				7B6E6F3D2A03B2B0001723C7 /* PianoView.swift in Sources */,
 				7B55CEC62A04C3AF009F9B5D /* TimeSignature.swift in Sources */,
 				7B3D956C2A10D4AB007CA60D /* StaffView.swift in Sources */,
-				7B1E1C542A35DE1E00C87DF1 /* Fourier.swift in Sources */,
+				7B1E1C542A35DE1E00C87DF1 /* AudioPlayerTest.swift in Sources */,
 				7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */,
 				7B61AA092A1CDA6E0058A090 /* HelpView.swift in Sources */,
 				7B5EEDDF2A0133000007FF7E /* MusicSyllabusApp.swift in Sources */,
@@ -679,6 +695,30 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		7BD375012A37252C00958D62 /* XCRemoteSwiftPackageReference "AudioKitEX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKitEX.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		7BD375042A3725A600958D62 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/SoundpipeAudioKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		7BD375072A3727F900958D62 /* XCRemoteSwiftPackageReference "AudioKitUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKitUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.5;
+			};
+		};
 		7BF9B9D22A03AA3C00121EBA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -694,6 +734,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7B1E1C552A35E49C00C87DF1 /* XCRemoteSwiftPackageReference "AudioKit" */;
 			productName = AudioKit;
+		};
+		7BD375022A37252C00958D62 /* AudioKitEX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BD375012A37252C00958D62 /* XCRemoteSwiftPackageReference "AudioKitEX" */;
+			productName = AudioKitEX;
+		};
+		7BD375052A3725A600958D62 /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BD375042A3725A600958D62 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
+			productName = SoundpipeAudioKit;
+		};
+		7BD375082A3727F900958D62 /* AudioKitUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7BD375072A3727F900958D62 /* XCRemoteSwiftPackageReference "AudioKitUI" */;
+			productName = AudioKitUI;
 		};
 		7BF9B9D32A03AA3C00121EBA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

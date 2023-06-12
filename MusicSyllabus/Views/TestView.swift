@@ -7,6 +7,10 @@ struct TestView: View {
     var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
+    let ap = AudioPlayerTest()
+    //let tuner = TunerView()
+    let tuner = TunerConductor()
+    
     //let dataPoints: [CGFloat] = [0, 20, 10, 30, 25, 40, 30, 50] // Example data points
     @ObservedObject var test = NoteOnsetAnalyser()
     
@@ -14,6 +18,8 @@ struct TestView: View {
     @State private var segmentLengthSecondsMilliSec: Double = 0.5
     @State private var noteOnsetSliceWidthPercent: Double = 0.005
     @State private var FFTWindowSize: Double = 4096.0
+    //@State private var amplitudeFilter: Double = 0.1
+    @State private var amplitudeFilter: Double = 0.4
 
     init () {
         let data = ExampleData.shared
@@ -81,7 +87,7 @@ struct TestView: View {
             VStack {
                 HStack {
                     Button(action: {
-                        test.processFile(fileName: "Example 5", segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
+                        test.processFile(fileName: "Example 1", segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
                     }) {
                         Text("Segment Audio")
                     }
@@ -95,9 +101,9 @@ struct TestView: View {
                     .padding()
                     
                     Button(action: {
-                        //Fourier().RhythmAndPitch()
+                        tuner.run(amplitudeFilter: amplitudeFilter)
                     }) {
-                        Text("Fourier")
+                        Text("TunerTest")
                     }
                     .padding()
                 }
@@ -117,10 +123,18 @@ struct TestView: View {
                     Slider(value: self.$FFTWindowSize, in: 2000.0...100000.0)
                 }
                 .padding()
+                HStack {
+                    Text("amplitudeFilter:\(String(format: "%.2f", self.amplitudeFilter))")
+                    Slider(value: self.$amplitudeFilter, in: 0.1...10.0)
+                }
+                .padding()
 
+                
+                
                 Text("Status:\(test.status)")
                 .padding()                
 
+                TunerView()
 //                LineChartView(dataPoints: test.segmentAverages)
 //                    .border(Color.indigo)
 //                    .padding()
@@ -131,11 +145,11 @@ struct TestView: View {
                     //.padding()
                     //.frame(maxWidth: .infinity)
                     //.frame(height: geo.size.height / 0.5)
-                LineChartView(dataPoints: test.fourierTransformValues)
-                    .border(Color.green)
-                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
-                    //.padding()
-                    //.frame(height: geo.size.height / 0.5)
+//                LineChartView(dataPoints: test.fourierTransformValues)
+//                    .border(Color.green)
+//                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
+//                    //.padding()
+//                    //.frame(height: geo.size.height / 0.5)
             }
         }
     }

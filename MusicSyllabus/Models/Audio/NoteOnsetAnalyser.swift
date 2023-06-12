@@ -241,7 +241,7 @@ class NoteOnsetAnalyser : ObservableObject {
             }
         }
         
-        //show the notes and calculate the fourier for each note's range of frame indexes
+        //show the notes and calculate the fourier FFT for each note's range of frame indexes
         let firstNoteDuration = result[0].duration()
         var pitches:[Double] = []
         
@@ -306,7 +306,7 @@ class NoteOnsetAnalyser : ObservableObject {
         
         for i in 0..<result.count {
             let value = result[i].duration() / firstNoteDuration
-            print("\(i) " + String(format: "%.1f", value) + " " + String(format: "%.0f", pitches[i]))
+            print("\(i) value:" + String(format: "%.1f", value) + " pitch:" + String(format: "%.0f", pitches[i]))
         }
 
     }
