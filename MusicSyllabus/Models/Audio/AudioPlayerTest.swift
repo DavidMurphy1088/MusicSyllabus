@@ -19,9 +19,9 @@ class AudioPlayerTest {
         //let fftValidBinCount: FFTValidBinCount? = .full
         let callbackQueue = DispatchQueue.main
 
-        let fftTap = FFTTap(player!, callbackQueue: callbackQueue) {x in
-            print("fftTap", x)
-        }
+//        let fftTap = FFTTap(player!, callbackQueue: callbackQueue) {x in
+//            print("fftTap", x)
+//        }
         
         //----------------------------
         //TunerConductor

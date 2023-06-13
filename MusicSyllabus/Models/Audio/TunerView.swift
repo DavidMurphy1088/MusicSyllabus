@@ -65,10 +65,10 @@ class TunerConductor: ObservableObject, HasAudioEngine {
         }
         //pitchTracker.start()
         
-        FFTTracker = FFTTap(player!, callbackQueue: DispatchQueue.main) { f  in
-            print("FFT", f.count)
-        }
-        FFTTracker.start()
+//        FFTTracker = FFTTap(player!, callbackQueue: DispatchQueue.main) { f  in
+//            print("FFT", f.count)
+//        }
+        //FFTTracker.start()
 
         print("\n-------------->")
         try! engine.start()

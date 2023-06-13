@@ -8,17 +8,20 @@ struct TestView: View {
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
     let ap = AudioPlayerTest()
+    let test = Test()
     //let tuner = TunerView()
     let tuner = TunerConductor()
     
-    //let dataPoints: [CGFloat] = [0, 20, 10, 30, 25, 40, 30, 50] // Example data points
-    @ObservedObject var test = NoteOnsetAnalyser()
+    @State private var selectedNumber = 0
+    let numbers = Array(1...8)
+    
+    @ObservedObject var noteOnsetAnalyser = NoteOnsetAnalyser()
     
     //typically 10-50 milliseconds.
     @State private var segmentLengthSecondsMilliSec: Double = 0.5
     @State private var noteOnsetSliceWidthPercent: Double = 0.005
     @State private var FFTWindowSize: Double = 4096.0
-    //@State private var amplitudeFilter: Double = 0.1
+    @State private var FFTWindowOffset: Double = 1024.0
     @State private var amplitudeFilter: Double = 0.4
 
     init () {
@@ -81,75 +84,114 @@ struct TestView: View {
       //score1.addStemCharaceteristics()
         //score2.addStemCharaceteristics()
     }
-    
+    func arrayToFloat(_ doubleArray: [Double]) -> [Float] {
+        return doubleArray.map { Float($0) }
+    }
+ 
     var body: some View {
         GeometryReader { geo in
             VStack {
                 HStack {
                     Button(action: {
-                        test.processFile(fileName: "Example 1", segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec)
+                        //noteOnsetAnalyser.makeSegmentAverages(fileName: "Example \(self.selectedNumber)", segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
+                        noteOnsetAnalyser.makeSegmentAverages(fileName: "Example 7_sequenced", segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
                     }) {
-                        Text("Segment Audio")
+                        Text("Make Segment Averages")
                     }
                     .padding()
                     
                     Button(action: {
-                        test.detectNotes(segmentAverages: test.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec, FFTWindowSize:Int(FFTWindowSize))
+                        noteOnsetAnalyser.detectNoteOnsets(segmentAverages: noteOnsetAnalyser.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec,
+                                                           FFTFrameSize:Int(FFTWindowSize),
+                                                           FFTFrameOffset: Int(FFTWindowOffset))
                     }) {
                         Text("Detect Notes")
                     }
                     .padding()
                     
                     Button(action: {
-                        tuner.run(amplitudeFilter: amplitudeFilter)
+                        //tuner.run(amplitudeFilter: amplitudeFilter)
+                        
+                        //noteOnsetAnalyser.makeHammedAudioFile(fileName: "Example 1", outputName: "Example_1_Hammed")
                     }) {
-                        Text("TunerTest")
+                        Text("Make Hammed File")
+                    }
+                    .padding()
+
+                    Button(action: {
+                        //tuner.run(amplitudeFilter: amplitudeFilter)
+                        test.measurePitch(fileName: "Example 5")
+                    }) {
+                        Text("Test")
                     }
                     .padding()
                 }
                 
+//                Picker("Select Number", selection: $selectedNumber) {
+//                    ForEach(0..<numbers.count) { index in
+//                        Text("\(numbers[index])")
+//                    }
+//                }
+
+                
+                //Text("Status:\(noteOnsetAnalyser.status)").padding()
+
+                //TunerView()
+                
+                //================ smoothing (segments)
+                
                 HStack {
-                    Text("Segment Length:\(String(format: "%.2f", self.segmentLengthSecondsMilliSec)) ms")
-                    .padding()
+                    Text("Segment Average Length:\(String(format: "%.2f", self.segmentLengthSecondsMilliSec)) ms")
                     Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.05...2.0)
                 }
+                .padding(.horizontal)
+
+                LineChartView(dataPoints: noteOnsetAnalyser.segmentAverages, title: "Sample Averages")
+                    .border(Color.indigo)
+                    .frame(height: geo.size.height / 4.0)
+                    .padding(.horizontal)
+                
+                //================ rhythm and pitch
+                
                 HStack {
                     Text("NoteOnset slice size:\(String(format: "%.3f", self.noteOnsetSliceWidthPercent)) ms")
                     Slider(value: self.$noteOnsetSliceWidthPercent, in: 0.001...0.020)
                 }
-                .padding()
-                HStack {
-                    Text("FFT Window:\(String(format: "%.0f", self.FFTWindowSize)) ms")
-                    Slider(value: self.$FFTWindowSize, in: 2000.0...100000.0)
-                }
-                .padding()
-                HStack {
-                    Text("amplitudeFilter:\(String(format: "%.2f", self.amplitudeFilter))")
-                    Slider(value: self.$amplitudeFilter, in: 0.1...10.0)
-                }
-                .padding()
+                .padding(.horizontal)
 
+                HStack {
+                    Text("FFT Frame Size:\(String(format: "%.0f", self.FFTWindowSize))")
+                    Slider(value: self.$FFTWindowSize, in: 200.0...10000.0)
+                }
+                .padding(.horizontal)
                 
-                
-                Text("Status:\(test.status)")
-                .padding()                
+                HStack {
+                    Text("FFT Frame Offset:\(String(format: "%.2f", self.FFTWindowOffset))")
+                    Slider(value: self.$FFTWindowOffset, in: -10000.0...10000.0)
+                }
+                .padding(.horizontal)
 
-                TunerView()
-//                LineChartView(dataPoints: test.segmentAverages)
-//                    .border(Color.indigo)
-//                    .padding()
-                LineChartView(dataPoints: test.fourierValues)
-                    .border(Color.indigo)
-                    //.frame(maxWidth: .infinity)
-                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
-                    //.padding()
-                    //.frame(maxWidth: .infinity)
-                    //.frame(height: geo.size.height / 0.5)
-//                LineChartView(dataPoints: test.fourierTransformValues)
-//                    .border(Color.green)
-//                    .frame(width: geo.size.width, height: geo.size.height / 3.0)
-//                    //.padding()
-//                    //.frame(height: geo.size.height / 0.5)
+//                HStack {
+//                    LineChartView(dataPoints: noteOnsetAnalyser.pitchInputValues, title: "Frames into FFT")
+//                        .border(Color.indigo)
+//                        .frame(height: geo.size.height / 4.0)
+//                        .padding(.horizontal)
+//                    Text(" ")
+//                }
+                
+                HStack {
+                    LineChartView(dataPoints: noteOnsetAnalyser.pitchInputValuesWindowed, title: "Windowed Frames into FFT")
+                        .border(Color.indigo)
+                        .frame(height: geo.size.height / 4.0)
+                        .padding(.horizontal)
+                    Text(" ")
+                }
+
+                LineChartView(dataPoints: noteOnsetAnalyser.pitchOutputValues, title: "FFT Output")
+                    .border(Color.green)
+                    .frame(height: geo.size.height / 6.0)
+                    .padding(.horizontal)
+
             }
         }
     }

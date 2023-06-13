@@ -1,0 +1,30 @@
+Using swift I have an AVAudioFile of 10 seconds of a simple piano melody with 10 notes. I know the exact frames in the audio file where each note starts. How can I calculate the pitch the note was played at?
+
+Using swift I have an AVAudioFile of 10 seconds of a simple piano melody recorded with 10 notes. How can I use AudioKit to 1) determine the start and duration of each note in the audio file and 2) determie the pictch of each note.
+
+Using swift I have a short AVAudioFile of a simple piano melody recorded with 10 notes. How can I  1) determine the start and duration of each note in the audio file and 2) determie the pictch of each note. Please give example code that uses Apple's Swift code. Please ensure the example code provided will compile without errors.
+
+very simple example which plays an audio file of recorded piano notes using an AudioKit AVAudioFile through an AudioEngine. The code must inlcude an amplitude detector to that is triggerd on every note. The detector's closure code must also be able to know the frame number in teh audio file at which the note occurred.
+
+I have frame values from one second of an audo AVAudioFile that contains a piano note played. How do I measure the pitch of the note that was played in Apple's Swift code
+
+which algorithm in Swift is recommended for performPitchDetection given that the duration of the AVAudioFile frame values is 1 second long and that the sound recordoed is that of a single note played on a piano
+
+What is the recommended algorithm to prepare input from a short AVAudioFile of a simple melody for note onset analysis
+
+Using swift I have a short AVAudioFile of a simple piano melody recorded with 10 notes. I know the positions of the note onsets quite accuraltey.
+What algorithms can I use to determine the pitch of each note. Please also describe any techniques that would help 'clean up' the audio signal to make pitch anaalsis more accurate.
+
+I know the positions in the signal where notes start. If I use FFT -
+1) What segments of the AVAudioFile input buffer should I provide as input to FFT
+2) Should any preporcessing be done on those segments before they are input to FFT
+3) What technieus should I use to analyse the resulting FFT time domain to determine the note's pitch
+
+If I read an AVAudioFile into an AVAudioPCMBuffer buffer what characteristics of the signal does each value in the buffer represent.
+- amplitude
+
+Please provide Swift code to apply the Hamming windowing function to the signal before it is input to the FFT. The Hamming function that applies Hamming will input an array of Float values that represent the audio signal's' amplitude starting at the note's' start position. The Hamming function should apply apply Hamming windowing to the signal and then output an array of Floats that will be input to the FFT
+
+what advantage does Hamming windowing provide and how does it work
+
+give sample Swift code that can analyse the output of an FFT and return the MIDI pitch of the note. The function should input the values output from the FFT transform
