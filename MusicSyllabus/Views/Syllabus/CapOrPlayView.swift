@@ -13,6 +13,53 @@ enum QuestionMode {
     case none
 }
 
+struct PlayRecordingView: View {
+    var mode:QuestionMode
+    var buttonLabel:String
+    @State var score:Score
+    @State var metronome:Metronome
+    var tapRecorder = TapRecorder.shared
+    @ObservedObject var audioRecorder = AudioRecorder.shared
+    @State var playingScore:Bool = false
+    
+    var body: some View {
+        VStack {
+            Button(action: {
+                if mode == .rhythmClap || mode == .rhythmEchoClap {
+                    metronome.playScore(score: score, onDone: {
+                        playingScore = false
+                    })
+                    playingScore = true
+                }
+                else {
+                    audioRecorder.playRecording()
+                }
+            }) {
+                if playingScore {
+                    Button(action: {
+                        playingScore = false
+                        metronome.stopPlayingScore()
+                    }) {
+                        Text("Stop Playing")
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                        Image(systemName: "stop.circle")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.red)
+                    }
+                }
+                else {
+                    //Text("Hear Your \((mode == .rhythmClap || mode == .rhythmEchoClap) ? "Rhythm" : "Playing")")
+                    //\((Cythm" : "Playing")"
+                    Text(self.buttonLabel)
+                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                }
+            }
+            .padding()
+        }
+    }
+}
+
 struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
     @ObservedObject var audioRecorder = AudioRecorder.shared
@@ -102,20 +149,25 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
             
         case .rhythmClap:
             //result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
-            result += "tap your rhythm on the drum. (In the exam you can clap OR tap.)"
+            result += "tap your rhythm on the drum."
 
         case .rhythmPlay:
             result += "play the melody and the final chord."
             
         case .rhythmEchoClap:
-            result += "tap your rhythm on the drum. (In the exam you can clap OR tap.)"
+            result += "tap your rhythm on the drum."
             
         default:
             result = ""
         }
         return result + " When you are finished stop the recording."
     }
-        
+    
+    func getStudentScore() -> Score {
+        let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
+        return rhythmAnalysis.0
+    }
+    
     var body: AnyView {
         AnyView(
             GeometryReader { geometry in
@@ -152,8 +204,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                         answer.setState(.recording)
                                         if mode == .rhythmClap || mode == .rhythmEchoClap {
                                             self.isTapping = true
-                                            isTapping = true
-                                            tapRecorder.startRecording(timeSignature: score.timeSignature, metronomeLeadIn: false)
+                                            tapRecorder.startRecording(metronomeLeadIn: false)
                                         } else {
                                             audioRecorder.startRecording(outputFileName: contentSection.name)
                                         }
@@ -166,6 +217,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                     }
                                 }
                             }
+                            
                             if answer.state == .recording {
                                 Button(action: {
                                     answer.setState(.recorded)
@@ -187,7 +239,10 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 tappingView.padding()
                             }
 
-                            //if answer.state == .recorded {
+                            if answer.state == .recorded {
+                                PlayRecordingView(mode: mode, buttonLabel: "Hear Your Rhythm", score: getStudentScore(), metronome: self.metronome)
+                            }
+
                             if answer.state == .recorded {
                                 Button(action: {
                                     answer.setState(.submittedAnswer)
@@ -202,7 +257,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 .padding()
                             }
                             Text("  ").padding()
-                            //}
                         }
                         .overlay(
                             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
@@ -307,40 +361,6 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
             }
             .padding()
             
-            //Hear user rhythm
-            Button(action: {
-                if mode == .rhythmClap || mode == .rhythmEchoClap {
-                    if tappingScore != nil {
-                        metronome.playScore(score: tappingScore!, onDone: {
-                            playingStudent = false
-                        })
-                    }
-                    playingStudent = true
-                }
-                else {
-                    audioRecorder.playRecording()
-                }
-            }) {
-                if playingStudent {
-                    Button(action: {
-                        playingStudent = false
-                        metronome.stopPlayingScore()
-                    }) {
-                        Text("Stop Playing")
-                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
-                        Image(systemName: "stop.circle")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(.red)
-                    }
-                }
-                else {
-                    Text("Hear Your \((mode == .rhythmClap || mode == .rhythmEchoClap) ? "Rhythm" : "Playing")")
-                        //.font(.system(.body))
-                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
-                }
-            }
-            .padding()
         }
         .padding()
     }
@@ -403,9 +423,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         AnyView(
             GeometryReader { geometry in
                 VStack {
-                    if UIDevice.current.userInterfaceIdiom != .phone {
-                        MetronomeView()
-                    }
+//                    if UIDevice.current.userInterfaceIdiom != .phone {
+//                        MetronomeView()
+//                    }
                     VStack {
                         ScoreView(score: score).padding()
                         if tappingScore != nil {
@@ -414,16 +434,27 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                     }
 
                     HStack {
-                        HStack {
-                            stopPlayView
-                                .padding()
-                                .onAppear {
-                                    if mode == .rhythmClap || mode == .rhythmEchoClap {
-                                        analyseRhythm()
-                                    }
-                                }
+                        VStack {
+//                            stopPlayView
+//                                .padding()
+//                                .onAppear {
+//                                    if mode == .rhythmClap || mode == .rhythmEchoClap {
+//                                        analyseRhythm()
+//                                    }
+//                                }
+                            if let tappingScore = tappingScore {
+                                PlayRecordingView(mode: mode, buttonLabel: "Hear Your Rhythm", score: tappingScore, metronome: metronome)
+                            }
+                            
+                            PlayRecordingView(mode: mode, buttonLabel: "Hear The Given Rhythm", score: score, metronome: metronome)
+
                             speechEnabledView
                                 .padding()
+                        }
+                        .onAppear {
+                            if mode == .rhythmClap || mode == .rhythmEchoClap {
+                                analyseRhythm()
+                            }
                         }
                         .overlay(
                             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
@@ -453,7 +484,7 @@ struct ClapOrPlayView: View {
     
     init(mode:QuestionMode, contentSection:ContentSection) {
         self.contentSection = contentSection
-        presentQuestionView = ClapOrPlayPresentView(contentSection: contentSection, score: self.score, answer: answer, mode: mode)
+        presentQuestionView = ClapOrPlayPresentView(contentSection: contentSection, score: score, answer: answer, mode: mode)
         answerQuestionView = ClapOrPlayAnswerView(contentSection: contentSection, score: score, answer: answer, mode: mode)
     }
 

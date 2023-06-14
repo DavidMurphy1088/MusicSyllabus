@@ -2,7 +2,6 @@ https://stackoverflow.com/questions/70613514/how-can-i-display-my-app-documents-
 
 What is SiriKit - If you're a developer, you can also integrate Siri into your app using the SiriKit framework. This allows users to interact with your app using voice commands. To test SiriKit in your app, you'll need to have a development profile and run your app on a physical device that supports Siri. You can find more information on SiriKit development in the Apple Developer Documentation.
 
-
 Sound Fonts
     //http://www.mirbsd.org/~tg/soundfont/
     //https://sites.google.com/site/soundfonts4u/
@@ -11,14 +10,9 @@ MIDI percussion https://freewavesamples.com/roland-r-8-castanet
 
 Image background trasnparent
 https://retoucher.online/upload
-https://retoucher.online/upload
 
 Audio file type converter
 https://products.aspose.app/slides/video/wav-to-pcm
-
-Audio - For example, in the .playAndRecord category, you can specify whether the audio is intended for voice chat, video recording, or audio conferencing.
-
-'GoogleService-Info.plist', or the Bundle ID in the options if you are using a customized options. To ensure that everything can be configured correctly, you may need to make the Bundle IDs consistent. To continue with this plist file, you may change your app's bundle identifier to 'com.dmurphy.westernwheelers.Music-Syllabus'. Or you can download a new configuration file that matches your bundle identifier from https://console.firebase.google.com/ and replace the current one.
 
 it's important to note that SwiftUI views are often re-created multiple times during their lifetime.
 This happens when the view's state changes or when it needs to be re-rendered due to changes in the environment or parent views.
@@ -26,36 +20,26 @@ But a state change in a view does not recall its init()
 
 Its appears to be that if a view uses a geometry reader any child view that does not explctyly position itself does not center but goes to a zero postion
 
-1.9 Build ======================
-
-- Test #5 aural rhythm done
-
-- More examples for play/clap
-
-- Experimental speaking of the rhythm - one, two and, three etc. It can be turned on or off. Default is off
-
-- Identical user and exercise rhythms now line up correctly on staffs
-
-- Metronome lead in for test # 2 clapping - to establish tempo for user
-
-- Preliminary algorithm to attempt to show and explain to the user where their rhythm differs from the example
-======================
-
 - Minimum iOS required set to IOS 15, goes back to Sep  2021
 
-METRO
-- should be tick for test #5
-- needs accent on first best
-- what should be the temo the studnets uses for #2 and #3??
- - should app detect the tempo or should it specify a tempo value (and then should it lead in?)
- 
- 
-All playing of notes, melodies, chords etc requires a metronome. The metronome may or may not be visible.
-When its visbile it specifies the tempo as crotched = value
+============ AUDIO ANALYSIS 14June ===========
 
-#test1 - metronome displayed only on the answer screen (screen #2), intervals play at 60 BPM
-@test2 - metronome
+NoteOnsetAnalyser.class
 
-1.0.13
-Examples with no date removed
-Better feedback on rthyms
+Rhythm detection quite good for a clean syntheised paino recording of 10 notes. Genrated by onlinesequencer
+
+Pitch detection all over the place. Very sensitive to smal changes in the paramters for FFT
+
+SoundAnalyseView has tools to viualize a recorded waveform.
+- segment the signal into chunks for note onset analysis
+- feed segments of the audio frames into FFT. Use Hamming window smoothing for frame data into FFT
+- perform PeakInterpolation to interpret resutls from FFT frequency domain to determine the dominant pitch
+
+Next Ideas
+- try techniques other than FFT - ask GPT
+- e.g. have code for YIN algorithm but results need review
+- try rhythm  note onset with a regualr recording of piano
+- review other apps if they can do it. Ask GPT
+- check open source Sonic Visualizer for pitch detection https://www.sonicvisualiser.org/doc/reference/4.5.2/en/
+- SV does do correct pitch determination using Pane-Peak Freq spectrum
+- If we knw the pitch of the first note in the example can we use that to pick right freuency of all the freqs for the next note. in Ex1 pitch jumps are small

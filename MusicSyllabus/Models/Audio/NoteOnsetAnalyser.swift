@@ -61,11 +61,10 @@ class NoteOnsetAnalyser : ObservableObject {
         return realPart
     }
         
-    //segment a sound recordings into segments of specified length time
+    //Segment a sound recordings into segments of specified length time
     func segmentWavFile(url:URL, segmentLengthSecondsMilliSec: TimeInterval) -> [[Float]]? {
         do {
             var audioFile = try AVAudioFile(forReading: url)
-
             self.samplingRate = audioFile.fileFormat.sampleRate
             
             framesPerSegment = Int(AVAudioFrameCount(segmentLengthSecondsMilliSec * audioFile.fileFormat.sampleRate / 1000.0))
@@ -114,13 +113,7 @@ class NoteOnsetAnalyser : ObservableObject {
             var segments: [[Float]] = []
             let threshold = maxValue * 0.2 //TODO UI??
             var frameCtr = 0
-            
-//            var frameValues:[Float] = []
-//            for frame in 0..<audioBuffer.frameLength {
-//                frameValues.append(floatChannelData[0][frame])
-//            }
-//            let hammed = applyHammingWindow(to: frameValues)
-            
+
             let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: audioFile.fileFormat.sampleRate,
                                        channels: audioFile.fileFormat.channelCount, interleaved: false)
             
@@ -221,6 +214,8 @@ class NoteOnsetAnalyser : ObservableObject {
         return doubleArray.map { Double($0) }
     }
 
+    //Use the segmented audio frames to detect note onset.
+    //Then for each note duration feed the correspondg auio frames in FFT for pitch analsysis
     func detectNoteOnsets(segmentAverages:[Float], noteOnsetSliceWidthPercent:Double, segmentLengthSecondsMilliSec: Double,
                           FFTFrameSize:Int, FFTFrameOffset:Int) {
         var noteOffsets:[NoteOffset] = []
@@ -236,7 +231,6 @@ class NoteOnsetAnalyser : ObservableObject {
         let amplitudeChangeThreshold = maxAmplitude * 0.015
         var notesCount = 0
         
-        //var noteOffsets:[(Int, Double)] = []
         var lastNoteIdx:Int?
         
         //find the note onsets by looking for amplitude bumps in slices of the segment averages
@@ -317,8 +311,8 @@ class NoteOnsetAnalyser : ObservableObject {
                   "\n  Pitch:", pitch ?? 0
             )
             
+            //publish data
             pitches.append(Double(pitch!) )
-            //print("  Fourier", average, f.count)
             if i == 1 {
                 DispatchQueue.main.async {
                     self.pitchInputValues = []
@@ -357,41 +351,7 @@ class NoteOnsetAnalyser : ObservableObject {
         return res
     }
     
-//    func fourier() {
-//        let numberOfElements = 1000
-//        let sineArray1 = getSine(elements: numberOfElements, period: 50.0)
-//        let sineArray2 = getSine(elements: numberOfElements, period: 31.0)
-//        let sineArray3 = getSine(elements: numberOfElements, period: 77.0)
-//
-//        var sumArray: [Double] = []
-//        for i in 0..<numberOfElements {
-//            let sum = sineArray1[i] + sineArray2[i]// + sineArray3[i]
-//            sumArray.append(sum)
-//        }
-//
-//        let fourier = self.performFourierTransform(input: sumArray)
-//        let fMax = fourier.max()
-//        print("Fourier len:", fourier.count, "Max:", fMax ?? 0)
-//        var ctr = 0
-//        for f in fourier {
-//            if f > fMax! * 0.5 {
-//                print("index", ctr, "value", f)
-//            }
-//            ctr += 1
-//        }
-//        
-//        DispatchQueue.main.async {
-//            self.fourierValues = []
-//            self.fourierTransformValues = []
-//            for s in sumArray {
-//                self.fourierValues.append(s)
-//            }
-//            for f in fourier {
-//                self.fourierTransformValues.append(f)
-//            }
-//        }
-//    }
-    
+    //Collapse the segment frame values to an average per segment
     func makeSegmentAverages(fileName:String, segmentLengthSecondsMilliSec: Double) {
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
             print("File  not found in the app bundle.")
@@ -401,7 +361,6 @@ class NoteOnsetAnalyser : ObservableObject {
         //typically 10-50 milliseconds.
         var avgs:[Float] = []
 
-        //Collapse the segment frame values to an average per segment
         if let segments = segmentWavFile(url: url, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec) {
             for segmentIndex in 0..<segments.count {
                 let segmentData = segments[segmentIndex]
@@ -419,6 +378,7 @@ class NoteOnsetAnalyser : ObservableObject {
         }
     }
     
+    //Window smoothing for data input to FFT
     func applyHammingWindow(to buffer: [Float]) -> [Float] {
         let length = buffer.count
         var windowedBuffer = [Float](repeating: 0.0, count: length)
@@ -432,6 +392,7 @@ class NoteOnsetAnalyser : ObservableObject {
         return windowedBuffer
     }
     
+    //method for pitch estimation in audio signals.
     func performYINalgorithm1(_ audioSamples: [Float], sampleRate: Float) -> Float? {
         let bufferSize = audioSamples.count
         let threshold: Float = 0.15 // Adjust the threshold as needed
@@ -550,6 +511,8 @@ class NoteOnsetAnalyser : ObservableObject {
     }
     // ===================== Filter =================
 
+    //Allows high-frequency components to pass through while attenuating or reducing lower-frequency components.
+    //It essentially removes or reduces low-frequency content from an audio signal, allowing higher-frequency content to be emphasized or preserved.
     func applyHighPassFilter(signal: [Float], cutoffFrequency: Float, sampleRate: Float) -> [Float] {
         var signal = signal
 
@@ -723,3 +686,37 @@ class NoteOnsetAnalyser : ObservableObject {
 
 }
 
+//    func fourier() {
+//        let numberOfElements = 1000
+//        let sineArray1 = getSine(elements: numberOfElements, period: 50.0)
+//        let sineArray2 = getSine(elements: numberOfElements, period: 31.0)
+//        let sineArray3 = getSine(elements: numberOfElements, period: 77.0)
+//
+//        var sumArray: [Double] = []
+//        for i in 0..<numberOfElements {
+//            let sum = sineArray1[i] + sineArray2[i]// + sineArray3[i]
+//            sumArray.append(sum)
+//        }
+//
+//        let fourier = self.performFourierTransform(input: sumArray)
+//        let fMax = fourier.max()
+//        print("Fourier len:", fourier.count, "Max:", fMax ?? 0)
+//        var ctr = 0
+//        for f in fourier {
+//            if f > fMax! * 0.5 {
+//                print("index", ctr, "value", f)
+//            }
+//            ctr += 1
+//        }
+//
+//        DispatchQueue.main.async {
+//            self.fourierValues = []
+//            self.fourierTransformValues = []
+//            for s in sumArray {
+//                self.fourierValues.append(s)
+//            }
+//            for f in fourier {
+//                self.fourierTransformValues.append(f)
+//            }
+//        }
+//    }

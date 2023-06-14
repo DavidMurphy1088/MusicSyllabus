@@ -43,7 +43,9 @@ struct MusicSyllabusApp: App {
     @StateObject var launchScreenState = LaunchScreenStateManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     static let productionMode = false
-    static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
+    //static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Musicianship")
+    //product licensed by grade 14Jun23
+    static let root:ContentSection = ContentSection(parent: nil, type: ContentSection.SectionType.none, name: "Grade 1")
     var launchTimeSecs = 2.5
     
     init() {
@@ -53,15 +55,16 @@ struct MusicSyllabusApp: App {
     var body: some Scene {
         WindowGroup {
             VStack {
+                
                 if launchScreenState.state == .finished {
-                    if MusicSyllabusApp.productionMode {
+                    //if MusicSyllabusApp.productionMode {
                         TopicsNavigationView(topic: MusicSyllabusApp.root)
                             .tabItem {Label("Exercises", image: "music.note")
                         }
-                    }
-                    else {
-                        IndexView()
-                    }
+//                    }
+//                    else {
+//                        IndexView()
+//                    }
                 }
                 if MusicSyllabusApp.productionMode {
                     if launchScreenState.state != .finished {

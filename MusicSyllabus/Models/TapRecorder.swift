@@ -9,7 +9,6 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
     @Published var status:String = ""
     @Published var enableRecordingLight = false
     var metronome = Metronome.getMetronomeWithStandardSettings()
-    //let audioPlayer = AudioSamplerPlayer(tickType: .metronome)
     
     func setStatus(_ msg:String) {
         DispatchQueue.main.async {
@@ -17,8 +16,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         }
     }
     
-    func startRecording(timeSignature: TimeSignature, metronomeLeadIn:Bool)  {
-        print("TapRecorder::started rec")
+    func startRecording(metronomeLeadIn:Bool)  {
         self.tapValues = []
         self.tapTimes = []
         if metronomeLeadIn {
@@ -131,37 +129,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         
         return outputScore
     }
-    
-    //From the recording of ticks calculate the tempo the rhythm was tapped at
-    //Assumes quarter notes are the most frequent value in the recording
-    func getTempoFromWholeRecording(tapValues:[Double]) -> Int {
-        //round the tick values
-        var countDictionary: [Int: Int] = [:]
-        for value in tapValues {
-            let ms:Int = Int(value * 1000)
-            //let roundedNumber = ((ms + 50) / 100) * 100
-            let roundedNumber = ((ms + 100) / 200) * 200
-            //print(value, "\trounded:", roundedNumber)
-            if let count = countDictionary[roundedNumber] {
-                    countDictionary[roundedNumber] = count + 1
-            }
-            else {
-                countDictionary[roundedNumber] = 1
-            }
-        }
-        //determine the time value in ms for the quater note
-        let quarterNoteValue = countDictionary.max(by: { $0.value < $1.value })?.key
-        let tempo:Int
-        if let quarterNoteValue = quarterNoteValue {
-            tempo = Int((1000.0 / Double(quarterNoteValue))  * 60.0)
-        }
-        else {
-            tempo = 1
-        }
-        //print("\ngetTempoFromRecording counts", countDictionary, "Most frequent:", quarterNoteValue, "tempo", tempo)
-        return tempo
-    }
-    
+        
     //From the recording of the first tick, calculate the tempo the rhythm was tapped at
     func getTempoFromRecordingStart(tapValues:[Double], questionScore: Score) -> Int {
         let scoreTimeSlices = questionScore.getAllTimeSlices()
@@ -181,15 +149,44 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
         return (outScore, tempo)
     }
     
+    //From the recording of ticks calculate the tempo the rhythm was tapped at
+//    //Assumes quarter notes are the most frequent value in the recording
+//    func getTempoFromWholeRecording(tapValues:[Double]) -> Int {
+//        //round the tick values
+//        var countDictionary: [Int: Int] = [:]
+//        for value in tapValues {
+//            let ms:Int = Int(value * 1000)
+//            //let roundedNumber = ((ms + 50) / 100) * 100
+//            let roundedNumber = ((ms + 100) / 200) * 200
+//            //print(value, "\trounded:", roundedNumber)
+//            if let count = countDictionary[roundedNumber] {
+//                    countDictionary[roundedNumber] = count + 1
+//            }
+//            else {
+//                countDictionary[roundedNumber] = 1
+//            }
+//        }
+//        //determine the time value in ms for the quater note
+//        let quarterNoteValue = countDictionary.max(by: { $0.value < $1.value })?.key
+//        let tempo:Int
+//        if let quarterNoteValue = quarterNoteValue {
+//            tempo = Int((1000.0 / Double(quarterNoteValue))  * 60.0)
+//        }
+//        else {
+//            tempo = 1
+//        }
+//        //print("\ngetTempoFromRecording counts", countDictionary, "Most frequent:", quarterNoteValue, "tempo", tempo)
+//        return tempo
+//    }
 //    func makeScoreNew(timeSignature:TimeSignature) -> Score {
 //        var outputScore = Score(timeSignature: timeSignature, lines: 1)
 //        let staff = Staff(score: outputScore, type: .treble, staffNum: 0, linesInStaff: 1)
 //        outputScore.setStaff(num: 0, staff: staff)
 //        var ctr = 0
 //        var totalValue = 0.0
-//        
+//
 //        for n in self.tapValues {
-//            
+//
 //            let noteValue = roundNoteValue(inValue: n)
 //            if let noteValue = noteValue {
 //                if totalValue >= Double(timeSignature.top) {
@@ -281,5 +278,4 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
 //    }
   
 }
-
 

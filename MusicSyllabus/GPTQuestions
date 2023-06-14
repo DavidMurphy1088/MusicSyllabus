@@ -28,3 +28,5 @@ Please provide Swift code to apply the Hamming windowing function to the signal 
 what advantage does Hamming windowing provide and how does it work
 
 give sample Swift code that can analyse the output of an FFT and return the MIDI pitch of the note. The function should input the values output from the FFT transform
+
+is there a website or tool that can take a recording of a simple pinao melody and determine the rhythm and pitch of the notes recorded?

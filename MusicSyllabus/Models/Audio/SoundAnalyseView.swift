@@ -3,7 +3,7 @@ import CoreData
 import AVFoundation
 import Accelerate
 
-struct TestView: View {
+struct SoundAnalyseView: View {
     var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
