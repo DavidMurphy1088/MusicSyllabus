@@ -11,7 +11,7 @@ struct IndexView: View {
                 SoundAnalyseView() 
                 
                 ClapOrPlayView(
-                    mode: QuestionMode.rhythmClap,
+                    mode: QuestionMode.rhythmVisualClap,
                     contentSection: ContentSection(parent: nil,
                                                    type: ContentSection.SectionType.testType,
                                                    name: "test_clap")
@@ -31,7 +31,7 @@ struct IndexView: View {
                 
                 
                 ClapOrPlayView(
-                    mode: QuestionMode.rhythmPlay,
+                    mode: QuestionMode.melodyPlay,
                     contentSection: ContentSection(parent: nil,
                                                    type: ContentSection.SectionType.testType,
                                                    name: "test_clap")

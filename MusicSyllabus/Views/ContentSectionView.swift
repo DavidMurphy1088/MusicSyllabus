@@ -7,7 +7,8 @@ struct ContentSectionHeaderView: View {
     
     var body: some View {
         VStack {
-            Text("ContentSectionView Level:\(contentSection.level) name:\(contentSection.name) name:\(contentSection.title)").font(.title)
+            //Text("ContentSectionView Level:\(contentSection.level) name:\(contentSection.name) name:\(contentSection.title)").font(.title)
+            Text("\(contentSection.title)").font(.title)
                 .fontWeight(.bold)
                 .padding()
             if contentSection.level == 1 {
@@ -102,7 +103,7 @@ struct ContentSectionView: View {
                         }
                         if parentSection.name.contains("Clapping") {
                             ClapOrPlayView (
-                                mode: QuestionMode.rhythmClap,
+                                mode: QuestionMode.rhythmVisualClap,
                                  //presentType: IntervalPresentView.self,
                                  //answerType: IntervalAnswerView.self,
                                  contentSection: contentSection
@@ -111,7 +112,7 @@ struct ContentSectionView: View {
                         }
                         if parentSection.name.contains("Playing") {
                             ClapOrPlayView (
-                                mode: QuestionMode.rhythmPlay,
+                                mode: QuestionMode.melodyPlay,
                                  //presentType: IntervalPresentView.self,
                                  //answerType: IntervalAnswerView.self,
                                  contentSection: contentSection
@@ -133,8 +134,7 @@ struct ContentSectionView: View {
                 }
              }
         }
-        //.navigationTitle("XX").foregroundColor(.red)
-        .navigationBarTitle(contentSection.title, displayMode: .inline)//.font(.title)
+        .navigationBarTitle(contentSection.getPathName(), displayMode: .inline)//.font(.title)
     }
 }
 

@@ -35,7 +35,7 @@ struct StemView: View {
                         path.move(to: CGPoint(x: midX, y: midY - offsetY))
                         path.addLine(to: CGPoint(x: midX, y: midY - offsetY + (stemDirection * stemLength)))
                     }
-                    .stroke(Color.black, lineWidth: 1)
+                    .stroke(note.getColor(staff: staff), lineWidth: 1)
                 }
             }
         }
@@ -190,15 +190,6 @@ struct StaffNotesView: View {
                                         }
                                     }
                                 }
-//                                if let highestNote = highestNote(entry: entry) {
-//                                    //log(ctx:"test", entry)
-//                                    if highestNote.staffNum == nil || highestNote.staffNum == staff.staffNum {
-//                                        StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
-//                                                 note: highestNote,
-//                                                 offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: highestNote),
-//                                                 lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
-//                                    }
-//                                }
                             }
                         }
                         if entry is BarLine {
@@ -231,7 +222,7 @@ struct StaffNotesView: View {
                                             path.move(to: CGPoint(x: line.0.x, y: line.0.y))
                                             path.addLine(to: CGPoint(x: line.1.x, y: line.1.y))
                                         }
-                                        .stroke(Color.black, lineWidth: 2)
+                                        .stroke(endNote.getColor(staff: staff), lineWidth: 2)
                                     }
                                 }
                             }

@@ -14,7 +14,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     
     func setStatus(_ msg:String) {
         DispatchQueue.main.async {
-            self.status = msg
+            self.status = "AudioRecorder::"+msg
         }
     }
     

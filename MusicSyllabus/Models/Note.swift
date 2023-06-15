@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum AccidentalType {
     case sharp
@@ -20,10 +21,13 @@ enum QuaverBeamType {
 enum NoteTag {
     case noTag
     case inError
+    case renderedInError //e.g. all rhythm after a rhythm error is moot
+    case hilightExpected //hilight the correct note that was expected
 }
 
 class Note : Hashable, Comparable, ObservableObject {
     @Published var hilite = false
+    @Published var noteTag:NoteTag = .noTag
     static let MIDDLE_C = 60 //Midi pitch for C4
     static let OCTAVE = 12
     static let noteNames:[Character] = ["A", "B", "C", "D", "E", "F", "G"]
@@ -36,7 +40,6 @@ class Note : Hashable, Comparable, ObservableObject {
     let id = UUID()
     
     var midiNumber:Int
-    
     var staffNum:Int? //Narrow the display of the note to just one staff
     
     private var value:Double = Note.VALUE_QUARTER
@@ -44,7 +47,6 @@ class Note : Hashable, Comparable, ObservableObject {
     var isOnlyRhythmNote = false
 
     var sequence:Int = 0 //the note's sequence position 
-    var noteTag:NoteTag = .noTag
 
     var beamType:QuaverBeamType = .none
     //the note where the quaver beam for this note ends
@@ -81,7 +83,12 @@ class Note : Hashable, Comparable, ObservableObject {
         if value == 3.0 {
             self.isDotted = true
         }
-
+    }
+    
+    func setNoteTag(_ tag: NoteTag) {
+        DispatchQueue.main.async {
+            self.noteTag = tag
+        }
     }
 
     func setHilite(hilite: Bool) {
@@ -196,8 +203,26 @@ class Note : Hashable, Comparable, ObservableObject {
             return endNote
         }
         else {
-            //print("===Note::Start getBeamStartNote", "PosId", np.id, "seq:", endNote.sequence, "mid:", endNote.midiNumber, "back to", result?.sequence)
             return result!
+        }
+    }
+    
+    //cause notes that are set for specifc staff to be tranparent on other staffs
+    func getColor(staff:Staff) -> Color {
+        if noteTag == .inError {
+            return Color(.red)
+        }
+        if noteTag == .renderedInError {
+            return Color(.clear)
+        }
+        if noteTag == .hilightExpected {
+            return Color(red: 0, green: 0.5, blue: 0)
+        }
+        if staffNum == nil {
+            return Color(.black)
+        }
+        else {
+            return Color(staffNum == staff.staffNum ? .black : .clear)
         }
     }
 

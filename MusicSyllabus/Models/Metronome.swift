@@ -233,12 +233,12 @@ class Metronome: ObservableObject {
                                 if noteInChordNum == 0 && note.getValue() < 1.0 {
                                     noteValueSpeechWord = "and"
                                 }
+
                                 noteInChordNum += 1
                             }
                             
                             //determine what time slice comes on the next tick. e.g. maybe the current time slice needs > 1 tick
-                            //next time tick needs to have a time slice, e.g. throw away bar line entries
-                            currentNoteDuration -= self.shortestNoteValue //1
+                            currentNoteDuration -= self.shortestNoteValue
                             if currentNoteDuration <= 0 {
                                 nextTimeSlice = nil
                                 while nextScoreIndex < score.scoreEntries.count {

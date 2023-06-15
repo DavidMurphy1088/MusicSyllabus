@@ -43,10 +43,11 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     ]
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
-        return IntervalPresentView(contentSection: contentSection, score:score, answer: answer, mode:mode )
+       // var refresh:Bool? = nil
+        return IntervalPresentView(contentSection: contentSection, score:score, answer: answer, mode:mode)
     }
     
-    init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) {
+    init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode, refresh:(() -> Void)? = nil) {
         self.answer = answer
         self.score = score
         self.mode = mode
@@ -202,7 +203,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
         return IntervalAnswerView(contentSection:contentSection, score:score, answer: answer, mode: mode)
     }
     
-    init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) {
+    init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode, refresh:(() -> Void)? = nil) {
         self.answer = answer
         self.score = score
         self.noteIsSpace = true //[Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12, Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
@@ -260,6 +261,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
 
 struct IntervalView: View {
     let id = UUID()
+    @State var refresh:Bool = false
     var contentSection:ContentSection
     //WARNING - Making Score a @STATE makes instance #1 of this struct pass its Score to instance #2
     var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), lines: 5)
@@ -267,10 +269,16 @@ struct IntervalView: View {
     var presentQuestionView:IntervalPresentView?
     var answerQuestionView:IntervalAnswerView?
     
+    func onRefresh() {
+        DispatchQueue.main.async {
+            refresh.toggle()
+        }
+    }
+    
     init(mode:QuestionMode, contentSection:ContentSection) {
         self.contentSection = contentSection
         presentQuestionView = IntervalPresentView(contentSection: contentSection, score: self.score, answer: answer, mode:mode)
-        answerQuestionView = IntervalAnswerView(contentSection: contentSection, score: score, answer: answer, mode:mode)
+        answerQuestionView = IntervalAnswerView(contentSection: contentSection, score: score, answer: answer, mode:mode, refresh: onRefresh)
         //print("\n======QuestionAndAnswerView init name:", contentSection.name, contentSection.sectionType, "self ID", id, "score ID:", score.id)
     }
 

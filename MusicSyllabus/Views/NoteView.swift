@@ -49,19 +49,6 @@ struct NoteView: View {
 //        print ("----->NoteView", note.midiNumber, note.staffNum, "noteWidth", noteWidth, "value", note.getValue(), "seq", note.sequence, "VAL", val)
     }
     
-    //cause notes that are set for specifc staff to be tranparent on other staffs
-    func color(note:Note) -> Color {
-        if note.noteTag == .inError {
-            return Color(.red)
-        }
-        if note.staffNum == nil {
-            return Color(.black)
-        }
-        else {
-            return Color(note.staffNum == staff.staffNum ? .black : .clear)
-        }
-    }
-    
     var body: some View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
@@ -74,14 +61,14 @@ struct NoteView: View {
                     Ellipse()
                         //Closed ellipse
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
-                        .foregroundColor(color(note: note))
+                        .foregroundColor(note.getColor(staff: staff))
                         .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
                         .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
                 }
                 if noteValueUnDotted == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
-                            .stroke(color(note: note), lineWidth: 2)
+                            .stroke(note.getColor(staff: staff), lineWidth: 2)
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
                             .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
                 }
@@ -95,7 +82,7 @@ struct NoteView: View {
                         //.stroke(color(note: note), lineWidth: 2)
                         .frame(width: noteWidth/3.0, height: noteWidth/3.0)
                         .position(x: noteFrameWidth/2 + noteWidth/1.0, y: noteEllipseMidpoint - yOffset)
-                        .foregroundColor(color(note: note))
+                        .foregroundColor(note.getColor(staff: staff))
                         //.border(Color .red)
                 }
 
@@ -108,7 +95,7 @@ struct NoteView: View {
                                 path.move(to: CGPoint(x: (xOffset), y: noteEllipseMidpoint))
                                 path.addLine(to: CGPoint(x: (noteFrameWidth - xOffset), y: noteEllipseMidpoint))
                             }
-                            .stroke(color(note: note), lineWidth: 1)
+                            .stroke(note.getColor(staff: staff), lineWidth: 1)
                         }
                     }
                 }

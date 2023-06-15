@@ -77,7 +77,7 @@ class Score : ObservableObject {
     }
     
     //return the first timeslice index of where the scores differ
-    func GetFirstDifferentTimeSlice(compareScore:Score) -> Int? {
+    func getFirstDifferentTimeSlice(compareScore:Score) -> Int? {
         //let compareEntries = compareScore.scoreEntries
         var result:Int? = nil
         var scoreCtr = 0
@@ -301,6 +301,80 @@ class Score : ObservableObject {
                     }
                 }
 
+            }
+        }
+    }
+    
+    // ================= Student feedback =================
+    
+    func getFeedback(scoreToCompare:Score, timeSliceNumber:Int?, tempo:Int?) -> StudentFeedback {
+        let feedback = StudentFeedback()
+        if let timeSliceNumber = timeSliceNumber {
+            let exampleTimeSlices = getAllTimeSlices()
+            let exampleTimeSlice = exampleTimeSlices[timeSliceNumber]
+            let exampleNote = exampleTimeSlice.getNotes()?[0]
+            if let exampleNote = exampleNote {
+                let studentTimeSlice = scoreToCompare.getAllTimeSlices()[timeSliceNumber]
+                let studentNote = studentTimeSlice.getNotes()?[0]
+                if let studentNote = studentNote {
+                    //feedback.feedback = "Mistake at note \(studentNote.sequence)."
+                    feedback.feedback = "The example rhythm was a \(exampleNote.getNoteValueName()). "
+                    feedback.feedback! += "Your rhythm was a \(studentNote.getNoteValueName())."
+                    feedback.indexInError = studentNote.sequence
+                }
+            }
+            feedback.correct = false
+        }
+        else {
+            feedback.correct = true
+            feedback.feedback = "Good job!"
+        }
+        feedback.tempo = tempo
+        return feedback
+    }
+    
+    //analyse the student's score against this score. Markup dfferences.
+    func markupStudentScore(scoreToCompare:Score) {
+        let difference = getFirstDifferentTimeSlice(compareScore: scoreToCompare)
+        if let difference = difference {
+            if scoreToCompare.scoreEntries.count > 0 {
+                let toCompareTimeSlices = scoreToCompare.getAllTimeSlices()
+                let toCompareTimeSlice = toCompareTimeSlices[difference < toCompareTimeSlices.count ? difference : toCompareTimeSlices.count - 1]
+                if toCompareTimeSlice.notes.count > 0 {
+                    let mistakeNote = toCompareTimeSlice.notes[0]
+                    mistakeNote.noteTag = .inError
+                    
+                    //mark the note in the example score to hilight what was expected
+                    let timeslices = self.getAllTimeSlices()
+                    let timeslice = timeslices[difference]
+                    if timeslice.notes.count > 0 {
+                        timeslice.notes[0].setNoteTag(.hilightExpected)
+                        self.toggleShowNotes() //cause the example score to refresh
+                    }
+                    scoreToCompare.setStudentFeedback(studentFeedack: self.getFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:difference, tempo: 0))
+                }
+            }
+            //mark the remaining entries after the difference as invisibile in display
+            var toCompareTimeSlices = scoreToCompare.getAllTimeSlices()
+            for t in difference+1..<toCompareTimeSlices.count {
+                var toCompareTimeSlice = toCompareTimeSlices[t]
+                if toCompareTimeSlice.notes.count > 0 {
+                    toCompareTimeSlice.notes[0].noteTag = .renderedInError
+                }
+            }
+        }
+        else {
+            scoreToCompare.setStudentFeedback(studentFeedack: self.getFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:nil, tempo: 0))
+            //Play at students tempo if they got it correct, but otherwise at example tempo
+            //metronome.setTempo(tempo: tempo)
+        }
+
+    }
+    
+    func clearTages() {
+        for ts in getAllTimeSlices() {
+            for note in ts.notes {
+                note.setNoteTag(.noTag)
             }
         }
     }

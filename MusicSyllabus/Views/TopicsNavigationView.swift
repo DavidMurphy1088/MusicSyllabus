@@ -57,7 +57,7 @@ struct TopicsNavigationView: View {
                         }
                         .disabled(!contentSection.isActive)
                         //The back nav link that will be shown on the ContentSectionView
-                        .navigationTitle("NavTtitle::\(self.topic.level == 0 ? "" : topic.title)")
+                        //.navigationTitle("NavTtitle::\(self.topic.level == 0 ? "" : topic.title)")
                    }
                     .sheet(isPresented: $isShowingConfiguration) {
                         ConfigurationView(isPresented: $isShowingConfiguration)
@@ -93,7 +93,7 @@ struct TopicsNavigationView: View {
                 .sheet(isPresented: $isShowingConfiguration) {
                     ConfigurationView(isPresented: $isShowingConfiguration)
                 }
-                .navigationTitle(topic.name)
+                //.navigationTitle(topic.name)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
