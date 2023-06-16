@@ -106,8 +106,13 @@ class Score : ObservableObject {
             }
 
             if scoreCtr == scoreTimeSlices.count - 1 {
-                //last note just has to be semibreve (1/2 note) or longer, any other note must be an exact note value match
-                if compareNotes![0].getValue() < Note.VALUE_HALF {
+                //The time value of the last note is measured by when the student stopped the record which may be delayed
+                //Last note just has to be semibreve (1/2 note) or longer
+//                if compareNotes![0].getValue() < Note.VALUE_HALF {
+//                    result = scoreCtr
+//                    break
+//                }
+                if scoreNotes![0].getValue() > compareNotes![0].getValue() {
                     result = scoreCtr
                     break
                 }
@@ -314,13 +319,16 @@ class Score : ObservableObject {
             let exampleTimeSlice = exampleTimeSlices[timeSliceNumber]
             let exampleNote = exampleTimeSlice.getNotes()?[0]
             if let exampleNote = exampleNote {
-                let studentTimeSlice = scoreToCompare.getAllTimeSlices()[timeSliceNumber]
-                let studentNote = studentTimeSlice.getNotes()?[0]
-                if let studentNote = studentNote {
-                    //feedback.feedback = "Mistake at note \(studentNote.sequence)."
-                    feedback.feedback = "The example rhythm was a \(exampleNote.getNoteValueName()). "
-                    feedback.feedback! += "Your rhythm was a \(studentNote.getNoteValueName())."
-                    feedback.indexInError = studentNote.sequence
+                let studentTimeSlices = scoreToCompare.getAllTimeSlices()
+                if studentTimeSlices.count > timeSliceNumber {
+                    let studentTimeSlice = studentTimeSlices[timeSliceNumber]
+                    let studentNote = studentTimeSlice.getNotes()?[0]
+                    if let studentNote = studentNote {
+                        //feedback.feedback = "Mistake at note \(studentNote.sequence)."
+                        feedback.feedback = "The example rhythm was a \(exampleNote.getNoteValueName()). "
+                        feedback.feedback! += "Your rhythm was a \(studentNote.getNoteValueName())."
+                        feedback.indexInError = studentNote.sequence
+                    }
                 }
             }
             feedback.correct = false
@@ -333,8 +341,9 @@ class Score : ObservableObject {
         return feedback
     }
     
-    //analyse the student's score against this score. Markup dfferences.
-    func markupStudentScore(scoreToCompare:Score) {
+    //analyse the student's score against this score. Markup dfferences. Return false if there are errors
+    func markupStudentScore(scoreToCompare:Score) -> Bool {
+        var errorsExist = false
         let difference = getFirstDifferentTimeSlice(compareScore: scoreToCompare)
         if let difference = difference {
             if scoreToCompare.scoreEntries.count > 0 {
@@ -343,7 +352,7 @@ class Score : ObservableObject {
                 if toCompareTimeSlice.notes.count > 0 {
                     let mistakeNote = toCompareTimeSlice.notes[0]
                     mistakeNote.noteTag = .inError
-                    
+                    errorsExist = true
                     //mark the note in the example score to hilight what was expected
                     let timeslices = self.getAllTimeSlices()
                     let timeslice = timeslices[difference]
@@ -355,9 +364,9 @@ class Score : ObservableObject {
                 }
             }
             //mark the remaining entries after the difference as invisibile in display
-            var toCompareTimeSlices = scoreToCompare.getAllTimeSlices()
+            let toCompareTimeSlices = scoreToCompare.getAllTimeSlices()
             for t in difference+1..<toCompareTimeSlices.count {
-                var toCompareTimeSlice = toCompareTimeSlices[t]
+                let toCompareTimeSlice = toCompareTimeSlices[t]
                 if toCompareTimeSlice.notes.count > 0 {
                     toCompareTimeSlice.notes[0].noteTag = .renderedInError
                 }
@@ -368,7 +377,7 @@ class Score : ObservableObject {
             //Play at students tempo if they got it correct, but otherwise at example tempo
             //metronome.setTempo(tempo: tempo)
         }
-
+        return errorsExist
     }
     
     func clearTages() {
@@ -378,4 +387,14 @@ class Score : ObservableObject {
             }
         }
     }
+    
+    func addTonicChord(score:Score) {
+        let timeSlices = self.getAllTimeSlices()
+        if timeSlices.count == 0 {
+            return
+        }
+        let lastTimeSlice = timeSlices[timeSlices.count-1]
+        lastTimeSlice.addTonicChord()
+    }
+
 }

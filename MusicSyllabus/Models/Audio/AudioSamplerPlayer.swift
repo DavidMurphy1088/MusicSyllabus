@@ -12,7 +12,7 @@ enum TickType {
 class AudioSamplerPlayer {
     private var timeSignature:TimeSignature
     
-    //use an array so that sound n+1 can start before n finishes
+    //Use an array so that sound n+1 can start before n finishes. Required for faster tempos and short note values.
     private var audioPlayersLow:[AVAudioPlayer] = []
     private var audioPlayersHigh:[AVAudioPlayer] = []
     private var numAudioPlayers = 16
@@ -20,13 +20,17 @@ class AudioSamplerPlayer {
     private var duration = 0.0
     private var newBar = true
     
-    init(timeSignature: TimeSignature) {
+    init(timeSignature: TimeSignature, tickStyle:Bool) {
         self.timeSignature = timeSignature
         //https://samplefocus.com/samples/short-ambient-clap-one-shot
-        audioPlayersLow = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
-        //audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - High", ext: "aif")
-        audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
-        //open-clap_F_minor, 404543__inspectorj__clap-single-16
+        if tickStyle {
+            audioPlayersLow = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
+            audioPlayersHigh = loadAudioPlayer(name: "Mechanical metronome - Low", ext: "aif")
+        }
+        else {
+            audioPlayersLow = loadAudioPlayer(name: "clap-single-inspectorj", ext: "wav")
+            audioPlayersHigh = loadAudioPlayer(name: "clap-single-inspectorj", ext: "wav")
+        }
     }
     
     func loadAudioPlayer(name:String, ext:String) -> [AVAudioPlayer] {

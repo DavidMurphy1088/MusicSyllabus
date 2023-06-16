@@ -1,12 +1,13 @@
 import Foundation
 
-class TimeSlice : ScoreEntry {
+class TimeSlice : ScoreEntry, ObservableObject {
     var score:Score?
     var notes:[Note]
     var footnote:String?
     var barLine:Int = 0
-    var tag:String?
-    
+    @Published var tag:String?
+    @Published var notesLength:Int?
+
     private static var idIndex = 0
     
     init(score:Score?) {
@@ -16,11 +17,13 @@ class TimeSlice : ScoreEntry {
     }
     
     func addNote(n:Note) {
-        self.notes.append(n)
-        if let score = score {
-            score.updateStaffs()
-            score.addStemCharaceteristics()
-        }
+        //DispatchQueue.main.async {
+            self.notes.append(n)
+            if let score = self.score {
+                score.updateStaffs()
+                score.addStemCharaceteristics()
+            }
+        //}
     }
     
     func addChord(c:Chord) {
@@ -34,5 +37,29 @@ class TimeSlice : ScoreEntry {
     
     static func == (lhs: TimeSlice, rhs: TimeSlice) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    func addTonicChord() {
+        guard let score = score else {
+            return
+        }
+        let lastNote = getNotes()![0]
+        let isDotted = lastNote.isDotted
+        
+        if score.key.keySig.accidentalCount > 0 { //G Major
+            addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+            addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+            addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+        }
+        else {
+            addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+            addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+            addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
+        }
+
+        DispatchQueue.main.async {
+            self.tag = "I"
+            self.notesLength = self.notes.count
+        }
     }
 }

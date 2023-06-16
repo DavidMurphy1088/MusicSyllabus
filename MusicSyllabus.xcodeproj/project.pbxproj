@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		7B0E05312A25E84C00CFD554 /* AudioSamplerPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */; };
 		7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */; };
-		7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */; };
+		7B0E05372A261A1000CFD554 /* clap-single-inspectorj.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B0E05362A261A1000CFD554 /* clap-single-inspectorj.wav */; };
 		7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */; };
 		7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B1E1C512A35940600C87DF1 /* Example 1.wav */; };
 		7B1E1C542A35DE1E00C87DF1 /* AudioPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1E1C532A35DE1E00C87DF1 /* AudioPlayerTest.swift */; };
 		7B1E1C572A35E49C00C87DF1 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7B1E1C562A35E49C00C87DF1 /* AudioKit */; };
+		7B218B122A3BC25E00EA4B08 /* VoiceCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B218B112A3BC25E00EA4B08 /* VoiceCounter.swift */; };
+		7B218B142A3BC2E800EA4B08 /* ToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B218B132A3BC2E800EA4B08 /* ToolsView.swift */; };
 		7B258C912A285B94003CB91C /* SoundAnalyseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* SoundAnalyseView.swift */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
@@ -95,10 +97,12 @@
 /* Begin PBXFileReference section */
 		7B0E05302A25E84C00CFD554 /* AudioSamplerPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSamplerPlayer.swift; sourceTree = "<group>"; };
 		7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "open-clap_F_minor.wav"; sourceTree = "<group>"; };
-		7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404543__inspectorj__clap-single-16.wav"; sourceTree = "<group>"; };
+		7B0E05362A261A1000CFD554 /* clap-single-inspectorj.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "clap-single-inspectorj.wav"; sourceTree = "<group>"; };
 		7B1CF5092A293F8B00A8BD46 /* StaffNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffNotesView.swift; sourceTree = "<group>"; };
 		7B1E1C512A35940600C87DF1 /* Example 1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 1.wav"; sourceTree = "<group>"; };
 		7B1E1C532A35DE1E00C87DF1 /* AudioPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerTest.swift; sourceTree = "<group>"; };
+		7B218B112A3BC25E00EA4B08 /* VoiceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCounter.swift; sourceTree = "<group>"; };
+		7B218B132A3BC2E800EA4B08 /* ToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsView.swift; sourceTree = "<group>"; };
 		7B258C902A285B94003CB91C /* SoundAnalyseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundAnalyseView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
@@ -205,14 +209,14 @@
 		7B51F0DE2A0A52EA00A7ABFA /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				7B0E05362A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav */,
-				7B5E27972A388BB400458B17 /* Example 7_sequenced.wav */,
+				7B0E05362A261A1000CFD554 /* clap-single-inspectorj.wav */,
 				7B1E1C512A35940600C87DF1 /* Example 1.wav */,
 				7BD375122A387E6600958D62 /* Example 2.wav */,
 				7BD3750C2A387E6500958D62 /* Example 3.wav */,
 				7BD3750D2A387E6500958D62 /* Example 4.wav */,
 				7BD3750E2A387E6500958D62 /* Example 5.wav */,
 				7BD375112A387E6600958D62 /* Example 6.wav */,
+				7B5E27972A388BB400458B17 /* Example 7_sequenced.wav */,
 				7BD3750F2A387E6600958D62 /* Example 7.wav */,
 				7BD375102A387E6600958D62 /* Example 8.wav */,
 				7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */,
@@ -305,8 +309,10 @@
 				7B3D956B2A10D4AB007CA60D /* StaffView.swift */,
 				7B25F8392A0657CC00F9552E /* Syllabus */,
 				7B6C32872A177A67004E2FA6 /* TappingView.swift */,
+				7B218B132A3BC2E800EA4B08 /* ToolsView.swift */,
 				7B519FA42A1837BD00A105E9 /* TopicsNavigationView.swift */,
 				7B43C69E2A138CAE00BBB027 /* UIGlobals.swift */,
+				7B218B112A3BC25E00EA4B08 /* VoiceCounter.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -422,7 +428,7 @@
 				7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */,
 				7B5641B32A34926400DEC01C /* simplemelodypiano.wav in Resources */,
 				7BD375182A387E6600958D62 /* Example 6.wav in Resources */,
-				7B0E05372A261A1000CFD554 /* 404543__inspectorj__clap-single-16.wav in Resources */,
+				7B0E05372A261A1000CFD554 /* clap-single-inspectorj.wav in Resources */,
 				7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
 				7BD375152A387E6600958D62 /* Example 5.wav in Resources */,
@@ -449,6 +455,7 @@
 				7BF9B9CD2A026DDF00121EBA /* Logger.swift in Sources */,
 				7B51F0E42A0A6DD900A7ABFA /* AudioRecorder.swift in Sources */,
 				7B5EEDFB2A025E870007FF7E /* KeySignature.swift in Sources */,
+				7B218B142A3BC2E800EA4B08 /* ToolsView.swift in Sources */,
 				7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */,
 				7B61A9FF2A19A3810058A090 /* ViewProtocol.swift in Sources */,
 				7B1CF50A2A293F8B00A8BD46 /* StaffNotesView.swift in Sources */,
@@ -469,6 +476,7 @@
 				7B519FA32A182BC700A105E9 /* IntervalsView.swift in Sources */,
 				7B55CEC02A03D052009F9B5D /* ContentSectionView.swift in Sources */,
 				7BF9B9CF2A0271E400121EBA /* PianoKeyboard.swift in Sources */,
+				7B218B122A3BC25E00EA4B08 /* VoiceCounter.swift in Sources */,
 				7BD3750B2A37DECF00958D62 /* FFTTap.swift in Sources */,
 				7B5EEDE12A0133000007FF7E /* IndexView.swift in Sources */,
 				7B5EEE032A025F430007FF7E /* TimeSlice.swift in Sources */,

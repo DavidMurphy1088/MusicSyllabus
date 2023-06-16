@@ -27,9 +27,9 @@ struct ScoreView: View {
                             Text("Wrong rhythm at note: \(index)").padding()
                     }
 
-                    if let tempo = studentFeedback.tempo {
-                        Text("Your Tempo:\(tempo)").padding()
-                    }
+//                    if let tempo = studentFeedback.tempo {
+//                        Text("Your Tempo:\(tempo)").padding()
+//                    }
                 }
             }
             if let studentFeedback = score.studentFeedback {

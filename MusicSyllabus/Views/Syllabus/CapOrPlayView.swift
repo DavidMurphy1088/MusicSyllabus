@@ -21,7 +21,7 @@ struct PlayRecordingView: View {
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @State var playingScore:Bool = false
     var onDone: (()->Void)?
-    
+
     var body: some View {
         VStack {
             Button(action: {
@@ -68,6 +68,8 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @ObservedObject var tapRecorder = TapRecorder.shared
     @ObservedObject private var logger = Logger.logger
+    @ObservedObject private var metronome = Metronome.getMetronomeWithSettings(initialTempo: 60, allowChangeTempo: true)
+
     @State var tappingView:TappingView? = nil
 
     //@State var showBaseCleff = false
@@ -79,7 +81,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     var score:Score
     let exampleData = ExampleData.shared
     var contentSection:ContentSection
-    let metronome:Metronome
     var mode:QuestionMode
     var onRefresh: (() -> Void)? = nil
     
@@ -108,8 +109,8 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
         self.rhythmHeard = self.mode == .rhythmEchoClap ? false : true
-        var lastTS:TimeSlice? = nil
-        var lastNote:Note? = nil
+//        var lastTS:TimeSlice? = nil
+//        var lastNote:Note? = nil
         
         if let entries = exampleData {
             for entry in entries {
@@ -119,8 +120,8 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     note.staffNum = 0
                     note.setIsOnlyRhythm(way: mode == .rhythmVisualClap || mode == .rhythmEchoClap ? true : false)
                     timeSlice.addNote(n: note)
-                    lastTS = timeSlice
-                    lastNote = note
+//                    lastTS = timeSlice
+//                    lastNote = note
                 }
                 if entry is BarLine {
                     score.addBarLine()
@@ -133,23 +134,14 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     score.setKey(key: Key(type: .major, keySig: KeySignature(type: .sharp, count: 1)))
                 }
             }
-            if mode == .melodyPlay && lastNote != nil {
-                let isDotted = lastNote!.isDotted
-                lastTS?.tag = "I"
-                if score.key.keySig.accidentalCount > 0 { //G Major
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 5 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - 1 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C + 2 - 12, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                }
-                else {
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 4, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                    lastTS?.addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote!.getValue(), staffNum:1, isDotted: isDotted))
-                }
-            }
         }
-        self.metronome = Metronome.getMetronomeWithSettings(initialTempo: 80, allowChangeTempo: true)
-        //score.addStemCharaceteristics()
+        if mode == .melodyPlay {
+            score.addTonicChord(score:score)
+        }
+        if mode == .rhythmEchoClap {
+            metronome.setTempo(tempo: 90)
+            metronome.setAllowTempoChange(allow: false)
+        }
     }
 
     func getInstruction(mode:QuestionMode) -> String {
@@ -183,9 +175,10 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 VStack {
                     VStack {
                         if UIDevice.current.userInterfaceIdiom != .phone {
-                            if mode != .rhythmVisualClap {
-                                MetronomeView()
-                            }
+                            //if mode != .rhythmVisualClap {
+                                ToolsView(score: score)
+                                //MetronomeView()
+                            //}
                         }
 
                         if mode == .rhythmVisualClap || mode == .melodyPlay {
@@ -208,6 +201,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                         answer.setState(.recording)
                                         if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
                                             self.isTapping = true
+                                            metronome.stopTicking()
                                             tapRecorder.startRecording(metronomeLeadIn: false)
                                         } else {
                                             audioRecorder.startRecording(outputFileName: contentSection.name)
@@ -297,9 +291,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @State var playingStudent = false
     @State var speechEnabled = false
     @State var tappingScore:Score?
-    
-    private var score:Score
-    private let metronome = Metronome.getMetronomeWithCurrentSettings()
+    @ObservedObject var metronome:Metronome
+    @State var answerWasCorrect:Bool = false
+    @ObservedObject var score:Score
     private var mode:QuestionMode
 
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
@@ -310,6 +304,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         self.answer = answer
         self.score = score
         self.mode = mode
+        self.metronome = Metronome.getMetronomeWithCurrentSettings()
         metronome.speechEnabled = self.speechEnabled
         self.onRefresh = refresh
     }
@@ -344,9 +339,18 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     func analyseStudentRhythm() {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         self.tappingScore = rhythmAnalysis.0
-        let tempo = rhythmAnalysis.1
+        let tappingTempo = rhythmAnalysis.1
         if let tappingScore = tappingScore {
-            score.markupStudentScore(scoreToCompare: tappingScore)
+            let errorsExist = score.markupStudentScore(scoreToCompare: tappingScore)
+            self.answerWasCorrect = !errorsExist
+            if errorsExist {
+                self.metronome.setTempo(tempo: 60)
+                self.metronome.setAllowTempoChange(allow: false)
+            }
+            else {
+                self.metronome.setTempo(tempo: tappingTempo)
+                self.metronome.setAllowTempoChange(allow: true)
+            }
             tappingScore.label = "Your Rhythm"
         }
     }
@@ -355,9 +359,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         AnyView(
             GeometryReader { geometry in
                 VStack {
-//                    if UIDevice.current.userInterfaceIdiom != .phone {
-//                        MetronomeView()
-//                    }
+                    if UIDevice.current.userInterfaceIdiom != .phone {
+                        ToolsView(score: score)
+                    }
                     VStack {
                         ScoreView(score: score).padding()
                         if let tappingScore = self.tappingScore {
@@ -404,6 +408,12 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                 .onAppear() {
                     if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
                         analyseStudentRhythm()
+                    }
+                    if mode == .melodyPlay {
+                        metronome.allowChangeTempo = false
+                    }
+                    if mode == .rhythmEchoClap {
+                        metronome.setTempo(tempo: 90)
                     }
                 }
                 .onDisappear() {

@@ -43,9 +43,9 @@ struct StemView: View {
 }
 
 struct StaffNotesView: View {
+    @ObservedObject var noteLayoutPositions:NoteLayoutPositions
     @State var score:Score
     @State var staff:Staff
-    @ObservedObject var noteLayoutPositions:NoteLayoutPositions
     @State var lineSpacing:Double
     @State var first:Int? = nil
     @State var last:Int? = nil
@@ -163,6 +163,9 @@ struct StaffNotesView: View {
                 ForEach(score.scoreEntries, id: \.self) { entry in
                     VStack { //VStack - required in forEach closure
                         if entry is TimeSlice {
+//                            let ts = entry as! TimeSlice
+//                            let x:Int = ts.notesLength!
+//                            Text("TS__________\(x)")
                             ZStack { // Each note frame in the timeslice shares the same same space
                                 ForEach(getNotes(entry: entry), id: \.self) { note in
                                     //render the note in both staffs to ensure all entries (stems, bar lines etc ) in both staffs line up vertically
