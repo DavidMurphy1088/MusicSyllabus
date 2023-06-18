@@ -4,10 +4,7 @@ import CoreData
 struct MetronomeView: View {
     let score:Score
     var frameHeight:Double
-    
     @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
-    //@State var metronomeIsOn = false
-    //@State private var isSwitchedOn = false
     
     var body: some View {
         VStack {

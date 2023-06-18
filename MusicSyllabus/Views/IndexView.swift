@@ -7,56 +7,49 @@ struct IndexView: View {
 
     var body: some View {
         TabView {
-            if !MusicSyllabusApp.productionMode {
-                SoundAnalyseView() 
-                
-                ClapOrPlayView(
-                    mode: QuestionMode.rhythmVisualClap,
-                    contentSection: ContentSection(parent: nil,
-                                                   type: ContentSection.SectionType.testType,
-                                                   name: "test_clap")
-                )
-                .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")
+            SoundAnalyseView()
+                .tabItem {Label("IndexView", systemImage: "music.quarternote.3")}
+
+            TestView()
+                .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")}
+
+            ClapOrPlayView(
+                mode: QuestionMode.rhythmVisualClap,
+                contentSection: ContentSection(parent: nil,
+                                               type: ContentSection.SectionType.testType,
+                                               name: "test_clap")
+            )
+            .tabItem {Label("Clap_Test", systemImage: "music.quarternote.3")
+            }
+
+            IntervalView(
+                mode: QuestionMode.intervalAural,
+                contentSection: ContentSection(parent: nil,
+                                               type: ContentSection.SectionType.testType,
+                                               name: "test_aural_interval")
+            )
+            .tabItem {Label("AuralInt", systemImage: "music.quarternote.3")
+            }
+            
+            ClapOrPlayView(
+                mode: QuestionMode.melodyPlay,
+                contentSection: ContentSection(parent: nil,
+                                               type: ContentSection.SectionType.testType,
+                                               name: "test_clap")
+            )
+            .tabItem {Label("Play_Test", systemImage: "music.quarternote.3")
+            }
+
+
+            TopicsNavigationView(topic: MusicSyllabusApp.root)
+                .tabItem {Label("Musicianship1", systemImage: "music.note.list")
+                }
+            TopicsNavigationView(topic: MusicSyllabusApp.root)
+                .tabItem {Label("Musicianship2", systemImage: "music.note.list")
                 }
 
-                IntervalView(
-                    mode: QuestionMode.intervalAural,
-                    contentSection: ContentSection(parent: nil,
-                                                   type: ContentSection.SectionType.testType,
-                                                   name: "test_aural_interval")
-                )
-                .tabItem {Label("AuralInt", systemImage: "music.quarternote.3")
-                }
-
-                
-                
-                ClapOrPlayView(
-                    mode: QuestionMode.melodyPlay,
-                    contentSection: ContentSection(parent: nil,
-                                                   type: ContentSection.SectionType.testType,
-                                                   name: "test_clap")
-                )
-                .tabItem {Label("Play_Test", systemImage: "music.quarternote.3")
-                }
-
-
-                TopicsNavigationView(topic: MusicSyllabusApp.root)
-                    .tabItem {Label("Musicianship1", systemImage: "music.note.list")
-                    }
-                TopicsNavigationView(topic: MusicSyllabusApp.root)
-                    .tabItem {Label("Musicianship2", systemImage: "music.note.list")
-                    }
-
             }
-            else {
-                TopicsNavigationView(topic: MusicSyllabusApp.root)
-                    .tabItem {Label("Exercises", image: "music.note")}
-                ConfigurationView(isPresented: $isShowingConfiguration)
-                    .tabItem {Label("Configuration", image: "music.note")}
-            }
-            //.navigationViewStyle(StackNavigationViewStyle())
-            }
-        }
+    }
 }
 
 

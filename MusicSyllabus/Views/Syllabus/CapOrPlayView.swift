@@ -135,9 +135,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 }
             }
         }
-        if mode == .melodyPlay {
-            score.addTonicChord(score:score)
-        }
         if mode == .rhythmEchoClap {
             metronome.setTempo(tempo: 90)
             metronome.setAllowTempoChange(allow: false)
@@ -411,6 +408,10 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                     }
                     if mode == .melodyPlay {
                         metronome.allowChangeTempo = false
+                        if let timeSlice = score.getLastTimeSlice() {
+                            timeSlice.addTonicChord()
+                            timeSlice.setTags(high: "G", low: "I")
+                        }
                     }
                     if mode == .rhythmEchoClap {
                         metronome.setTempo(tempo: 90)

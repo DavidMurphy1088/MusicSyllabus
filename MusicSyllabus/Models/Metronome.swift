@@ -12,6 +12,7 @@ class Metronome: ObservableObject {
     @Published var tempo:Int = 60
     @Published var allowChangeTempo:Bool = false
     @Published var tickingIsActive = false
+    @Published var speechEnabled = false
 
     //must be instance of Metronome lifetime
     let midiNoteEngine = AVAudioEngine()
@@ -29,7 +30,6 @@ class Metronome: ObservableObject {
     //the shortest note value which is used to set the metronome's thread firing frequency
     private let shortestNoteValue = Note.VALUE_QUAVER
     private let speech = SpeechSynthesizer.shared
-    public var speechEnabled = false
     private var onDoneFunction:(()->Void)? = nil
     
     static func getMetronomeWithSettings(initialTempo:Int, allowChangeTempo:Bool) -> Metronome {
@@ -52,6 +52,12 @@ class Metronome: ObservableObject {
     }
 
     private init() {
+    }
+    
+    func setSpeechEnabled(enabled:Bool) {
+        DispatchQueue.main.async {
+            self.speechEnabled = enabled
+        }
     }
     
     func startTicking(score:Score) {
@@ -175,7 +181,7 @@ class Metronome: ObservableObject {
         let audioClapper:AudioSamplerPlayer = AudioSamplerPlayer(timeSignature: timeSignature, tickStyle: false)
 
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            print("\n====>Thread STARTING...")
+            //print("\n====>Thread STARTING...")
             var loopCtr = 0
             var keepRunning = true
             var currentTimeValue = 0.0
@@ -185,7 +191,7 @@ class Metronome: ObservableObject {
             
             while keepRunning {
                 noteValueSpeechWord = nil
-                print("\nthread loop", loopCtr, "score:", score, "next ts:", nextScoreTimeSlice, "firstNote", firstNote)
+                //print("\nthread loop", loopCtr, "score:", score, "next ts:", nextScoreTimeSlice, "firstNote", firstNote)
 
                 // sound the metronome tick. %2 because its counting at quaver intervals
                 // Make sure score playing is synched to the metronome tick
@@ -200,9 +206,9 @@ class Metronome: ObservableObject {
                 }
                 
                 //sound the next note
-                if score != nil && firstNote {
-                    print(" --- Score first note", loopCtr, "next score time slice", nextScoreTimeSlice)
-                }
+//                if score != nil && firstNote {
+//                    print(" --- Score first note", loopCtr, "next score time slice", nextScoreTimeSlice)
+//                }
                 if (firstNote && loopCtr % 2 == 0) || (!firstNote) {
                    
                     if let score = score {
@@ -224,8 +230,7 @@ class Metronome: ObservableObject {
                                     audioClapper.play(noteValue: note.getValue())
                                 }
                                 else {
-                                    print(" --- Score play note", loopCtr, "next score time slice", nextScoreTimeSlice)
-
+                                    //print(" --- Score play note", loopCtr, "next score time slice", nextScoreTimeSlice)
                                     if let audioPlayer = audioSamplerPlayerMIDI {
                                         audioPlayer.startNote(UInt8(note.midiNumber), withVelocity:64, onChannel:UInt8(channel))
                                     }
@@ -278,7 +283,7 @@ class Metronome: ObservableObject {
                 }
                 currentTimeValue += shortestNoteValue
                 
-                print(" --thread end test", loopCtr, "score:", score, "next ts:", nextScoreTimeSlice, "firstNote", firstNote)
+                //print(" --thread end test", loopCtr, "score:", score, "next ts:", nextScoreTimeSlice, "firstNote", firstNote)
                 if score == nil {
                     firstNote = true
                 }
@@ -290,7 +295,7 @@ class Metronome: ObservableObject {
                         self.onDoneFunction = nil
                         score = nil
                         firstNote = true
-                        print("Score play finished loopCtr:",loopCtr)
+                        //print("Score play finished loopCtr:",loopCtr)
                     }
                 }
 
@@ -305,7 +310,7 @@ class Metronome: ObservableObject {
                 }
             }
             self.isThreadRunning = false
-            print("====>Thread ENDED")
+            //print("====>Thread ENDED")
         }
     }
 
@@ -370,9 +375,7 @@ class Metronome: ObservableObject {
         catch let error {
             Logger.logger.reportError(self, "Cant create MIDI sampler \(error.localizedDescription)")
         }
-        
         return midiSampler
     }
-
 }
 

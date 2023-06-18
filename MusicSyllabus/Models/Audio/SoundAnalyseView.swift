@@ -19,7 +19,8 @@ struct SoundAnalyseView: View {
     
     //typically 10-50 milliseconds.
     @State private var segmentLengthSecondsMilliSec: Double = 0.5
-    @State private var noteOnsetSliceWidthPercent: Double = 0.005
+    //@State private var noteOnsetSliceWidthPercent: Double = 0.005
+    @State private var noteOnsetSliceMilliSecs: Double = 10.0
     @State private var FFTWindowSize: Double = 4096.0
     @State private var FFTWindowOffset: Double = 1024.0
     @State private var amplitudeFilter: Double = 0.4
@@ -75,8 +76,8 @@ struct SoundAnalyseView: View {
 //        ts.addNote(n: Note(num: 55, value: 3.0))
 
         for i in 0...8 {
-            var timeSlice2 = self.score2.addTimeSlice()
-            var n = Note(num:67 + (i % 4)*2, value: i % 3 != 0 ? 0.5 : 1.0)
+            let timeSlice2 = self.score2.addTimeSlice()
+            let n = Note(num:67 + (i % 4)*2, value: i % 3 != 0 ? 0.5 : 1.0)
             //n.isOnlyRhythmNote = true
             timeSlice2.addNote(n: n)
         }
@@ -90,20 +91,34 @@ struct SoundAnalyseView: View {
  
     var body: some View {
         GeometryReader { geo in
+            let fileName = "Ex1_Sine_9_Notes"
             VStack {
                 HStack {
                     Button(action: {
-                        //noteOnsetAnalyser.makeSegmentAverages(fileName: "Example \(self.selectedNumber)", segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
-                        noteOnsetAnalyser.makeSegmentAverages(fileName: "Example 7_sequenced", segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
+                        noteOnsetAnalyser.reset()
+                        noteOnsetAnalyser.makeSegmentAverages(fileName: fileName, segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
+                        noteOnsetAnalyser.detectNoteOnsets(noteOnsetSliceMilliSecs: noteOnsetSliceMilliSecs,
+                                                           segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec,
+                                                           FFTFrameSize:Int(FFTWindowSize),
+                                                           FFTFrameOffset: Int(FFTWindowOffset))
+                    }) {
+                        Text("Analyse Pitch")
+                    }
+                    .padding()
+ 
+                    Button(action: {
+                        noteOnsetAnalyser.makeSegmentAverages(fileName: fileName, segmentLengthSecondsMilliSec:segmentLengthSecondsMilliSec)
                     }) {
                         Text("Make Segment Averages")
                     }
                     .padding()
                     
                     Button(action: {
-                        noteOnsetAnalyser.detectNoteOnsets(segmentAverages: noteOnsetAnalyser.segmentAverages, noteOnsetSliceWidthPercent: noteOnsetSliceWidthPercent, segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec,
-                                                           FFTFrameSize:Int(FFTWindowSize),
-                                                           FFTFrameOffset: Int(FFTWindowOffset))
+                        noteOnsetAnalyser.detectNoteOnsets(
+                            noteOnsetSliceMilliSecs: noteOnsetSliceMilliSecs,
+                            segmentLengthSecondsMilliSec: segmentLengthSecondsMilliSec,
+                            FFTFrameSize:Int(FFTWindowSize),
+                            FFTFrameOffset: Int(FFTWindowOffset))
                     }) {
                         Text("Detect Notes")
                     }
@@ -142,11 +157,11 @@ struct SoundAnalyseView: View {
                 
                 HStack {
                     Text("Segment Average Length:\(String(format: "%.2f", self.segmentLengthSecondsMilliSec)) ms")
-                    Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.05...2.0)
+                    Slider(value: self.$segmentLengthSecondsMilliSec, in: 0.05...500.0)
                 }
                 .padding(.horizontal)
 
-                LineChartView(dataPoints: noteOnsetAnalyser.segmentAverages, title: "Sample Averages")
+                LineChartView(dataPoints: noteOnsetAnalyser.segmentAveragesPublished, title: "Sample Averages")
                     .border(Color.indigo)
                     .frame(height: geo.size.height / 4.0)
                     .padding(.horizontal)
@@ -154,8 +169,8 @@ struct SoundAnalyseView: View {
                 //================ rhythm and pitch
                 
                 HStack {
-                    Text("NoteOnset slice size:\(String(format: "%.3f", self.noteOnsetSliceWidthPercent)) ms")
-                    Slider(value: self.$noteOnsetSliceWidthPercent, in: 0.001...0.020)
+                    Text("NoteOnset slice millisecs:\(String(format: "%.3f", self.noteOnsetSliceMilliSecs)) ms")
+                    Slider(value: self.$noteOnsetSliceMilliSecs, in: 1.0...200.0)
                 }
                 .padding(.horizontal)
 
@@ -180,14 +195,14 @@ struct SoundAnalyseView: View {
 //                }
                 
                 HStack {
-                    LineChartView(dataPoints: noteOnsetAnalyser.pitchInputValuesWindowed, title: "Windowed Frames into FFT")
+                    LineChartView(dataPoints: noteOnsetAnalyser.pitchInputValuesWindowedPublished, title: "Windowed Frames into FFT")
                         .border(Color.indigo)
                         .frame(height: geo.size.height / 4.0)
                         .padding(.horizontal)
                     Text(" ")
                 }
 
-                LineChartView(dataPoints: noteOnsetAnalyser.pitchOutputValues, title: "FFT Output")
+                LineChartView(dataPoints: noteOnsetAnalyser.pitchOutputValuesPublished, title: "FFT Output")
                     .border(Color.green)
                     .frame(height: geo.size.height / 6.0)
                     .padding(.horizontal)

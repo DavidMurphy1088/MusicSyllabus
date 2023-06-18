@@ -1,13 +1,14 @@
 import Foundation
 
 class TimeSlice : ScoreEntry, ObservableObject {
+    @Published var notes:[Note]
+    @Published var tagHigh:String?
+    @Published var tagLow:String?
+    @Published var notesLength:Int?
+    
     var score:Score?
-    var notes:[Note]
     var footnote:String?
     var barLine:Int = 0
-    @Published var tag:String?
-    @Published var notesLength:Int?
-
     private static var idIndex = 0
     
     init(score:Score?) {
@@ -17,13 +18,18 @@ class TimeSlice : ScoreEntry, ObservableObject {
     }
     
     func addNote(n:Note) {
-        //DispatchQueue.main.async {
-            self.notes.append(n)
-            if let score = self.score {
-                score.updateStaffs()
-                score.addStemCharaceteristics()
-            }
-        //}
+        self.notes.append(n)
+        if let score = self.score {
+            score.updateStaffs()
+            score.addStemCharaceteristics()
+        }
+    }
+    
+    func setTags(high:String, low:String) {
+        DispatchQueue.main.async {
+            self.tagHigh = high
+            self.tagLow = low
+        }
     }
     
     func addChord(c:Chord) {
@@ -38,9 +44,12 @@ class TimeSlice : ScoreEntry, ObservableObject {
     static func == (lhs: TimeSlice, rhs: TimeSlice) -> Bool {
         return lhs.id == rhs.id
     }
-    
+        
     func addTonicChord() {
         guard let score = score else {
+            return
+        }
+        if getNotes()?.count == 0 {
             return
         }
         let lastNote = getNotes()![0]
@@ -57,9 +66,5 @@ class TimeSlice : ScoreEntry, ObservableObject {
             addNote(n: Note(num: Note.MIDDLE_C - Note.OCTAVE + 7, value: lastNote.getValue(), staffNum:1, isDotted: isDotted))
         }
 
-        DispatchQueue.main.async {
-            self.tag = "I"
-            self.notesLength = self.notes.count
-        }
     }
 }

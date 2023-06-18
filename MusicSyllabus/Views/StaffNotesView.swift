@@ -1,6 +1,37 @@
 import SwiftUI
 import CoreData
 
+struct TimeSliceLabelView: View {
+    var score:Score
+    var staff:Staff
+    @ObservedObject var timeSlice:TimeSlice
+    var lineSpacing:Double
+    
+    var body: some View {
+        ZStack {
+            if staff.staffNum == 0 {
+                if let tag = timeSlice.tagHigh {
+                    VStack {
+                        Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
+                        Spacer()
+                    }
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    
+                }
+                if let tag = timeSlice.tagLow {
+                    VStack {
+                        Spacer()
+                        Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
+                    }
+                    .frame(maxHeight: .infinity, alignment: .top)
+                }
+            }
+        }
+        .frame(width: 4.0 * CGFloat(lineSpacing), height: 10.0 * CGFloat(lineSpacing))
+        //.border(.red)
+    }
+}
+
 struct StemView: View {
     @State var score: Score
     @State var staff: Staff
@@ -44,8 +75,9 @@ struct StemView: View {
 
 struct StaffNotesView: View {
     @ObservedObject var noteLayoutPositions:NoteLayoutPositions
-    @State var score:Score
-    @State var staff:Staff
+    @ObservedObject var score:Score
+    @ObservedObject var staff:Staff
+    
     @State var lineSpacing:Double
     @State var first:Int? = nil
     @State var last:Int? = nil
@@ -163,9 +195,6 @@ struct StaffNotesView: View {
                 ForEach(score.scoreEntries, id: \.self) { entry in
                     VStack { //VStack - required in forEach closure
                         if entry is TimeSlice {
-//                            let ts = entry as! TimeSlice
-//                            let x:Int = ts.notesLength!
-//                            Text("TS__________\(x)")
                             ZStack { // Each note frame in the timeslice shares the same same space
                                 ForEach(getNotes(entry: entry), id: \.self) { note in
                                     //render the note in both staffs to ensure all entries (stems, bar lines etc ) in both staffs line up vertically
@@ -193,6 +222,7 @@ struct StaffNotesView: View {
                                         }
                                     }
                                 }
+                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, lineSpacing: lineSpacing)
                             }
                         }
                         if entry is BarLine {

@@ -118,6 +118,7 @@ struct KeySignatureView: View {
 }
 
 struct StaffView: View {
+    let id = UUID()
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
     //@ObservedObject var noteLayoutPositions:NoteLayoutPositions
@@ -130,6 +131,7 @@ struct StaffView: View {
     var totalDuration = 0.0
 
     init (score:Score, staff:Staff, lineSpacing:Double) {
+        print("---- StaffView INIT", id)
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
@@ -152,6 +154,11 @@ struct StaffView: View {
     
     func xPos(note:Note) -> CGFloat {
         return CGFloat(self.entryPositions[note.sequence])
+    }
+    
+    func test() -> Int {
+        print("---- StaffView BODY", id)
+        return 1
     }
     
     var body: some View {

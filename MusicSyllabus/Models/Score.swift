@@ -23,7 +23,6 @@ class ScoreEntry : Hashable {
 }
 
 class BarLine : ScoreEntry {
-
 }
 
 class StudentFeedback { //}: ObservableObject {
@@ -153,7 +152,7 @@ class Score : ObservableObject {
         for index in stride(from: scoreEntries.count - 1, through: 0, by: -1) {
             let element = scoreEntries[index]
             if element is TimeSlice {
-                ts = element as! TimeSlice
+                ts = element as? TimeSlice
                 break
             }
         }
@@ -165,13 +164,7 @@ class Score : ObservableObject {
             self.showFootnotes = on
         }
     }
-    
-    func toggleShowNotes() {
-        DispatchQueue.main.async {
-            self.showNotes = !self.showNotes
-        }
-    }
-    
+        
     func updateStaffs() {
         for staff in staff {
             staff.update()
@@ -358,7 +351,6 @@ class Score : ObservableObject {
                     let timeslice = timeslices[difference]
                     if timeslice.notes.count > 0 {
                         timeslice.notes[0].setNoteTag(.hilightExpected)
-                        self.toggleShowNotes() //cause the example score to refresh
                     }
                     scoreToCompare.setStudentFeedback(studentFeedack: self.getFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:difference, tempo: 0))
                 }
@@ -387,14 +379,4 @@ class Score : ObservableObject {
             }
         }
     }
-    
-    func addTonicChord(score:Score) {
-        let timeSlices = self.getAllTimeSlices()
-        if timeSlices.count == 0 {
-            return
-        }
-        let lastTimeSlice = timeSlices[timeSlices.count-1]
-        lastTimeSlice.addTonicChord()
-    }
-
 }

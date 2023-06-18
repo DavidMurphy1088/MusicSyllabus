@@ -3,12 +3,13 @@ import CoreData
 
 struct VoiceCounterView: View {
     var frameHeight:Double
-    @State private var isSwitchedOn = false
+    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
 
     var body: some View {
         VStack {
             Button(action: {
-                isSwitchedOn.toggle()
+                let enabled = !metronome.speechEnabled
+                metronome.setSpeechEnabled(enabled: enabled)
             }, label: {
                 Image("voiceCount")
                     .resizable()
@@ -16,8 +17,8 @@ struct VoiceCounterView: View {
                     .frame(height: frameHeight / 2.0)
                     .padding()
                     .overlay(
-                        RoundedRectangle(cornerRadius: isSwitchedOn ? 10 : 0)
-                            .stroke(isSwitchedOn ? Color.blue : Color.clear, lineWidth: 2)
+                        RoundedRectangle(cornerRadius: metronome.speechEnabled ? 10 : 0)
+                            .stroke(metronome.speechEnabled ? Color.blue : Color.clear, lineWidth: 2)
                     )
                     .padding()
                     //.border(isImagePressed ? Color.red : Color.clear, width: 2)

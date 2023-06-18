@@ -57,14 +57,14 @@ struct MusicSyllabusApp: App {
             VStack {
                 
                 if launchScreenState.state == .finished {
-                    //if MusicSyllabusApp.productionMode {
+                    if MusicSyllabusApp.productionMode {
                         TopicsNavigationView(topic: MusicSyllabusApp.root)
                             .tabItem {Label("Exercises", image: "music.note")
                         }
-//                    }
-//                    else {
-//                        IndexView()
-//                    }
+                    }
+                    else {
+                        IndexView()
+                    }
                 }
                 if MusicSyllabusApp.productionMode {
                     if launchScreenState.state != .finished {

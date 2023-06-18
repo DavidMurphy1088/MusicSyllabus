@@ -30,3 +30,13 @@ what advantage does Hamming windowing provide and how does it work
 give sample Swift code that can analyse the output of an FFT and return the MIDI pitch of the note. The function should input the values output from the FFT transform
 
 is there a website or tool that can take a recording of a simple pinao melody and determine the rhythm and pitch of the notes recorded?
+
+==================
+Using swift I have an AVAudioFile of 10 seconds of a simple piano melody with 10 notes. The sampling rate is 44100 per second for the input frame buffer which is a AVAudioPCMBuffer. I need to analyse the input frame values in the audio file to detect note onsets. I smooth the input buffer to reduce noise by segmenting the inout buffer into fixed length segments. What would be the recommended length in millsecnds of ech segment?
+Determine the average duration of a single note in your piano melody. Let's say it's approximately 1 second.
+
+Choose a fraction of the note duration as the segment length. For example, you can start with a segment length of 100 milliseconds (0.1 seconds), which is one-tenth of the average note duration.
+
+Adjust the segment length based on the characteristics of your audio data and the desired level of precision. If you find that the segments are too short and capturing too much noise, you can increase the segment length. Conversely, if the segments are too long and missing rapid note transitions, you can decrease the segment length.
+
+===========================
