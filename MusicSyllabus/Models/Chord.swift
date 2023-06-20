@@ -225,9 +225,7 @@ class Chord : Identifiable {
         let ls = log.sorted {
             $0.0 < $1.1
         }
-//        for l in ls {
-//            print(l.0, " -> ", l.1, "\t(", "step:\(l.2)", ")")
-//        }
+
         result.order()
         return result
     }

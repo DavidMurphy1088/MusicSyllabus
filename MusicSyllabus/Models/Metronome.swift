@@ -19,6 +19,7 @@ class Metronome: ObservableObject {
 
     let tempoMinimumSetting = 60
     let tempoMaximumSetting = 120
+    var setCtr = 0
 
     private var clapCnt = 0
     private var isThreadRunning = false
@@ -33,21 +34,21 @@ class Metronome: ObservableObject {
     private var onDoneFunction:(()->Void)? = nil
     
     static func getMetronomeWithSettings(initialTempo:Int, allowChangeTempo:Bool) -> Metronome {
-        shared.setTempo(tempo: initialTempo)
+        shared.setTempo(tempo: initialTempo, context: "getMetronomeWithSettings")
         shared.allowChangeTempo = allowChangeTempo
-        print("** Get Metronome, WithSettings (Specific), ID:", Metronome.shared.id, Metronome.shared.tempo)
+        print("** Get Metronome, WithSettings (Specific), ID:", "tempo:", Metronome.shared.tempo)
         return Metronome.shared
     }
 
     static func getMetronomeWithCurrentSettings() -> Metronome {
-        print("** Get Metronome, Current Settings, ID:", Metronome.shared.id, Metronome.shared.tempo)
+        print("** Get Metronome, Current Settings, ID:", "tempo:", Metronome.shared.tempo)
         let met = Metronome.shared
         return met
     }
     
     static func getMetronomeWithStandardSettings() -> Metronome {
         let met = Metronome.getMetronomeWithSettings(initialTempo: 60, allowChangeTempo: false)
-        print("** Get Metronome, Standard Settings, ID:", met.id, met.tempo)
+        print("** Get Metronome, Standard Settings, ID:", "tempo:", met.tempo)
         return met
     }
 
@@ -78,20 +79,24 @@ class Metronome: ObservableObject {
         }
     }
 
-    func setTempo(tempo: Int) {
+    func setTempo(tempo: Int, context:String) {
         //https://theonlinemetronome.com/blogs/12/tempo-markings-defined
-        var tempoToSet:Int = 0
-        if tempo < self.tempoMinimumSetting {
-            tempoToSet = self.tempoMinimumSetting
+        if self.tempo == tempo {
+            return
         }
-        else {
-            if tempo > self.tempoMaximumSetting {
-                tempoToSet = self.tempoMaximumSetting
-            }
-            else {
-                tempoToSet = tempo
-            }
-        }
+        var tempoToSet:Int = tempo
+        setCtr += 1
+//        if tempo < self.tempoMinimumSetting {
+//            tempoToSet = self.tempoMinimumSetting
+//        }
+//        else {
+//            if tempo > self.tempoMaximumSetting {
+//                tempoToSet = self.tempoMaximumSetting
+//            }
+//            else {
+//                tempoToSet = tempo
+//            }
+//        }
         var name = ""
         if tempoToSet <= 20 {
             name = "Larghissimo"
@@ -127,12 +132,12 @@ class Metronome: ObservableObject {
             name = "Presto"
         }
         if tempo > 200 {
-            tempoToSet = self.tempoMaximumSetting
+            name = "*"
         }
         DispatchQueue.main.async {
+            print("-- SET Metronome, SET TEMPO ctr:", "ctx:", context, self.setCtr, "requested:", tempo, "SET TO", tempoToSet)
             self.tempo = tempoToSet
             self.tempoName = name
-            //print("Metronome::ChangeTempo", self.id, self.tempo)
         }
     }
     
@@ -165,7 +170,7 @@ class Metronome: ObservableObject {
         if !self.isThreadRunning {
             startThreadRunning(timeSignature: score.timeSignature, audioSamplerPlayerMIDI:audioSamplerMIDI)
         }
-        setTempo(tempo: self.tempo)
+        setTempo(tempo: self.tempo, context: "Metronome start playScore")
     }
     
     func stopPlayingScore() {
@@ -181,7 +186,6 @@ class Metronome: ObservableObject {
         let audioClapper:AudioSamplerPlayer = AudioSamplerPlayer(timeSignature: timeSignature, tickStyle: false)
 
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            //print("\n====>Thread STARTING...")
             var loopCtr = 0
             var keepRunning = true
             var currentTimeValue = 0.0
@@ -206,9 +210,7 @@ class Metronome: ObservableObject {
                 }
                 
                 //sound the next note
-//                if score != nil && firstNote {
-//                    print(" --- Score first note", loopCtr, "next score time slice", nextScoreTimeSlice)
-//                }
+
                 if (firstNote && loopCtr % 2 == 0) || (!firstNote) {
                    
                     if let score = score {
@@ -283,7 +285,6 @@ class Metronome: ObservableObject {
                 }
                 currentTimeValue += shortestNoteValue
                 
-                //print(" --thread end test", loopCtr, "score:", score, "next ts:", nextScoreTimeSlice, "firstNote", firstNote)
                 if score == nil {
                     firstNote = true
                 }
@@ -295,7 +296,6 @@ class Metronome: ObservableObject {
                         self.onDoneFunction = nil
                         score = nil
                         firstNote = true
-                        //print("Score play finished loopCtr:",loopCtr)
                     }
                 }
 

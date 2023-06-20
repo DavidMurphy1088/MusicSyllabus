@@ -46,7 +46,7 @@ struct MetronomeView: View {
                         Slider(value: Binding<Double>(
                             get: { Double(metronome.tempo) },
                             set: {
-                                metronome.setTempo(tempo: Int($0))
+                                metronome.setTempo(tempo: Int($0), context: "Metronome View, Slider change")
                             }
                         ), in: Double(metronome.tempoMinimumSetting)...Double(metronome.tempoMaximumSetting), step: 1)
                         .padding()

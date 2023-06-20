@@ -107,7 +107,6 @@ class ExampleData {
             current = par!
             key = "." + key
         }
-        //print("--->Example key", key)
         return getData(key: key)
     }
     

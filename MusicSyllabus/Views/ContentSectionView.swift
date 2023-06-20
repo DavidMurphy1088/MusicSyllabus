@@ -1,6 +1,25 @@
 import SwiftUI
+import WebKit
 
-struct ContentSectionHeaderView: View {
+struct ContentSectionHeaderView: UIViewRepresentable {
+    var contentSection:ContentSection
+
+    func makeUIView(context: Context) -> WKWebView {
+        return WKWebView()
+    }
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        print(contentSection.name)
+        if let htmlPath = Bundle.main.path(forResource: contentSection.name, ofType: "html") {
+            let url = URL(fileURLWithPath: htmlPath)
+            let request = URLRequest(url: url)
+            uiView.load(request)
+        }
+    }
+    
+}
+   
+struct ContentSectionHeaderViewOld: View {
     var contentSection:ContentSection
     @State private var isHelpPresented = false
     var help:String = "In the exam you will be shown three notes and be asked to identify the intervals as either a second or a third."
@@ -76,8 +95,10 @@ struct ContentSectionView: View {
    
     var body: some View {
         VStack {
-            ContentSectionHeaderView(contentSection: contentSection)
+            
             if contentSection.subSections.count > 0 {
+                ContentSectionHeaderView(contentSection: contentSection)
+                    .padding()
                 VStack {
                     List(contentSection.subSections) { subtopic in
                         NavigationLink(destination: ContentSectionView(contentSection: subtopic)) {
@@ -137,4 +158,3 @@ struct ContentSectionView: View {
         .navigationBarTitle(contentSection.getPathName(), displayMode: .inline)//.font(.title)
     }
 }
-

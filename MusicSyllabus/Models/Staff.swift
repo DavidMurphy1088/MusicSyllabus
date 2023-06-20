@@ -16,7 +16,6 @@ class NoteLayoutPositions: ObservableObject {
     }
     
     static func getShared() -> NoteLayoutPositions {
-        //print("======================>NoteLayoutPositions getShared()", nextId)
         let lp = NoteLayoutPositions(id: nextId)
         nextId += 1
         return lp
@@ -137,7 +136,6 @@ class Staff : ObservableObject {
             var name = ""
             name = "X" //String(Note.noteNames[(noteOffsetInScale+2) % Note.noteNames.count])
             let offset = noteOffsetInScale + 1
-            //print("Midi note", noteValue, "offset", offset, "\t\tscale", noteOffsetInScale, "\tname", name)
             placement = NoteStaffPlacement(name: "X", offsetFroMidLine: offset)
             noteStaffPlacement[noteValue] = placement
         }

@@ -43,7 +43,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     ]
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
-       // var refresh:Bool? = nil
         return IntervalPresentView(contentSection: contentSection, score:score, answer: answer, mode:mode)
     }
     
@@ -113,7 +112,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     }
 
     var body: AnyView {
-    //var body: some View {
         AnyView(
             VStack {
                 HStack {
@@ -122,16 +120,16 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     }
                     else {
                         Button(action: {
-                            metronome.playScore(score: score, onDone: {self.scoreWasPlayed = true})
+                            metronome.playScore(score: score, onDone: {
+                                self.scoreWasPlayed = true
+                            })
+                            self.scoreWasPlayed = true
                         }) {
                             Text("Hear Interval")
                                 .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                         }
                         .padding()
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-//                        )
-//                        .background(UIGlobals.backgroundColor)
+                        .background(UIGlobals.backgroundColor)
                         .padding()
                     }
                 }
@@ -140,10 +138,6 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     VStack {
                         selectIntervalView.padding()
                     }
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-//                    )
-//                    .background(UIGlobals.backgroundColor)
                     .padding()
                 }
                 .disabled(mode == .intervalAural && scoreWasPlayed == false)
@@ -279,7 +273,6 @@ struct IntervalView: View {
         self.contentSection = contentSection
         presentQuestionView = IntervalPresentView(contentSection: contentSection, score: self.score, answer: answer, mode:mode)
         answerQuestionView = IntervalAnswerView(contentSection: contentSection, score: score, answer: answer, mode:mode, refresh: onRefresh)
-        //print("\n======QuestionAndAnswerView init name:", contentSection.name, contentSection.sectionType, "self ID", id, "score ID:", score.id)
     }
 
     var body: some View {

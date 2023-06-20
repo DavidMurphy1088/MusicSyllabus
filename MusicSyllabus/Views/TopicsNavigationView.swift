@@ -15,6 +15,11 @@ struct GradeIntroView: View {
                     .font(.title)
                     .fontWeight(.bold)
                     .padding()
+                
+                Text("Piano")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding()
 
                 //GeometryReader { geo in
                     Image("nzmeb_logo_transparent")

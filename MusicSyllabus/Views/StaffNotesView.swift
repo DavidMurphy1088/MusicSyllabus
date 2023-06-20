@@ -55,16 +55,17 @@ struct StemView: View {
         GeometryReader { geo in
             VStack {
                 let startNote = note.getBeamStartNote(score: score, np: notePositionLayout)
+                let inErrorAjdust = note.noteTag == .inError ? lineSpacing/2.0 : 0
                 if startNote.getValue() != Note.VALUE_WHOLE {
                     //Note this code eventually has to go adjust the stem length for notes under a quaver beam
                     //3.5 lines is a full length stem
                     let stemDirection = stemDirection(note: startNote)
                     let midX = geo.size.width / 2.0 + (stemDirection * -1.0 * noteWidth / 2.0)
                     let midY = geo.size.height / 2.0
-                    let offsetY = Double(offsetFromStaffMiddle) * 0.5 * lineSpacing
+                    var offsetY = Double(offsetFromStaffMiddle) * 0.5 * lineSpacing + inErrorAjdust
                     Path { path in
                         path.move(to: CGPoint(x: midX, y: midY - offsetY))
-                        path.addLine(to: CGPoint(x: midX, y: midY - offsetY + (stemDirection * stemLength)))
+                        path.addLine(to: CGPoint(x: midX, y: midY - offsetY + (stemDirection * (stemLength - inErrorAjdust))))
                     }
                     .stroke(note.getColor(staff: staff), lineWidth: 1)
                 }
@@ -158,8 +159,6 @@ struct StaffNotesView: View {
     }
     
 //    func log(ctx:String, entry:ScoreEntry) {
-//        print("-->StaffNotesView::Body ctx:", ctx, "StaffCount:", score.staff.count, "StaffNum:", staff.staffNum,
-//              "PosId:", noteLayoutPositions.id, "PosCount:", noteLayoutPositions.positions.count)
 //    }
 
     func highestNote(entry:ScoreEntry) -> Note? {
@@ -214,10 +213,13 @@ struct StaffNotesView: View {
                                                     }
                                             })
                                             
-                                            StemView(score:score, staff:staff, notePositionLayout: noteLayoutPositions,
+                                            StemView(score:score, staff:staff,
+                                                     notePositionLayout: noteLayoutPositions,
                                                      note: note,
                                                      offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note),
-                                                     lineSpacing: lineSpacing, stemLength: stemLength, noteWidth: noteWidth)
+                                                     lineSpacing: lineSpacing,
+                                                     stemLength: stemLength,
+                                                     noteWidth: noteWidth)
 
                                         }
                                     }

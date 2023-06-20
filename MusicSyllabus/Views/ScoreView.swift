@@ -1,7 +1,50 @@
 import SwiftUI
 import CoreData
 import MessageUI
- 
+
+struct FeedbackView: View {
+    @ObservedObject var score:Score
+    var body: some View {
+        HStack {
+            if let studentFeedback = score.studentFeedback {
+                if studentFeedback.correct {
+                    Image(systemName: "checkmark.circle")
+                        .scaleEffect(2.0)
+                        .foregroundColor(Color.green)
+                        .padding()
+                }
+                else {
+                    Image(systemName: "xmark.octagon")
+                        .scaleEffect(2.0)
+                        .foregroundColor(Color.red)
+                        .padding()
+                }
+                if let index = studentFeedback.indexInError {
+                        Text("Wrong rhythm at note: \(index)").padding()
+                }
+
+//                    if let tempo = studentFeedback.tempo {
+//                        Text("Your Tempo:\(tempo)").padding()
+//                    }
+            }
+        }
+        if let studentFeedback = score.studentFeedback {
+            if let feedbackExplanation = studentFeedback.feedbackExplanation {
+                VStack {
+                    Text(feedbackExplanation)
+                        .lineLimit(nil)
+                }
+            }
+            if let feedbackNote = studentFeedback.feedbackNote {
+                VStack {
+                    Text(feedbackNote)
+                        .lineLimit(nil)
+                }
+            }
+        }
+    }
+}
+
 struct ScoreView: View {
     @ObservedObject var score:Score
     let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : 16.0 //was 10 , TODO dont hard code
@@ -9,38 +52,8 @@ struct ScoreView: View {
     var body: some View {
         VStack {
             
-            HStack {
-                if let studentFeedback = score.studentFeedback {
-                    if studentFeedback.correct {
-                        Image(systemName: "checkmark.circle")
-                            .scaleEffect(2.0)
-                            .foregroundColor(Color.green)
-                            .padding()
-                    }
-                    else {
-                        Image(systemName: "xmark.octagon")
-                            .scaleEffect(2.0)
-                            .foregroundColor(Color.red)
-                            .padding()
-                    }
-                    if let index = studentFeedback.indexInError {
-                            Text("Wrong rhythm at note: \(index)").padding()
-                    }
-
-//                    if let tempo = studentFeedback.tempo {
-//                        Text("Your Tempo:\(tempo)").padding()
-//                    }
-                }
-            }
-            if let studentFeedback = score.studentFeedback {
-                if let feedback = studentFeedback.feedback {
-                    VStack {
-                        Text(feedback)
-                            .lineLimit(nil)
-                    }
-                }
-            }
-
+            FeedbackView(score: score)
+            
             ForEach(score.getStaff(), id: \.self.type) { staff in
                 if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
                     StaffView(score: score, staff: staff, lineSpacing: lineSpacing)

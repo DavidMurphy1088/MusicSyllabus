@@ -57,20 +57,32 @@ struct TimeSignatureView: View {
     var lineSpacing:Double
     var clefWidth:Double
     
-    var body: some View {
-        let padding:Double = Double(lineSpacing) / 3.0
-        let fontSize1:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
+    func fontSize(for height: CGFloat) -> CGFloat {
+        // Calculate the font size based on the desired pixel height
+        let desiredPixelHeight: CGFloat = 48.0
+        let scaleFactor: CGFloat = 72.0 // 72 points per inch
+        let points = (desiredPixelHeight * 72.0) / scaleFactor
+        let scalingFactor = height / UIScreen.main.bounds.size.height
+        return points * scalingFactor
+    }
 
-        if timeSignature.isCommonTime {
-            Text(" C")
-                .font(.custom("Times New Roman", size: fontSize1 * 1.1)).bold()
-        }
-        else {
-            VStack (spacing: 0) {
-                Text(" \(timeSignature.top)").font(.system(size: fontSize1 * 1.1)).padding(.vertical, -padding)
-                Text(" \(timeSignature.bottom)").font(.system(size: fontSize1  * 1.1)).padding(.vertical, -padding)
+    var body: some View {
+        //GeometryReader { geometry in
+            let padding:Double = Double(lineSpacing) / 3.0
+            let fontSize:Double = Double(lineSpacing) * (staff.linesInStaff == 1 ? 2.2 : 2.2)
+            
+            if timeSignature.isCommonTime {
+                Text(" C")
+                    .font(.custom("Times New Roman", size: fontSize * 1.5)).bold()
+                //.font(.system(size: fontSize(for: geometry.size.height)))
             }
-        }
+            else {
+                VStack (spacing: 0) {
+                    Text(" \(timeSignature.top)").font(.system(size: fontSize * 1.1)).padding(.vertical, -padding)
+                    Text(" \(timeSignature.bottom)").font(.system(size: fontSize  * 1.1)).padding(.vertical, -padding)
+                }
+            }
+        //}
     }
 }
 
@@ -131,7 +143,6 @@ struct StaffView: View {
     var totalDuration = 0.0
 
     init (score:Score, staff:Staff, lineSpacing:Double) {
-        print("---- StaffView INIT", id)
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
@@ -154,11 +165,6 @@ struct StaffView: View {
     
     func xPos(note:Note) -> CGFloat {
         return CGFloat(self.entryPositions[note.sequence])
-    }
-    
-    func test() -> Int {
-        print("---- StaffView BODY", id)
-        return 1
     }
     
     var body: some View {

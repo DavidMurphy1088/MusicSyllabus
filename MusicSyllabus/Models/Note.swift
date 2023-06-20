@@ -105,9 +105,9 @@ class Note : Hashable, Comparable, ObservableObject {
         case 1.0 :
             name += "crotchet"
         case 2.0 :
-            name += "minum"
+            name += "minim"
         case 3.0 :
-            name += "minum"
+            name += "minim"
         default :
             name += "whole Note"
         }

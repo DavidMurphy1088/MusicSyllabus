@@ -20,6 +20,11 @@
 		7B218B182A3DD83500EA4B08 /* Ex1_Sine.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B172A3DD83500EA4B08 /* Ex1_Sine.wav */; };
 		7B218B1A2A3DDAE000EA4B08 /* Ex1_Sine_Short.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B192A3DDAE000EA4B08 /* Ex1_Sine_Short.wav */; };
 		7B218B1C2A3F132600EA4B08 /* Ex1_Sine_9_Notes.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B1B2A3F132600EA4B08 /* Ex1_Sine_9_Notes.wav */; };
+		7B218B1E2A406FB700EA4B08 /* Intervals Visual.html in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B1D2A406FB700EA4B08 /* Intervals Visual.html */; };
+		7B218B202A41061F00EA4B08 /* Clapping.html in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B1F2A41061F00EA4B08 /* Clapping.html */; };
+		7B218B222A41065B00EA4B08 /* Playing.html in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B212A41065B00EA4B08 /* Playing.html */; };
+		7B218B242A41067100EA4B08 /* Intervals Aural.html in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B232A41067100EA4B08 /* Intervals Aural.html */; };
+		7B218B262A4106A900EA4B08 /* Echo Clap.html in Resources */ = {isa = PBXBuildFile; fileRef = 7B218B252A4106A900EA4B08 /* Echo Clap.html */; };
 		7B258C912A285B94003CB91C /* SoundAnalyseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B258C902A285B94003CB91C /* SoundAnalyseView.swift */; };
 		7B25F8382A04D57D00F9552E /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25F8372A04D57D00F9552E /* NoteView.swift */; };
 		7B3BA4512A070A3D000246C6 /* ClapTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3BA4502A070A3D000246C6 /* ClapTestView.swift */; };
@@ -111,6 +116,11 @@
 		7B218B172A3DD83500EA4B08 /* Ex1_Sine.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Ex1_Sine.wav; sourceTree = "<group>"; };
 		7B218B192A3DDAE000EA4B08 /* Ex1_Sine_Short.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Ex1_Sine_Short.wav; sourceTree = "<group>"; };
 		7B218B1B2A3F132600EA4B08 /* Ex1_Sine_9_Notes.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Ex1_Sine_9_Notes.wav; sourceTree = "<group>"; };
+		7B218B1D2A406FB700EA4B08 /* Intervals Visual.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "Intervals Visual.html"; sourceTree = "<group>"; };
+		7B218B1F2A41061F00EA4B08 /* Clapping.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Clapping.html; sourceTree = "<group>"; };
+		7B218B212A41065B00EA4B08 /* Playing.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Playing.html; sourceTree = "<group>"; };
+		7B218B232A41067100EA4B08 /* Intervals Aural.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "Intervals Aural.html"; sourceTree = "<group>"; };
+		7B218B252A4106A900EA4B08 /* Echo Clap.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "Echo Clap.html"; sourceTree = "<group>"; };
 		7B258C902A285B94003CB91C /* SoundAnalyseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundAnalyseView.swift; sourceTree = "<group>"; };
 		7B25F8372A04D57D00F9552E /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		7B3BA4502A070A3D000246C6 /* ClapTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClapTestView.swift; sourceTree = "<group>"; };
@@ -218,8 +228,10 @@
 			isa = PBXGroup;
 			children = (
 				7B0E05362A261A1000CFD554 /* clap-single-inspectorj.wav */,
-				7B218B192A3DDAE000EA4B08 /* Ex1_Sine_Short.wav */,
+				7B218B1F2A41061F00EA4B08 /* Clapping.html */,
+				7B218B252A4106A900EA4B08 /* Echo Clap.html */,
 				7B218B1B2A3F132600EA4B08 /* Ex1_Sine_9_Notes.wav */,
+				7B218B192A3DDAE000EA4B08 /* Ex1_Sine_Short.wav */,
 				7B218B172A3DD83500EA4B08 /* Ex1_Sine.wav */,
 				7B1E1C512A35940600C87DF1 /* Example 1.wav */,
 				7BD375122A387E6600958D62 /* Example 2.wav */,
@@ -231,10 +243,13 @@
 				7BD3750F2A387E6600958D62 /* Example 7.wav */,
 				7BD375102A387E6600958D62 /* Example 8.wav */,
 				7B98D7922A1DC53B00928FC4 /* GuitarAcoustic.sf2 */,
+				7B218B232A41067100EA4B08 /* Intervals Aural.html */,
+				7B218B1D2A406FB700EA4B08 /* Intervals Visual.html */,
 				7B51F0CC2A09C94D00A7ABFA /* Mechanical metronome - High.aif */,
 				7B51F0CD2A09C94D00A7ABFA /* Mechanical metronome - Low.aif */,
 				7BF9B9CA2A02654100121EBA /* Nice-Steinway-v3.8.sf2 */,
 				7B0E05322A2613C100CFD554 /* open-clap_F_minor.wav */,
+				7B218B212A41065B00EA4B08 /* Playing.html */,
 				7B5641B22A34926400DEC01C /* simplemelodypiano.wav */,
 			);
 			path = Sounds;
@@ -437,6 +452,7 @@
 				7B43C69D2A1354D000BBB027 /* Todo in Resources */,
 				7B218B1C2A3F132600EA4B08 /* Ex1_Sine_9_Notes.wav in Resources */,
 				7B218B182A3DD83500EA4B08 /* Ex1_Sine.wav in Resources */,
+				7B218B262A4106A900EA4B08 /* Echo Clap.html in Resources */,
 				7B0E05332A2613C100CFD554 /* open-clap_F_minor.wav in Resources */,
 				7B98D7932A1DC53B00928FC4 /* GuitarAcoustic.sf2 in Resources */,
 				7B55CEBE2A03C870009F9B5D /* GoogleService-Info.plist in Resources */,
@@ -445,17 +461,21 @@
 				7B0E05372A261A1000CFD554 /* clap-single-inspectorj.wav in Resources */,
 				7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
+				7B218B242A41067100EA4B08 /* Intervals Aural.html in Resources */,
 				7BD375152A387E6600958D62 /* Example 5.wav in Resources */,
 				7BD375142A387E6600958D62 /* Example 4.wav in Resources */,
 				7B56419D2A31C70200DEC01C /* AudioNotes in Resources */,
 				7BD375172A387E6600958D62 /* Example 8.wav in Resources */,
+				7B218B1E2A406FB700EA4B08 /* Intervals Visual.html in Resources */,
 				7BD375192A387E6600958D62 /* Example 2.wav in Resources */,
 				7BD375132A387E6600958D62 /* Example 3.wav in Resources */,
 				7BD375162A387E6600958D62 /* Example 7.wav in Resources */,
 				7B5E27982A388BB500458B17 /* Example 7_sequenced.wav in Resources */,
 				7B51F0CE2A09C94D00A7ABFA /* Mechanical metronome - High.aif in Resources */,
 				7B51F0CF2A09C94D00A7ABFA /* Mechanical metronome - Low.aif in Resources */,
+				7B218B222A41065B00EA4B08 /* Playing.html in Resources */,
 				7B5EEDE32A0133020007FF7E /* Assets.xcassets in Resources */,
+				7B218B202A41061F00EA4B08 /* Clapping.html in Resources */,
 				7B218B1A2A3DDAE000EA4B08 /* Ex1_Sine_Short.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -652,7 +672,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
@@ -689,7 +709,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;

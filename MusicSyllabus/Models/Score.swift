@@ -28,7 +28,8 @@ class BarLine : ScoreEntry {
 class StudentFeedback { //}: ObservableObject {
     var correct:Bool = false
     var indexInError:Int? = nil
-    var feedback:String? = nil
+    var feedbackExplanation:String? = nil
+    var feedbackNote:String? = nil
     var tempo:Int? = nil
 }
 
@@ -46,7 +47,7 @@ class Score : ObservableObject {
     var staff:[Staff] = []
     
     var minorScaleType = Scale.MinorType.natural
-    var tempo:Float = 75 //BPM, 75 = andante
+    var recordedTempo:Int?
     static let maxTempo:Float = 200
     static let minTempo:Float = 30
     static let midTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 2.0
@@ -105,12 +106,6 @@ class Score : ObservableObject {
             }
 
             if scoreCtr == scoreTimeSlices.count - 1 {
-                //The time value of the last note is measured by when the student stopped the record which may be delayed
-                //Last note just has to be semibreve (1/2 note) or longer
-//                if compareNotes![0].getValue() < Note.VALUE_HALF {
-//                    result = scoreCtr
-//                    break
-//                }
                 if scoreNotes![0].getValue() > compareNotes![0].getValue() {
                     result = scoreCtr
                     break
@@ -127,7 +122,6 @@ class Score : ObservableObject {
             }
             scoreCtr += 1
         }
-        print("---------------------> Score diff", result ?? 0)
         return result
     }
     
@@ -143,7 +137,6 @@ class Score : ObservableObject {
     func setStudentFeedback(studentFeedack:StudentFeedback? = nil) {
         DispatchQueue.main.async {
             self.studentFeedback = studentFeedack
-            print("===============> Set Student feedback ", studentFeedack?.correct, studentFeedack?.feedback)
         }
     }
 
@@ -200,12 +193,11 @@ class Score : ObservableObject {
         updateStaffs()
     }
 
-    func setTempo(temp: Int, pitch: Int? = nil) {
-        self.tempo = Float(temp)
-    }
+//    func setTempo(temp: Int, pitch: Int? = nil) {
+//        self.tempo = Float(temp)
+//    }
     
     func addTimeSlice() -> TimeSlice {
-        //print("----Score add Timeslice", self.id)
         let ts = TimeSlice(score: self)
         ts.sequence = self.scoreEntries.count
         self.scoreEntries.append(ts)
@@ -270,42 +262,11 @@ class Score : ObservableObject {
             ctr += 1
         }
         
-//        if underBeam {
-//            if let previous = previousNote {
-//                if previous.value == Note.VALUE_QUAVER {
-//                    previous.beamType = .end
-//                }
-//            }
-//        }
-//        for ts in timeSlices {
-//            let note = ts.notes[0]
-//            //print(note.sequence, "value", note.value, "BeamType", note.beamType, "\tend beam note", note.beamEndNote?.sequence ?? "None")
-//        }
     }
-    
-
-    func playChord(chord: Chord, arpeggio: Bool? = nil) {
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            //let t = Score.maxTempo - tempo
-            //var index = 0
-            for note in chord.notes {
-                let playTempo = 60.0/self.tempo
-                //print(" ", note.num)
-                //Score.sampler.startNote(UInt8(note.num + 12 + self.pitchAdjust), withVelocity:48, onChannel:0)
-                //index += 1
-                if let arp = arpeggio {
-                    if arp  {
-                        usleep(useconds_t(playTempo * 500000))
-                    }
-                }
-
-            }
-        }
-    }
-    
+        
     // ================= Student feedback =================
     
-    func getFeedback(scoreToCompare:Score, timeSliceNumber:Int?, tempo:Int?) -> StudentFeedback {
+    func constuctFeedback(scoreToCompare:Score, timeSliceNumber:Int?, tempo:Int, allowTempoVariation:Bool) -> StudentFeedback {
         let feedback = StudentFeedback()
         if let timeSliceNumber = timeSliceNumber {
             let exampleTimeSlices = getAllTimeSlices()
@@ -318,8 +279,8 @@ class Score : ObservableObject {
                     let studentNote = studentTimeSlice.getNotes()?[0]
                     if let studentNote = studentNote {
                         //feedback.feedback = "Mistake at note \(studentNote.sequence)."
-                        feedback.feedback = "The example rhythm was a \(exampleNote.getNoteValueName()). "
-                        feedback.feedback! += "Your rhythm was a \(studentNote.getNoteValueName())."
+                        feedback.feedbackExplanation = "The example rhythm was a \(exampleNote.getNoteValueName()). "
+                        feedback.feedbackExplanation! += "Your rhythm was a \(studentNote.getNoteValueName())."
                         feedback.indexInError = studentNote.sequence
                     }
                 }
@@ -328,14 +289,19 @@ class Score : ObservableObject {
         }
         else {
             feedback.correct = true
-            feedback.feedback = "Good job!"
+            feedback.feedbackExplanation = "Good job!"
+            if let recordedTempo = scoreToCompare.recordedTempo {
+                if !allowTempoVariation && abs(recordedTempo - tempo) > 10 {
+                    feedback.feedbackExplanation = "But your tempo was \(recordedTempo < tempo ? "slower" : "faster") than the question tempo."
+                }
+            }
         }
         feedback.tempo = tempo
         return feedback
     }
     
     //analyse the student's score against this score. Markup dfferences. Return false if there are errors
-    func markupStudentScore(scoreToCompare:Score) -> Bool {
+    func markupStudentScore(questionTempo: Int, scoreToCompare:Score, allowTempoVariation:Bool) -> Bool {
         var errorsExist = false
         let difference = getFirstDifferentTimeSlice(compareScore: scoreToCompare)
         if let difference = difference {
@@ -352,22 +318,22 @@ class Score : ObservableObject {
                     if timeslice.notes.count > 0 {
                         timeslice.notes[0].setNoteTag(.hilightExpected)
                     }
-                    scoreToCompare.setStudentFeedback(studentFeedack: self.getFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:difference, tempo: 0))
+                    scoreToCompare.setStudentFeedback(studentFeedack: self.constuctFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:difference, tempo: questionTempo, allowTempoVariation: allowTempoVariation))
                 }
             }
             //mark the remaining entries after the difference as invisibile in display
             let toCompareTimeSlices = scoreToCompare.getAllTimeSlices()
-            for t in difference+1..<toCompareTimeSlices.count {
-                let toCompareTimeSlice = toCompareTimeSlices[t]
-                if toCompareTimeSlice.notes.count > 0 {
-                    toCompareTimeSlice.notes[0].noteTag = .renderedInError
+            if difference + 1 < toCompareTimeSlices.count {
+                for t in difference+1..<toCompareTimeSlices.count {
+                    let toCompareTimeSlice = toCompareTimeSlices[t]
+                    if toCompareTimeSlice.notes.count > 0 {
+                        toCompareTimeSlice.notes[0].noteTag = .renderedInError
+                    }
                 }
             }
         }
         else {
-            scoreToCompare.setStudentFeedback(studentFeedack: self.getFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:nil, tempo: 0))
-            //Play at students tempo if they got it correct, but otherwise at example tempo
-            //metronome.setTempo(tempo: tempo)
+            scoreToCompare.setStudentFeedback(studentFeedack: self.constuctFeedback(scoreToCompare: scoreToCompare, timeSliceNumber:nil, tempo: questionTempo, allowTempoVariation: allowTempoVariation))
         }
         return errorsExist
     }
