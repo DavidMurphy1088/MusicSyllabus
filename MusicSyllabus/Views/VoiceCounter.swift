@@ -3,7 +3,7 @@ import CoreData
 
 struct VoiceCounterView: View {
     var frameHeight:Double
-    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
+    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings(ctx: "VoiceCounterView")
 
     var body: some View {
         VStack {

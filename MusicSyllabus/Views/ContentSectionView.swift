@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 
-struct ContentSectionHeaderView: UIViewRepresentable {
+struct ContentSectionHelpView: UIViewRepresentable {
     var contentSection:ContentSection
 
     func makeUIView(context: Context) -> WKWebView {
@@ -16,10 +16,9 @@ struct ContentSectionHeaderView: UIViewRepresentable {
             uiView.load(request)
         }
     }
-    
 }
    
-struct ContentSectionHeaderViewOld: View {
+struct ContentSectionHeaderView: View {
     var contentSection:ContentSection
     @State private var isHelpPresented = false
     var help:String = "In the exam you will be shown three notes and be asked to identify the intervals as either a second or a third."
@@ -48,26 +47,14 @@ struct ContentSectionHeaderViewOld: View {
                             .font(.largeTitle)
                     }
                 }
-                .popover(isPresented: $isHelpPresented, arrowEdge: .bottom) {
-                    VStack {
-                        Text("Hints")
-                            .font(.title2)
-                        Text(contentSection.hints).padding()
-                        Button(action: {
-                            isHelpPresented = false
-                        }) {
-                            Text("Close")
-                                .font(.headline)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                    }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    //.shadow(radius: 5)
+
+                .sheet(isPresented: $isHelpPresented) {
+                    ContentSectionHelpView(contentSection: contentSection)
+                        .padding()
+                        .background(
+                            Rectangle()
+                                .stroke(Color.blue, lineWidth: 4) 
+                        )
                 }
                 .padding()
             }

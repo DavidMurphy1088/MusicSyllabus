@@ -33,24 +33,23 @@ class Metronome: ObservableObject {
     private let speech = SpeechSynthesizer.shared
     private var onDoneFunction:(()->Void)? = nil
     
-    static func getMetronomeWithSettings(initialTempo:Int, allowChangeTempo:Bool) -> Metronome {
-        shared.setTempo(tempo: initialTempo, context: "getMetronomeWithSettings")
+    static func getMetronomeWithSettings(initialTempo:Int, allowChangeTempo:Bool, ctx:String) -> Metronome {
+        shared.setTempo(tempo: initialTempo, context: "getMetronomeWithSettings - \(ctx)")
         shared.allowChangeTempo = allowChangeTempo
-        print("** Get Metronome, WithSettings (Specific), ID:", "tempo:", Metronome.shared.tempo)
+        print("** Get Metronome, WithSettings (Specific), ID:", "tempo:", Metronome.shared.tempo, ctx)
         return Metronome.shared
     }
 
-    static func getMetronomeWithCurrentSettings() -> Metronome {
-        print("** Get Metronome, Current Settings, ID:", "tempo:", Metronome.shared.tempo)
-        let met = Metronome.shared
-        return met
+    static func getMetronomeWithCurrentSettings(ctx:String) -> Metronome {
+        print("** Get Metronome, Current Settings, ID:", "tempo:", Metronome.shared.tempo, ctx)
+        return Metronome.shared
     }
-    
-    static func getMetronomeWithStandardSettings() -> Metronome {
-        let met = Metronome.getMetronomeWithSettings(initialTempo: 60, allowChangeTempo: false)
-        print("** Get Metronome, Standard Settings, ID:", "tempo:", met.tempo)
-        return met
-    }
+//
+//    static func getMetronomeWithStandardSettings(ctx:String) -> Metronome {
+//        let met = Metronome.getMetronomeWithSettings(initialTempo: 60, allowChangeTempo: false, ctx: "getMetronomeWithStandardSettings - \(ctx)")
+//        print("** Get Metronome, Standard Settings, ID:", "tempo:", met.tempo)
+//        return met
+//    }
 
     private init() {
     }
@@ -81,22 +80,26 @@ class Metronome: ObservableObject {
 
     func setTempo(tempo: Int, context:String) {
         //https://theonlinemetronome.com/blogs/12/tempo-markings-defined
-        if self.tempo == tempo {
+        print("------> SET Metronome START, SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
+
+        var tempoToSet:Int
+        if tempo < self.tempoMinimumSetting {
+            tempoToSet = self.tempoMinimumSetting
+        }
+        else {
+            if tempo > self.tempoMaximumSetting {
+                tempoToSet = self.tempoMaximumSetting
+            }
+            else {
+                tempoToSet = tempo
+            }
+        }
+        
+        if self.tempo == tempoToSet {
             return
         }
-        var tempoToSet:Int = tempo
         setCtr += 1
-//        if tempo < self.tempoMinimumSetting {
-//            tempoToSet = self.tempoMinimumSetting
-//        }
-//        else {
-//            if tempo > self.tempoMaximumSetting {
-//                tempoToSet = self.tempoMaximumSetting
-//            }
-//            else {
-//                tempoToSet = tempo
-//            }
-//        }
+
         var name = ""
         if tempoToSet <= 20 {
             name = "Larghissimo"
@@ -107,9 +110,6 @@ class Metronome: ObservableObject {
         if tempoToSet > 40 && tempo <= 59 {
             name = "Lento"
         }
-//        if tempo > 60 && tempo <= 66 {
-//            name = "Larghetto"
-//        }
         if tempoToSet > 59 && tempo <= 72 {
             name = "Adagio"
         }
@@ -131,13 +131,15 @@ class Metronome: ObservableObject {
         if tempoToSet > 180  {
             name = "Presto"
         }
-        if tempo > 200 {
+        if tempoToSet > 200 {
             name = "*"
         }
         DispatchQueue.main.async {
-            print("-- SET Metronome, SET TEMPO ctr:", "ctx:", context, self.setCtr, "requested:", tempo, "SET TO", tempoToSet)
             self.tempo = tempoToSet
             self.tempoName = name
+            print("------> SET Metronome END  , SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
+            print("")
+
         }
     }
     
@@ -170,7 +172,7 @@ class Metronome: ObservableObject {
         if !self.isThreadRunning {
             startThreadRunning(timeSignature: score.timeSignature, audioSamplerPlayerMIDI:audioSamplerMIDI)
         }
-        setTempo(tempo: self.tempo, context: "Metronome start playScore")
+        //setTempo(tempo: self.tempo, context: "Metronome start playScore")
     }
     
     func stopPlayingScore() {

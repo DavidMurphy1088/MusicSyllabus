@@ -4,7 +4,7 @@ import CoreData
 struct MetronomeView: View {
     let score:Score
     var frameHeight:Double
-    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings()
+    @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings(ctx: "MetronomeView")
     
     var body: some View {
         VStack {

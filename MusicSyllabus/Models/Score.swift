@@ -278,7 +278,6 @@ class Score : ObservableObject {
                     let studentTimeSlice = studentTimeSlices[timeSliceNumber]
                     let studentNote = studentTimeSlice.getNotes()?[0]
                     if let studentNote = studentNote {
-                        //feedback.feedback = "Mistake at note \(studentNote.sequence)."
                         feedback.feedbackExplanation = "The example rhythm was a \(exampleNote.getNoteValueName()). "
                         feedback.feedbackExplanation! += "Your rhythm was a \(studentNote.getNoteValueName())."
                         feedback.indexInError = studentNote.sequence

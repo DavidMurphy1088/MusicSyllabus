@@ -12,6 +12,7 @@ struct TimeSliceLabelView: View {
             if staff.staffNum == 0 {
                 if let tag = timeSlice.tagHigh {
                     VStack {
+                        Text(" ")
                         Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
                         Spacer()
                     }
@@ -21,13 +22,14 @@ struct TimeSliceLabelView: View {
                 if let tag = timeSlice.tagLow {
                     VStack {
                         Spacer()
+                        Text(" ")
                         Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
                 }
             }
         }
-        .frame(width: 4.0 * CGFloat(lineSpacing), height: 10.0 * CGFloat(lineSpacing))
+        .frame(width: 4.0 * CGFloat(lineSpacing), height: 12.0 * CGFloat(lineSpacing))
         //.border(.red)
     }
 }

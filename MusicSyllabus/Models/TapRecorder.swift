@@ -2,22 +2,13 @@ import SwiftUI
 import CoreData
 import AVFoundation
 
-//class ScoreWithTempo {
-//    var score:Score
-//    var tempo:Int
-//    init(score:Score, tempo:Int) {
-//        self.score = score
-//        self.tempo = tempo
-//    }
-//}
-
 class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, ObservableObject {
     static let shared = TapRecorder()
     var tapTimes:[Double] = []
     var tapValues:[Double] = []
     @Published var status:String = ""
     @Published var enableRecordingLight = false
-    var metronome = Metronome.getMetronomeWithStandardSettings()
+    var metronome = Metronome.getMetronomeWithCurrentSettings(ctx: "Tap Recorder init")
     
     func setStatus(_ msg:String) {
         DispatchQueue.main.async {

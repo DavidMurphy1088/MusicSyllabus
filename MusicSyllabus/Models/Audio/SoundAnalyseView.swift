@@ -6,7 +6,7 @@ import Accelerate
 struct SoundAnalyseView: View {
     var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
     var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
-    let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
+    let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false, ctx:"SoundAnalyseView")
     let ap = AudioPlayerTest()
     let test = Test()
     //let tuner = TunerView()
@@ -20,7 +20,7 @@ struct SoundAnalyseView: View {
     //typically 10-50 milliseconds.
     @State private var segmentLengthSecondsMilliSec: Double = 0.5
     //@State private var noteOnsetSliceWidthPercent: Double = 0.005
-    @State private var noteOnsetSliceMilliSecs: Double = 10.0
+    @State private var noteOnsetSliceMilliSecs: Double = 20.0
     @State private var FFTWindowSize: Double = 4096.0
     @State private var FFTWindowOffset: Double = 1024.0
     @State private var amplitudeFilter: Double = 0.4

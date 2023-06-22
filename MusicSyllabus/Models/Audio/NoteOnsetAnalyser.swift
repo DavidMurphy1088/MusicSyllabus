@@ -45,6 +45,7 @@ class NoteOnsetAnalyser : ObservableObject {
     }
     
     func setStatus(_ msg:String) {
+        print("NoteOnsetAnalyser \(msg)")
         DispatchQueue.main.async {
             self.status = self.status
         }

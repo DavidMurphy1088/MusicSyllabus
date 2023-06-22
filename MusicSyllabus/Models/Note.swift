@@ -109,7 +109,7 @@ class Note : Hashable, Comparable, ObservableObject {
         case 3.0 :
             name += "minim"
         default :
-            name += "whole Note"
+            name += "semibreve"
         }
         return name
     }

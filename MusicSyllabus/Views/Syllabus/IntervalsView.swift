@@ -8,7 +8,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
     @ObservedObject private var logger = Logger.logger
     @State private var selectedIntervalIndex:Int = 10//? = nil
     var mode:QuestionMode
-    let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
+    let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false, ctx:"IntervalPresentView")
     @State private var selectedOption: String? = nil
     @State private var scoreWasPlayed = false
     
@@ -190,7 +190,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
 
     private var score:Score
     private let imageSize = Double(32)
-    private let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false)
+    private let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false, ctx:"Interval answer View")
     private var noteIsSpace:Bool
     
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {

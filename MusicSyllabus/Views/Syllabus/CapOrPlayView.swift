@@ -72,7 +72,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     @ObservedObject var audioRecorder = AudioRecorder.shared
     @ObservedObject var tapRecorder = TapRecorder.shared
     @ObservedObject private var logger = Logger.logger
-    @ObservedObject private var metronome:Metronome = Metronome.getMetronomeWithStandardSettings()
+    @ObservedObject private var metronome:Metronome = Metronome.getMetronomeWithCurrentSettings(ctx: "ClapOrPlayPresentView init @ObservedObject")
 
     @State var tappingView:TappingView? = nil
 
@@ -87,6 +87,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     var contentSection:ContentSection
     var mode:QuestionMode
     var onRefresh: (() -> Void)? = nil
+    let questionTempo = 90
     
     static func onRefresh() {
     }
@@ -112,7 +113,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         }
         let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
-        self.rhythmHeard = self.mode == .rhythmEchoClap ? false : true
+        self.rhythmHeard = self.mode == .rhythmVisualClap ? true : false
 //        var lastTS:TimeSlice? = nil
 //        var lastNote:Note? = nil
         
@@ -139,23 +140,29 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 }
             }
         }
-        metronome.setTempo(tempo: mode == .rhythmEchoClap ? 90 : 60, context: "View init()")
-
+        if mode == .melodyPlay {
+            if let timeSlice = score.getLastTimeSlice() {
+                timeSlice.addTonicChord()
+                timeSlice.setTags(high: score.key.keySig.accidentalCount > 0 ? "G" : "C", low: "I")
+            }
+        }
     }
 
     func getInstruction(mode:QuestionMode) -> String {
         var result = "Press start recording then "
         switch mode {
             
-        case .rhythmVisualClap:
+        case .rhythmVisualClap, .rhythmEchoClap:
             //result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
-            result += "tap your rhythm on the drum. Remember to tap rather than hold your finger firmly down."
+            result += "tap your rhythm on the drum."
+            result += "\n\nTap and release rather than hold your finger firmly down on long notes. When you have finished, stop the recording."
+            result += "\n\nIf you tap the rhythm incorrectly, you will be able to hear your rhythm and the given rhythm at crotchet = 60 on the next page."
 
         case .melodyPlay:
             result += "play the melody and the final chord."
             
-        case .rhythmEchoClap:
-            result += "tap your rhythm on the drum. Remember to tap rather than hold your finger firmly down."
+//        case :
+//            result += "tap your rhythm on the drum. Remember to tap rather than hold your finger firmly down."
             
         default:
             result = ""
@@ -174,7 +181,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 VStack {
                     VStack {
                         if UIDevice.current.userInterfaceIdiom != .phone {
-                            if mode != .rhythmVisualClap {
+                            if mode == .melodyPlay || mode == .rhythmEchoClap {
                                 ToolsView(score: score)
                             }
                         }
@@ -183,20 +190,25 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                             ScoreView(score: score).padding()
                         }
                         
-                        if mode == .melodyPlay || mode == .rhythmEchoClap {
-                            PlayRecordingView(buttonLabel: "Hear The Given \(mode == .melodyPlay ? "Melody" : "Rhythm")",
-                                              score: score,
-                                              metronome: metronome,
-                                              onDone: {rhythmHeard = true})
+                        if answer.state != .recording {
+                            if mode == .melodyPlay || mode == .rhythmEchoClap {
+                                let lname = mode == .melodyPlay ? "melody" : "rhythm"
+                                let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
+                                Text("When hearing the \(lname) you can adjust the metronome to play faster or slower").padding()
+                                PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
+                                                  score: score,
+                                                  metronome: metronome,
+                                                  onDone: {rhythmHeard = true})
+                            }
                         }
 
                         VStack {
-                            Text(self.getInstruction(mode: self.mode))
-                                        .lineLimit(nil)
-                                        .padding()
-                            
                             if answer.state != .recording {
                                 if rhythmHeard {
+                                    Text(self.getInstruction(mode: self.mode))
+                                        .lineLimit(nil)
+                                        .padding()
+
                                     Button(action: {
                                         answer.setState(.recording)
                                         if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
@@ -242,19 +254,18 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                                   score: mode == .melodyPlay ? nil : getStudentScoreWithTempo(),
                                                   metronome: self.metronome,
                                                   onStart: ({
-                                                        if let recordedTempo = getStudentScoreWithTempo().recordedTempo {
-                                                            metronome.setTempo(tempo: recordedTempo, context:"start hear student")
+                                                        if mode != .melodyPlay {
+                                                            if let recordedTempo = getStudentScoreWithTempo().recordedTempo {
+                                                                metronome.setTempo(tempo: recordedTempo, context:"start hear student")
+                                                            }
                                                         }
                                                     }),
                                                   onDone: ({
                                                         //recording was played at the student's tempo and now reset metronome
-                                                        metronome.setTempo(tempo: mode == .rhythmEchoClap ? 90 : 60,
-                                                        context: "end hear student")
+                                                        metronome.setTempo(tempo: self.questionTempo, context: "end hear student")
                                                     })
                                                   )
-                            }
-                            
-                            if answer.state == .recorded {
+
                                 Button(action: {
                                     answer.setState(.submittedAnswer)
                                     score.setHiddenStaff(num: nil)
@@ -269,11 +280,11 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                             }
                             Text("  ").padding()
                         }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                        )
-                        .background(UIGlobals.backgroundColor)
-                        .padding()
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+//                        )
+//                        .background(UIGlobals.backgroundColor)
+//                        .padding()
                         
                         Text(audioRecorder.status).padding()
                         if logger.status.count > 0 {
@@ -282,6 +293,13 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     }
                     .onAppear() {
                         score.setHiddenStaff(num: 1)
+                        metronome.setTempo(tempo: 90, context: "View init")
+                        if mode == .rhythmEchoClap || mode == .melodyPlay {
+                            metronome.setAllowTempoChange(allow: true)
+                        }
+                        else {
+                            metronome.setAllowTempoChange(allow: false)
+                        }
                     }
                 }
                 .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
@@ -307,6 +325,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     @State var answerWasCorrect:Bool = false
     @ObservedObject var score:Score
     private var mode:QuestionMode
+    let questionTempo = 90
 
     static func createInstance(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode) -> QuestionPartProtocol {
         return ClapOrPlayAnswerView(contentSection:contentSection, score:score, answer: answer, mode: mode)
@@ -316,24 +335,20 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         self.answer = answer
         self.score = score
         self.mode = mode
-        self.metronome = Metronome.getMetronomeWithCurrentSettings()
+        self.metronome = Metronome.getMetronomeWithCurrentSettings(ctx:"ClapPlay Answer mode")
         metronome.speechEnabled = self.speechEnabled
         self.onRefresh = refresh
     }
-    
-    func getQuestionTempo() -> Int {
-        return mode == .rhythmEchoClap ? 90 : 60
-    }
-    
+        
     func analyseStudentRhythm() {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         self.tappingScore = rhythmAnalysis
         //let recordedTempo = rhythmAnalysis.recordedTempo
         if let tappingScore = tappingScore {
-            let errorsExist = score.markupStudentScore(questionTempo: getQuestionTempo(), scoreToCompare: tappingScore, allowTempoVariation: mode != .rhythmEchoClap)
+            let errorsExist = score.markupStudentScore(questionTempo: self.questionTempo, scoreToCompare: tappingScore, allowTempoVariation: mode != .rhythmEchoClap)
             self.answerWasCorrect = !errorsExist
             if errorsExist {
-                self.metronome.setTempo(tempo: getQuestionTempo(), context: "Analyse Student - failed")
+                self.metronome.setTempo(tempo: self.questionTempo, context: "Analyse Student - failed")
                 self.metronome.setAllowTempoChange(allow: false)
             }
             else {
@@ -405,12 +420,12 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                     if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
                         analyseStudentRhythm()
                     }
-                    if mode == .melodyPlay {
-                        if let timeSlice = score.getLastTimeSlice() {
-                            timeSlice.addTonicChord()
-                            timeSlice.setTags(high: "G", low: "I")
-                        }
-                    }
+//                    if mode == .melodyPlay {
+//                        if let timeSlice = score.getLastTimeSlice() {
+//                            timeSlice.addTonicChord()
+//                            timeSlice.setTags(high: score.key.keySig.accidentalCount > 0 ? "G" : "C", low: "I")
+//                        }
+//                    }
                 }
                 .onDisappear() {
                     score.clearTages() //clear tags from any previous attempt
