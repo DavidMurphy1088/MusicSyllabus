@@ -6,11 +6,15 @@ struct ToolsView: View {
     let frameHeight = 120.0
     
     var body: some View {
-        HStack {
-            MetronomeView(score:score, frameHeight: frameHeight)
-                //.frame(height: imageSize * 1.50)
-            VoiceCounterView(frameHeight: frameHeight)
-                //.frame(height: imageSize * 1.50)
+        VStack {
+            HStack {
+                MetronomeView(score:score, frameHeight: frameHeight)
+                    //.padding(.horizontal)
+                    .padding()
+                VoiceCounterView(frameHeight: frameHeight)
+                    //.padding(.horizontal)
+                    .padding()
+            }
         }
     }
 }

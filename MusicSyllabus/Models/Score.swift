@@ -34,9 +34,16 @@ class StudentFeedback { //}: ObservableObject {
 }
 
 class LineSpacing: ObservableObject {
-    var value:Double
+    @Published var value:Double
     init (value:Double) {
         self.value = value
+    }
+    
+    func setValue(_ v:Double) {
+        DispatchQueue.main.async {
+            self.value = v
+            //print("===============LineSpacing::SETVALUE======", v)
+        }
     }
 }
 

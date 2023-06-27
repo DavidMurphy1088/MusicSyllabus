@@ -115,7 +115,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         AnyView(
             VStack {
                 if mode == .intervalVisual {
-                    ScoreView(score: score, screenWidth: UIScreen.main.bounds.width).padding()
+                    ScoreView(score: score).padding()
                 }
                 
                 HStack {
@@ -207,7 +207,7 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
     var body: AnyView {
         AnyView(
             VStack {
-                ScoreView(score: score, screenWidth: UIScreen.main.bounds.width).padding()
+                ScoreView(score: score).padding()
 
                 HStack {
                     if answer.correct {

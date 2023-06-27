@@ -9,7 +9,7 @@ struct ContentSectionHelpView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        print(contentSection.name)
+        //print(contentSection.name)
         if let htmlPath = Bundle.main.path(forResource: contentSection.name, ofType: "html") {
             let url = URL(fileURLWithPath: htmlPath)
             let request = URLRequest(url: url)

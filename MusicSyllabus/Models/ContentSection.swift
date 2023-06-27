@@ -80,7 +80,6 @@ class ContentSection: Identifiable {
         var path = ""
         var section = self
         while true {
-            print(path, section.name, section.level)
             path = section.name + path
             if let parent = section.parent {
                 section = parent
@@ -134,7 +133,7 @@ class FirestorePersistance {
 //    }
     
     func getSyllabus() {
-        print("trying set data...")
+        //print("trying set data...")
         let collection = "Clapping"
         let db = Firestore.firestore()
         
@@ -152,7 +151,6 @@ class FirestorePersistance {
 
         db.collection(collection).getDocuments() { (querySnapshot, err) in
             if let q = querySnapshot {
-                print(q.count)
                 for document in q.documents {
                     print(document.description, document.data())
                 }

@@ -51,7 +51,7 @@ class AudioPlayerTest {
         
         //let ampTap = AmplitudeTap(engine.input!, callbackQueue: DispatchQueue.main) {a in
         let ampTap = AmplitudeTap(player!, callbackQueue: DispatchQueue.main) {a in
-            print("AmpTap", a)
+            //print("AmpTap", a)
         }
     //    ampTap.analysisMode = .peak
     //

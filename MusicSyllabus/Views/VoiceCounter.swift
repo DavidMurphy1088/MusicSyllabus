@@ -30,7 +30,6 @@ struct VoiceCounterView: View {
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
         .background(UIGlobals.backgroundColor)
-        .padding()
     }
 }
 

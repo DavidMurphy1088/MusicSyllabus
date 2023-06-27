@@ -110,55 +110,10 @@ class ClapRecorder: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Obse
         }
     }
     
-    func displayLogBuffer() {
-        var c = 0
-        for row in logBuffer {
-            print(row.getRow())
-            c += 1
-        }
-    }
-    
     func stopRecording() {
         DispatchQueue.global(qos: .background).async {
-            print("Stopped recording")
+            //print("Stopped recording")
             self.captureSession.stopRunning()
-            self.displayLogBuffer()
         }
     }
 }
-
-
-//    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-//        guard let channel = connection.audioChannels.first else { return }
-//        let decibels = Double(channel.averagePowerLevel)
-//        //let peak = channel.peakHoldLevel
-//        //print("AVCaptureOutput - didOutput...", captureCtr, "Decibels", decibels, "buf size", buf.count)
-//
-//        var sumDecibels = 0.0 //decibelBuffer.reduce(0, +)
-//        for r in decibelBuffer {
-//            sumDecibels += r.decibels
-//        }
-//        let avgLastDecibels = sumDecibels / Double(decibelBuffer.count)
-//
-//        logBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-//
-//        if decibelBuffer.count < requiredBufSize {
-//            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-//            return
-//        }
-//
-//        if Int(decibels - avgLastDecibels) > requiredDecibelChange {
-//            clapCnt += 1
-//            logBuffer[logBuffer.count-1].clap = true
-//            DispatchQueue.main.async {
-//                self.clapCounter += 1
-//            }
-//            decibelBuffer = []
-//            //print(captureCtr, "Claps", clapCnt, "Average", fmt(avgDec), "Dec", fmt(decibels), "buf Size", buf.count)
-//        }
-//        else {
-//            decibelBuffer.append(DecibelBufferRow (ctr: captureCtr, time: Date().timeIntervalSince1970, decibels: decibels, decibelsAvg: avgLastDecibels))
-//            decibelBuffer.removeFirst()
-//        }
-//        captureCtr += 1
-//    }

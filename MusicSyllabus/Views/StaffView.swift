@@ -101,7 +101,7 @@ struct CleffView: View {
                 //.border(Color.red)
             }
             else {
-                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing.value) * 5.5)))
+                Text("\u{1d122}").font(.system(size: CGFloat(Double(lineSpacing.value) * 6.0)))
             }
         }
         //.border(Color.green)

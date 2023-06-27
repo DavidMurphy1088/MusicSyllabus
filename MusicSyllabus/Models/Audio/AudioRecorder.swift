@@ -13,7 +13,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     @Published var status:String = ""
     
     func setStatus(_ msg:String) {
-        print("AudioRecorder::status", msg)
+        //print("AudioRecorder::status", msg)
         DispatchQueue.main.async {
             self.status = "AudioRecorder::"+msg
         }
@@ -22,7 +22,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     func startRecording(outputFileName:String)  {
         recordingSession = AVAudioSession.sharedInstance()
         audioFilename = getDocumentsDirectory().appendingPathComponent("\(outputFileName).wav")
-        print("RECORDING TO file:", audioFilename ?? "")
+        //print("RECORDING TO file:", audioFilename ?? "")
 
         AppDelegate.startAVAudioSession(category: .record)
         
@@ -88,7 +88,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             return
         }
         let fileManager = FileManager.default
-        print("PLAYING FROM:", audioFilename)
+        //print("PLAYING FROM:", audioFilename)
         if !fileManager.fileExists(atPath: url.path) {
             Logger.logger.reportError(self, "At playback, file does not exist \(url.path)")
             return
@@ -117,9 +117,9 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         //let paths = FileManager.default.urls(for: .sharedPublicDirectory, in: .userDomainMask)
         
-        for p in paths {
-            print("getDocumentsDirectory", p)
-        }
+//        for p in paths {
+//            print("getDocumentsDirectory", p)
+//        }
         return paths[0]
     }
 }

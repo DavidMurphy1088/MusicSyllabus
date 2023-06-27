@@ -36,12 +36,12 @@ class Metronome: ObservableObject {
     static func getMetronomeWithSettings(initialTempo:Int, allowChangeTempo:Bool, ctx:String) -> Metronome {
         shared.setTempo(tempo: initialTempo, context: "getMetronomeWithSettings - \(ctx)")
         shared.allowChangeTempo = allowChangeTempo
-        print("** Get Metronome, WithSettings (Specific), ID:", "tempo:", Metronome.shared.tempo, ctx)
+        //print("** Get Metronome, WithSettings (Specific), ID:", "tempo:", Metronome.shared.tempo, ctx)
         return Metronome.shared
     }
 
     static func getMetronomeWithCurrentSettings(ctx:String) -> Metronome {
-        print("** Get Metronome, Current Settings, ID:", "tempo:", Metronome.shared.tempo, ctx)
+        //print("** Get Metronome, Current Settings, ID:", "tempo:", Metronome.shared.tempo, ctx)
         return Metronome.shared
     }
 //
@@ -80,7 +80,7 @@ class Metronome: ObservableObject {
 
     func setTempo(tempo: Int, context:String) {
         //https://theonlinemetronome.com/blogs/12/tempo-markings-defined
-        print("------> SET Metronome START, SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
+        //print("------> SET Metronome START, SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
 
         var tempoToSet:Int
         if tempo < self.tempoMinimumSetting {
@@ -137,7 +137,7 @@ class Metronome: ObservableObject {
         DispatchQueue.main.async {
             self.tempo = tempoToSet
             self.tempoName = name
-            print("------> SET Metronome END  , SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
+            //print("------> SET Metronome END  , SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
             print("")
 
         }

@@ -45,7 +45,7 @@ class NoteOnsetAnalyser : ObservableObject {
     }
     
     func setStatus(_ msg:String) {
-        print("NoteOnsetAnalyser \(msg)")
+        //print("NoteOnsetAnalyser \(msg)")
         DispatchQueue.main.async {
             self.status = self.status
         }
@@ -348,7 +348,7 @@ class NoteOnsetAnalyser : ObservableObject {
                 score += 1
             }
             out += "\tCorrect:\(isCorrect)"
-            print(out)
+            //print(out)
             correctCtr += 1
         }
         print("==>Score:", score)

@@ -43,45 +43,68 @@ struct FeedbackView: View {
 
 struct ScoreView: View {
     @ObservedObject var score:Score
-    var screenWidth:Double
+    @ObservedObject var lineSpacing:LineSpacing
 
-    func getLineSpacing() -> CGFloat {
-        UIScreen.main.bounds.width
-        let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : screenWidth / 64.0 //16.0 //was 10 , TODO dont hard code
-        //print("ScoreView body::", "totalWidth:", geo.size.width, "linespacing:", lineSpacing)
-        return lineSpacing
+    init(score:Score) {
+        self.score = score
+        self.lineSpacing = LineSpacing(value: UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0)
+        //self.setOrientationLayout()
+        //print("SCORE VIEW INIT", "width::", UIScreen.main.bounds.width, "line spacing", lineSpacing.value)
     }
     
     func getFrameHeight() -> Double {
-        var h:Double = Double(score.staffLineCount) * getLineSpacing()
+        var h:Double = Double(score.staffLineCount) * Double(self.lineSpacing.value)
         if score.staffs.count > 1 {
             h = 2 * h + h / 2.0
         }
         return h
     }
     
+    func setChangeOrientationLayout() {
+        //Absolutley no idea - the width reported here decreases in landscape mode so use height (which increases)
+        //https://www.hackingwithswift.com/quick-start/swiftui/how-to-detect-device-rotation
+        let ls = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.height / 64.0
+        print("SET ORIENTATION", "width::", UIScreen.main.bounds.width, "heght:", UIScreen.main.bounds.height, "line spacing", ls)
+        self.lineSpacing.setValue(ls)
+    }
+    
     var body: some View {
         VStack {
-            let lineSpacing = LineSpacing(value: getLineSpacing())
-
-            VStack {
-                
-                FeedbackView(score: score)
-                
-                ForEach(score.getStaff(), id: \.self.type) { staff in
-                    if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
-                        StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
-                            .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing.value))  //fixed size of height for all staff lines + ledger lines
-                    }
+            
+            FeedbackView(score: score)
+            
+            ForEach(score.getStaff(), id: \.self.type) { staff in
+                if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
+                    StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
+                        .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing.value))  //fixed size of height for all staff lines + ledger lines
                 }
             }
-            .coordinateSpace(name: "Score1")
-            .overlay(
-                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-            )
-            .background(UIGlobals.backgroundColor)
-            .frame(height: getFrameHeight())
-            
         }
+        .onAppear {
+            self.lineSpacing.value = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0
+            //setOrientationLayout()
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { orientation in
+            if UIDevice.current.orientation.isLandscape {
+                print("--->Landscape", UIScreen.main.bounds)
+            }
+            else {
+                print("--->Portrait", UIScreen.main.bounds)
+            }
+            setChangeOrientationLayout()
+         }
+        .onDisappear {
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
+        .coordinateSpace(name: "Score1")
+        .overlay(
+            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+        )
+        .background(UIGlobals.backgroundColor)
+        .frame(height: getFrameHeight())
+        
     }
+
 }
+

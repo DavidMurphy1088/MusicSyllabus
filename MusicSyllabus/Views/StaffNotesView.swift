@@ -5,7 +5,7 @@ struct TimeSliceLabelView: View {
     var score:Score
     var staff:Staff
     @ObservedObject var timeSlice:TimeSlice
-    var lineSpacing:Double
+    var lineSpacing:LineSpacing
     
     var body: some View {
         ZStack {
@@ -29,7 +29,7 @@ struct TimeSliceLabelView: View {
                 }
             }
         }
-        .frame(width: 4.0 * CGFloat(lineSpacing), height: 12.0 * CGFloat(lineSpacing))
+        .frame(width: 4.0 * CGFloat(lineSpacing.value), height: 12.0 * CGFloat(lineSpacing.value))
         //.border(.red)
     }
 }
@@ -199,14 +199,10 @@ struct StaffNotesView: View {
         return self.lineSpacing1.value
     }
 
-    func log(lineSpacing:Double) {
-        print("StaffNotesView body::",lineSpacing)
-    }
-    
     var body: some View {
         ZStack { //ZStack - notes and quaver beam drawing shares same space
-            let lineSpacing = self.getLineSpacing()
-            let noteWidth = lineSpacing * 1.2
+            //let lineSpacing = self.getLineSpacing()
+            let noteWidth = getLineSpacing() * 1.2
             HStack(spacing: 0) { //HStack - score entries display along the staff
                 ForEach(score.scoreEntries, id: \.self) { entry in
                     VStack { //VStack - required in forEach closure
@@ -217,7 +213,7 @@ struct StaffNotesView: View {
                                     GeometryReader { geo in
                                         ZStack {
                                             NoteView(staff: staff, note: note,
-                                                     noteWidth: noteWidth, lineSpacing: lineSpacing,
+                                                     noteWidth: noteWidth, lineSpacing: lineSpacing1.value,
                                                      offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note))
                                             .background(GeometryReader { geometry in
                                                 Color.clear
@@ -226,13 +222,13 @@ struct StaffNotesView: View {
                                                             noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
                                                     }
-                                                    .onChange(of: lineSpacing) { newValue in
+                                                    .onChange(of: lineSpacing1.value) { newValue in
                                                          if staff.staffNum == 0 {
                                                             noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
                                                     }
                                             })
-                                            
+
                                             StemView(score:score, staff:staff,
                                                      notePositionLayout: noteLayoutPositions,
                                                      note: note,
@@ -241,11 +237,11 @@ struct StaffNotesView: View {
                                         }
                                     }
                                 }
-                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, lineSpacing: lineSpacing)
+                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, lineSpacing: lineSpacing1)
                             }
                         }
                         if entry is BarLine {
-                            BarLineView(entry: entry, staff: staff, lineSpacing: lineSpacing)
+                            BarLineView(entry: entry, staff: staff, lineSpacing: lineSpacing1)
                         }
                     }
                     .coordinateSpace(name: "VStack")
@@ -256,20 +252,20 @@ struct StaffNotesView: View {
                 .coordinateSpace(name: "ForEach")
             }
             .coordinateSpace(name: "HStack")
-            
+//
             // ==================== Quaver beams =================
             
             if staff.staffNum == 0 {
                 GeometryReader { geo in
                     ZStack {
                         ZStack {
-                            let log = log(lineSpacing: lineSpacing)
+                            //let log = log(lineSpacing: lineSpacing.value)
                             //Text("PubUdateId:\(noteLayoutPositions.id) PubUdateCtr:\(noteLayoutPositions.updated)")
                             ForEach(noteLayoutPositions.positions.sorted(by: { $0.key.sequence < $1.key.sequence }), id: \.key) {
                                 endNote, endNotePos in
                                 if endNote.beamType == .end {
                                     let startNote = endNote.getBeamStartNote(score: score, np:noteLayoutPositions)
-                                    if let line = getBeamLine(endNote: endNote, noteWidth: noteWidth, startNote: startNote, stemLength: lineSpacing * 3.5) {
+                                    if let line = getBeamLine(endNote: endNote, noteWidth: noteWidth, startNote: startNote, stemLength: self.lineSpacing1.value * 3.5) {
                                         Path { path in
                                             path.move(to: CGPoint(x: line.0.x, y: line.0.y))
                                             path.addLine(to: CGPoint(x: line.1.x, y: line.1.y))
