@@ -23,11 +23,9 @@ class NoteLayoutPositions: ObservableObject {
     func storePosition(note: Note, rect: CGRect, cord:String) {
         if note.beamType != .none {
             let rectCopy = CGRect(origin: CGPoint(x: rect.minX, y: rect.minY), size: CGSize(width: rect.size.width, height: rect.size.height))
-//            print("---------->NoteLayoutPositions::storePosition Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count, "\tbeam:", note.beamType, "\torigin", String(format: "%.1f", rect.origin.x), String(format: "%.1f", rect.origin.y))
             DispatchQueue.main.async {
                 sleep(UInt32(0.25))
                 self.positions[note] = rectCopy //rect
-                //print("  ---------->NoteLayoutPositions::storePosition published Posid:", self.id, "noteSeq:", note.sequence, "count:", self.positions.count)
             }
         }
     }

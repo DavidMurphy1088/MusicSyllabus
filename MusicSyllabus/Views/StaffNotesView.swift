@@ -90,10 +90,6 @@ struct StaffNotesView: View {
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
     @ObservedObject var lineSpacing1:LineSpacing
-    
-    @State var first:Int? = nil
-    @State var last:Int? = nil
-    
     static var viewNum:Int = 0
     let viewNum:Int
     
@@ -104,7 +100,7 @@ struct StaffNotesView: View {
         self.noteLayoutPositions = staff.noteLayoutPositions
         StaffNotesView.viewNum += 1
         self.viewNum = StaffNotesView.viewNum
-        print("    StaffNotesView init::lineSpace", viewNum, lineSpacing, self.getLineSpacing())
+        //print("    StaffNotesView init::lineSpace", viewNum, lineSpacing, self.getLineSpacing())
     }
     
     func getNotes(entry:ScoreEntry) -> [Note] {
@@ -227,9 +223,12 @@ struct StaffNotesView: View {
                                                 Color.clear
                                                     .onAppear {
                                                         if staff.staffNum == 0 {
-                                                            //let log = log(ctx: "Report Pos Midi:\(note.midiNumber)")
-                                                            noteLayoutPositions.storePosition(note: note,
-                                                                                              rect: geometry.frame(in: .named("HStack")), cord: "HStack")
+                                                            noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
+                                                        }
+                                                    }
+                                                    .onChange(of: lineSpacing) { newValue in
+                                                         if staff.staffNum == 0 {
+                                                            noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
                                                     }
                                             })

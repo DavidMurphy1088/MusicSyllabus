@@ -43,17 +43,26 @@ struct FeedbackView: View {
 
 struct ScoreView: View {
     @ObservedObject var score:Score
-    var parentGeometry:GeometryProxy
-    
-    func getLineSpacing(geo: GeometryProxy) -> CGFloat {
-        let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : geo.size.width / 64.0 //16.0 //was 10 , TODO dont hard code
-        print("ScoreView body::", "totalWidth:", geo.size.width, "linespacing:", lineSpacing)
+    var screenWidth:Double
+
+    func getLineSpacing() -> CGFloat {
+        UIScreen.main.bounds.width
+        let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : screenWidth / 64.0 //16.0 //was 10 , TODO dont hard code
+        //print("ScoreView body::", "totalWidth:", geo.size.width, "linespacing:", lineSpacing)
         return lineSpacing
     }
     
+    func getFrameHeight() -> Double {
+        var h:Double = Double(score.staffLineCount) * getLineSpacing()
+        if score.staffs.count > 1 {
+            h = 2 * h + h / 2.0
+        }
+        return h
+    }
+    
     var body: some View {
-        GeometryReader { geo in
-            let lineSpacing = LineSpacing(value: getLineSpacing(geo: geo))
+        VStack {
+            let lineSpacing = LineSpacing(value: getLineSpacing())
 
             VStack {
                 
@@ -71,9 +80,8 @@ struct ScoreView: View {
                 RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
             )
             .background(UIGlobals.backgroundColor)
-            .frame(height: CGFloat(Double(score.staffLineCount) * getLineSpacing(geo: geo)))
-            //.border(Color .green)
+            .frame(height: getFrameHeight())
+            
         }
-        //.coordinateSpace(name: "Score2")
     }
 }

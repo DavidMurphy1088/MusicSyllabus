@@ -146,7 +146,7 @@ struct StaffView: View {
         self.score = score
         self.staff = staff
         self.lineSpacing = lineSpacing
-        print("  StaffView init::lineSpace", lineSpacing)
+        //print("  StaffView init::lineSpace", lineSpacing)
     }
     
     func clefWidth() -> Double {

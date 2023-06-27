@@ -51,7 +51,7 @@ class Score : ObservableObject {
     @Published var hiddenStaffNo:Int?
     @Published var studentFeedback:StudentFeedback? = nil
     
-    var staff:[Staff] = []
+    var staffs:[Staff] = []
     
     var minorScaleType = Scale.MinorType.natural
     var recordedTempo:Int?
@@ -135,7 +135,7 @@ class Score : ObservableObject {
     func setHiddenStaff(num:Int?) {
         DispatchQueue.main.async {
             self.hiddenStaffNo = num
-            for staff in self.staff {
+            for staff in self.staffs {
                 staff.update()
             }
         }
@@ -166,22 +166,22 @@ class Score : ObservableObject {
     }
         
     func updateStaffs() {
-        for staff in staff {
+        for staff in staffs {
             staff.update()
         }
     }
     
     func setStaff(num:Int, staff:Staff) {
-        if self.staff.count <= num {
-            self.staff.append(staff)
+        if self.staffs.count <= num {
+            self.staffs.append(staff)
         }
         else {
-            self.staff[num] = staff
+            self.staffs[num] = staff
         }
     }
     
     func getStaff() -> [Staff] {
-        return self.staff
+        return self.staffs
     }
     
     func keyDesc() -> String {
@@ -219,7 +219,7 @@ class Score : ObservableObject {
 
     func clear() {
         self.scoreEntries = []
-        for staff in staff  {
+        for staff in staffs  {
             staff.clear()
         }
     }

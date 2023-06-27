@@ -194,7 +194,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     
     var body: AnyView {
         AnyView(
-            GeometryReader { geo in
+            //GeometryReader { geo in
                 VStack {
                     VStack {
                         if UIDevice.current.userInterfaceIdiom != .phone {
@@ -204,7 +204,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                         }
 
                         if mode == .rhythmVisualClap || mode == .melodyPlay {
-                            ScoreView(score: score, parentGeometry: geo).padding()
+                            ScoreView(score: score, screenWidth: UIScreen.main.bounds.width).padding()
                         }
                         
                         if answer.state != .recording {
@@ -306,8 +306,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 }
                                 .padding()
                             }
-                            Text("  ").padding()
-                            //Spacer()
                         }
                         //Text(audioRecorder.status).padding()
                         if logger.status.count > 0 {
@@ -327,7 +325,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                 }
                 .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
                 //.navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
-            }
+            //}
         )
     }
 }
@@ -386,26 +384,18 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
 
     var body: AnyView {
         AnyView(
-            GeometryReader { geo in
+            //GeometryReader { geo in
                 VStack {
                     if UIDevice.current.userInterfaceIdiom != .phone {
                         if mode != .melodyPlay {
                             ToolsView(score: score)
                         }
-                        else {
-                            Text("") //Hack... oherwise score overwrite stop
-                                                Text(" ").padding() // the following VStack centers vertically without observance of the ScoreView and/or ToolsView
-                                                Text(" ").padding()
-                                                Text(" ").padding()
-
-                        }
                     }
-                    ScoreView(score: score, parentGeometry: geo).padding()
+                    ScoreView(score: score, screenWidth: UIScreen.main.bounds.width).padding()
                     if let tappingScore = self.tappingScore {
-                        ScoreView(score: tappingScore, parentGeometry: geo).padding()
+                        ScoreView(score: tappingScore, screenWidth: UIScreen.main.bounds.width).padding()
                     }
                     
-
                     VStack {
                         PlayRecordingView(buttonLabel: "Hear The Given \(mode == .melodyPlay ? "Melody" : "Rhythm")",
                                           score: score,
@@ -452,7 +442,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                 .onDisappear() {
                     score.clearTaggs() //clear tags from any previous attempt
                 }
-            }
+            //}
         )
     }
 }
