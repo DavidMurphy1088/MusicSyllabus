@@ -20,12 +20,8 @@ struct FeedbackView: View {
                         .padding()
                 }
                 if let index = studentFeedback.indexInError {
-                        Text("Wrong rhythm at note: \(index)").padding()
+                        Text("Wrong rhythm here at note: \(index)").padding()
                 }
-
-//                    if let tempo = studentFeedback.tempo {
-//                        Text("Your Tempo:\(tempo)").padding()
-//                    }
             }
         }
         if let studentFeedback = score.studentFeedback {
@@ -47,28 +43,37 @@ struct FeedbackView: View {
 
 struct ScoreView: View {
     @ObservedObject var score:Score
-    let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : 16.0 //was 10 , TODO dont hard code
-
+    var parentGeometry:GeometryProxy
+    
+    func getLineSpacing(geo: GeometryProxy) -> CGFloat {
+        let lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : geo.size.width / 64.0 //16.0 //was 10 , TODO dont hard code
+        print("ScoreView body::", "totalWidth:", geo.size.width, "linespacing:", lineSpacing)
+        return lineSpacing
+    }
+    
     var body: some View {
-        VStack {
-            
-            FeedbackView(score: score)
-            
-            ForEach(score.getStaff(), id: \.self.type) { staff in
-                if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
-                    StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
-                        .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing))  //fixed size of height for all staff lines + ledger lines
+        GeometryReader { geo in
+            let lineSpacing = LineSpacing(value: getLineSpacing(geo: geo))
+
+            VStack {
+                
+                FeedbackView(score: score)
+                
+                ForEach(score.getStaff(), id: \.self.type) { staff in
+                    if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
+                        StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
+                            .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing.value))  //fixed size of height for all staff lines + ledger lines
+                    }
                 }
             }
-            .padding(.vertical, CGFloat(lineSpacing) * 2.0)
+            .coordinateSpace(name: "Score1")
+            .overlay(
+                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+            )
+            .background(UIGlobals.backgroundColor)
+            .frame(height: CGFloat(Double(score.staffLineCount) * getLineSpacing(geo: geo)))
+            //.border(Color .green)
         }
-        .padding(.horizontal, (score.scoreEntries.count > 10 && UIDevice.current.userInterfaceIdiom == .phone)  ? 0 : 12)
-        .coordinateSpace(name: "Score1")
-        .overlay(
-            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-        )
-        .background(UIGlobals.backgroundColor)
-
         //.coordinateSpace(name: "Score2")
     }
 }

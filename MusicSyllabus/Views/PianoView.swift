@@ -25,7 +25,7 @@ struct PianoView: View {
                             .position(x: edgePadding + (CGFloat(col) * whiteKeyWidth) + whiteKeyWidth/2, y: whiteKeyHeight/2) //.pos is center of rect
                             .onTapGesture {
                                 DispatchQueue.global(qos: .userInitiated).async {
-                                    SoundGenerator.soundGenerator.playNote(notePitch: whiteKeys.keys[col].pitch)
+                                    //SoundGenerator.soundGenerator.playNote(notePitch: whiteKeys.keys[col].pitch)
                                     for key in self.whiteKeys.keys {
                                         key.pressed = false
                                     }

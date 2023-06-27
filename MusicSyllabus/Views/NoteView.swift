@@ -51,6 +51,7 @@ struct NoteView: View {
     var body: some View {
         GeometryReader { geometry in
             let noteFrameWidth = geometry.size.width * 1.0 //center the note in the space allocated by the parent for this note's view
+            //let noteRotation:Int = note.rotatated == true ? noteFrameWidth : 0
             let noteEllipseMidpoint:Double = geometry.size.height/2.0 - Double(offsetFromStaffMiddle) * lineSpacing / 2.0
             let noteValueUnDotted = note.isDotted ? note.getValue() * 2.0/3.0 : note.getValue()
 
@@ -71,14 +72,14 @@ struct NoteView: View {
                         //.stroke(Color.black, lineWidth: note.value == 4 ? 0 : 2) // minim or use foreground color for 1/4 note
                             .foregroundColor(note.getColor(staff: staff))
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 1.0))
-                            .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
+                            .position(x: noteFrameWidth/2  - (note.rotated ? noteWidth : 0), y: noteEllipseMidpoint)
                     }
                     if noteValueUnDotted == Note.VALUE_HALF || noteValueUnDotted == Note.VALUE_WHOLE {
                         Ellipse()
                         //Open ellipse
                             .stroke(note.getColor(staff: staff), lineWidth: 2)
                             .frame(width: noteWidth, height: CGFloat(Double(lineSpacing) * 0.9))
-                            .position(x: noteFrameWidth/2, y: noteEllipseMidpoint)
+                            .position(x: noteFrameWidth/2 - (note.rotated ? noteWidth : 0), y: noteEllipseMidpoint)
                     }
                     
                     //dotted
@@ -91,7 +92,6 @@ struct NoteView: View {
                             .frame(width: noteWidth/3.0, height: noteWidth/3.0)
                             .position(x: noteFrameWidth/2 + noteWidth/0.75, y: noteEllipseMidpoint - yOffset)
                             .foregroundColor(note.getColor(staff: staff))
-                        //.border(Color .red)
                     }
                     
                     //ledger line hack - totally not generalized :(

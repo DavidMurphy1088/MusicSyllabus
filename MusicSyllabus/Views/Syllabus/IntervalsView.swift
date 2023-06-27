@@ -38,7 +38,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                      IntervalName(interval:3, name: "Third",
                                 explanation: ["A line to a line is a skip",
                                               "A space to a space is a skip"]),
-                     IntervalName(interval:4, name: "Major Third",
+                     IntervalName(interval:4, name: "Third",
                                 explanation: ["",""]),
     ]
     
@@ -63,7 +63,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                     timeSlice.addNote(n: note)
                     intervalNotes.append(note)
                     if mode == .intervalAural {
-                        chord.notes.append(Note(num: note.midiNumber, value: 2))
+                        chord.addNote(note: Note(num: note.midiNumber, value: 2))
                     }
                 }
                 if entry is TimeSignature {
@@ -73,7 +73,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
 
             }
         }
-        if chord.notes.count > 0 {
+        if chord.getNotes().count > 0 {
             score.addTimeSlice().addChord(c: chord)
         }
         for interval in intervals {
@@ -113,72 +113,74 @@ struct IntervalPresentView: View, QuestionPartProtocol {
 
     var body: AnyView {
         AnyView(
-            VStack {
-                HStack {
-                    if mode == .intervalVisual {
-                        ScoreView(score: score).padding()
-                    }
-                    else {
-                        Button(action: {
-                            metronome.playScore(score: score, onDone: {
+            GeometryReader { geo in
+                VStack {
+                    HStack {
+                        if mode == .intervalVisual {
+                            ScoreView(score: score, parentGeometry: geo).padding()
+                        }
+                        else {
+                            Button(action: {
+                                metronome.playScore(score: score, onDone: {
+                                    self.scoreWasPlayed = true
+                                })
                                 self.scoreWasPlayed = true
-                            })
-                            self.scoreWasPlayed = true
-                        }) {
-                            Text("Hear Interval")
-                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                            }) {
+                                Text("Hear Interval")
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                            }
+                            .padding()
+                            .background(UIGlobals.backgroundColor)
+                            .padding()
                         }
-                        .padding()
-                        .background(UIGlobals.backgroundColor)
-                        .padding()
                     }
-                }
-                VStack {
-                    Text("Is the interval a second (2nd) or a third (3rd) ?").padding()
                     VStack {
-                        selectIntervalView.padding()
-                    }
-                    .padding()
-                }
-                .disabled(mode == .intervalAural && scoreWasPlayed == false)
-
-                VStack {
-                    if answer.state == .answered {
-                        Button(action: {
-                            answer.setState(.submittedAnswer)
-                            let interval = abs((intervalNotes[1].midiNumber - intervalNotes[0].midiNumber))
-                            if answer.selectedInterval == interval {
-                                answer.correct = true
-                                answer.correctInterval = interval
-                            }
-                            else {
-                                answer.correct = false
-                                answer.correctInterval = interval
-                            }
-                            let name = intervals.first(where: { $0.interval == answer.correctInterval})
-                            if name != nil {
-                                answer.correctIntervalName = name!.name
-                                let noteIsSpace = [Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12, Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
-                                answer.explanation = name!.explanation[noteIsSpace ? 1 : 0]
-                            }
-                        }) {
-                            Text("Check Your Answer")
-                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                        Text("Is the interval a second or a third?").padding()
+                        VStack {
+                            selectIntervalView.padding()
                         }
                         .padding()
                     }
+                    .disabled(mode == .intervalAural && scoreWasPlayed == false)
+                    
+                    VStack {
+                        if answer.state == .answered {
+                            Button(action: {
+                                answer.setState(.submittedAnswer)
+                                let interval = abs((intervalNotes[1].midiNumber - intervalNotes[0].midiNumber))
+                                if answer.selectedInterval == interval {
+                                    answer.correct = true
+                                    answer.correctInterval = interval
+                                }
+                                else {
+                                    answer.correct = false
+                                    answer.correctInterval = interval
+                                }
+                                let name = intervals.first(where: { $0.interval == answer.correctInterval})
+                                if name != nil {
+                                    answer.correctIntervalName = name!.name
+                                    let noteIsSpace = [Note.MIDDLE_C + 5, Note.MIDDLE_C + 9, Note.MIDDLE_C + 12, Note.MIDDLE_C + 16].contains(intervalNotes[0].midiNumber)
+                                    answer.explanation = name!.explanation[noteIsSpace ? 1 : 0]
+                                }
+                            }) {
+                                Text("Check Your Answer")
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                            }
+                            .padding()
+                        }
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                    )
+                    .background(UIGlobals.backgroundColor)
+                    .padding()
+                    
+                    if logger.status.count > 0 {
+                        Text(logger.status).foregroundColor(logger.isError ? .red : .gray)
+                    }
+                    
                 }
-                .overlay(
-                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                )
-                .background(UIGlobals.backgroundColor)
-                .padding()
-
-                if logger.status.count > 0 {
-                    Text(logger.status).foregroundColor(logger.isError ? .red : .gray)
-                }
-
-        }
+            }
         //.navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
         )
     }
@@ -207,47 +209,49 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
     
     var body: AnyView {
         AnyView(
-            VStack {
-                //if UIDevice.current.userInterfaceIdiom != .phone {
-                    //MetronomeView()
-                //}
-                //HStack {
-                    ScoreView(score: score).padding()
-                //}
-
+            GeometryReader { geo in
                 VStack {
-                    HStack {
-                        if answer.correct {
-                            Image(systemName: "checkmark.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.green)
-                            Text("Correct - Good job")
-                        }
-                        else {
-                            Image(systemName: "staroflife.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.red)
-                            Text("Sorry, not correct")
-                        }
-                    }
-                    .padding()
+                    //if UIDevice.current.userInterfaceIdiom != .phone {
+                    //MetronomeView()
+                    //}
+                    //HStack {
+                    ScoreView(score: score, parentGeometry: geo).padding()
+                    //}
                     
-                    Text("The interval is a \(answer.correctIntervalName)").padding()
-                    if mode == .intervalVisual {
-                        Text(answer.explanation).italic().fixedSize(horizontal: false, vertical: true).padding()
-                    }
-                    
-                    if mode == .intervalAural {
-                        Button(action: {
-                            metronome.playScore(score: score)
-                        }) {
-                            Text("Hear Interval")
-                                .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                    VStack {
+                        HStack {
+                            if answer.correct {
+                                Image(systemName: "checkmark.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.green)
+                                Text("Correct - Good job")
+                            }
+                            else {
+                                Image(systemName: "staroflife.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.red)
+                                Text("Sorry, not correct - ")
+                            }
                         }
                         .padding()
+                        
+                        Text("The interval is a \(answer.correctIntervalName)").padding()
+                        if mode == .intervalVisual {
+                            Text(answer.explanation).italic().fixedSize(horizontal: false, vertical: true).padding()
+                        }
+                        
+                        if mode == .intervalAural {
+                            Button(action: {
+                                metronome.playScore(score: score)
+                            }) {
+                                Text("Hear Interval")
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                            }
+                            .padding()
+                        }
                     }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                    )
+                    .background(UIGlobals.backgroundColor)
+                    .padding()
                 }
-                .overlay(
-                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                )
-                .background(UIGlobals.backgroundColor)
-                .padding()
             }
         )
     }

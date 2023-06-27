@@ -83,7 +83,6 @@
 		7BD3750B2A37DECF00958D62 /* FFTTap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD3750A2A37DECF00958D62 /* FFTTap.swift */; };
 		7BD375132A387E6600958D62 /* Example 3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD3750C2A387E6500958D62 /* Example 3.wav */; };
 		7BD375142A387E6600958D62 /* Example 4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD3750D2A387E6500958D62 /* Example 4.wav */; };
-		7BD375152A387E6600958D62 /* Example 5.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD3750E2A387E6500958D62 /* Example 5.wav */; };
 		7BD375162A387E6600958D62 /* Example 7.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD3750F2A387E6600958D62 /* Example 7.wav */; };
 		7BD375172A387E6600958D62 /* Example 8.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD375102A387E6600958D62 /* Example 8.wav */; };
 		7BD375182A387E6600958D62 /* Example 6.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7BD375112A387E6600958D62 /* Example 6.wav */; };
@@ -178,7 +177,6 @@
 		7BD3750A2A37DECF00958D62 /* FFTTap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFTTap.swift; sourceTree = "<group>"; };
 		7BD3750C2A387E6500958D62 /* Example 3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 3.wav"; sourceTree = "<group>"; };
 		7BD3750D2A387E6500958D62 /* Example 4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 4.wav"; sourceTree = "<group>"; };
-		7BD3750E2A387E6500958D62 /* Example 5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "Example 5.wav"; path = "../../../../Downloads/Example 5.wav"; sourceTree = "<group>"; };
 		7BD3750F2A387E6600958D62 /* Example 7.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 7.wav"; sourceTree = "<group>"; };
 		7BD375102A387E6600958D62 /* Example 8.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 8.wav"; sourceTree = "<group>"; };
 		7BD375112A387E6600958D62 /* Example 6.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Example 6.wav"; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 				7BD375122A387E6600958D62 /* Example 2.wav */,
 				7BD3750C2A387E6500958D62 /* Example 3.wav */,
 				7BD3750D2A387E6500958D62 /* Example 4.wav */,
-				7BD3750E2A387E6500958D62 /* Example 5.wav */,
 				7BD375112A387E6600958D62 /* Example 6.wav */,
 				7B5E27972A388BB400458B17 /* Example 7_sequenced.wav */,
 				7BD3750F2A387E6600958D62 /* Example 7.wav */,
@@ -462,7 +459,6 @@
 				7B1E1C522A35940600C87DF1 /* Example 1.wav in Resources */,
 				7BF9B9CB2A02654100121EBA /* Nice-Steinway-v3.8.sf2 in Resources */,
 				7B218B242A41067100EA4B08 /* Intervals Aural.html in Resources */,
-				7BD375152A387E6600958D62 /* Example 5.wav in Resources */,
 				7BD375142A387E6600958D62 /* Example 4.wav in Resources */,
 				7B56419D2A31C70200DEC01C /* AudioNotes in Resources */,
 				7BD375172A387E6600958D62 /* Example 8.wav in Resources */,
@@ -672,7 +668,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;
@@ -709,7 +705,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"MusicSyllabus/Preview Content\"";
 				DEVELOPMENT_TEAM = 98U3T95RVJ;
 				ENABLE_PREVIEWS = YES;

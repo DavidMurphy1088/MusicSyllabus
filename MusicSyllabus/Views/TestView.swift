@@ -23,13 +23,13 @@ struct TestView: View {
         VStack {
             Text("test")
             //ToolsView(score: score)
-            ScoreView(score: score).padding()
+            //ScoreView(score: score).padding()
             
-            StaffView(score: score, staff: staff, lineSpacing: 20).padding().border(Color.blue)
+            StaffView(score: score, staff: staff, lineSpacing: LineSpacing(value:20)).padding().border(Color.blue)
             
             //Text("Ts:: \(tagText())")
             
-            StaffNotesView(score: score, staff: staff, lineSpacing: 20)
+            StaffNotesView(score: score, staff: staff, lineSpacing: LineSpacing(value: 20))
                 .border(Color.indigo)
                 .frame(width: 5 * Double(ts.notesLength ?? 0) + 200)
             

@@ -33,6 +33,13 @@ class StudentFeedback { //}: ObservableObject {
     var tempo:Int? = nil
 }
 
+class LineSpacing: ObservableObject {
+    var value:Double
+    init (value:Double) {
+        self.value = value
+    }
+}
+
 class Score : ObservableObject {
     let id = UUID()
     var timeSignature:TimeSignature
@@ -288,7 +295,7 @@ class Score : ObservableObject {
         }
         else {
             feedback.correct = true
-            feedback.feedbackExplanation = "Good job!"
+            feedback.feedbackExplanation = "Good Job!"
             if let recordedTempo = scoreToCompare.recordedTempo {
                 if !allowTempoVariation && abs(recordedTempo - tempo) > 10 {
                     feedback.feedbackExplanation = "But your tempo was \(recordedTempo < tempo ? "slower" : "faster") than the question tempo."
@@ -337,7 +344,7 @@ class Score : ObservableObject {
         return errorsExist
     }
     
-    func clearTages() {
+    func clearTaggs() {
         for ts in getAllTimeSlices() {
             for note in ts.notes {
                 note.setNoteTag(.noTag)

@@ -13,6 +13,21 @@ enum QuestionMode {
     case none
 }
 
+struct PracticeToolView: View {
+    var text:String
+    var body: some View {
+        HStack {
+            Text("Practice Tool:")//.padding()
+            Text(text)
+        }
+        .padding()
+        .overlay(
+            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+        )
+        .background(UIGlobals.backgroundColorDarker)
+    }
+}
+
 struct PlayRecordingView: View {
     var buttonLabel:String
     @State var score:Score?
@@ -29,7 +44,6 @@ struct PlayRecordingView: View {
                     onStart()
                 }
                 if let score = score {
-                    //metronome.setTempo(tempo: tempo, context: "PlayRecordingView")
                     metronome.playScore(score: score, onDone: {
                         playingScore = false
                         if let onDone = onDone {
@@ -114,10 +128,9 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
         self.rhythmHeard = self.mode == .rhythmVisualClap ? true : false
-//        var lastTS:TimeSlice? = nil
-//        var lastNote:Note? = nil
         
         if let entries = exampleData {
+            var ctr = 0
             for entry in entries {
                 if entry is Note {
                     let timeSlice = score.addTimeSlice()
@@ -125,8 +138,10 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     note.staffNum = 0
                     note.setIsOnlyRhythm(way: mode == .rhythmVisualClap || mode == .rhythmEchoClap ? true : false)
                     timeSlice.addNote(n: note)
-//                    lastTS = timeSlice
-//                    lastNote = note
+//                    ctr += 1
+//                    if ctr > 3 {
+//                        break
+//                    }
                 }
                 if entry is BarLine {
                     score.addBarLine()
@@ -149,25 +164,27 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     }
 
     func getInstruction(mode:QuestionMode) -> String {
-        var result = "Press start recording then "
+        var result = "Press Start Recording then "
         switch mode {
             
         case .rhythmVisualClap, .rhythmEchoClap:
             //result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
-            result += "tap your rhythm on the drum."
-            result += "\n\nTap and release rather than hold your finger firmly down on long notes. When you have finished, stop the recording."
-            result += "\n\nIf you tap the rhythm incorrectly, you will be able to hear your rhythm and the given rhythm at crotchet = 60 on the next page."
+            result += "tap the given rhythm on the drum below."
+            result += "\n\nFor a clear result, you should tap and then immediately release your finger (like a staccato motion), rather than holding it down on the device."
+            result += "\n\nWhen you have finished, stop the recording."
+            result += " If you tap the rhythm incorrectly, you will be able to hear your rhythm and the given rhythm at crotchet = 90 on the next page."
 
         case .melodyPlay:
             result += "play the melody and the final chord."
-            
+            result += "\n\nWhen you have finished, stop the recording."
+
 //        case :
 //            result += "tap your rhythm on the drum. Remember to tap rather than hold your finger firmly down."
             
         default:
             result = ""
         }
-        return result + " When you are finished stop the recording."
+        return result
     }
     
     func getStudentScoreWithTempo() -> Score {
@@ -177,7 +194,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     
     var body: AnyView {
         AnyView(
-            GeometryReader { geometry in
+            GeometryReader { geo in
                 VStack {
                     VStack {
                         if UIDevice.current.userInterfaceIdiom != .phone {
@@ -187,47 +204,54 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                         }
 
                         if mode == .rhythmVisualClap || mode == .melodyPlay {
-                            ScoreView(score: score).padding()
+                            ScoreView(score: score, parentGeometry: geo).padding()
                         }
                         
                         if answer.state != .recording {
+                            //if mode == .melodyPlay || mode == .rhythmEchoClap {
+//                          let lname = mode == .melodyPlay ? "melody" : "rhythm"
+                            let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
+                            
                             if mode == .melodyPlay || mode == .rhythmEchoClap {
-                                let lname = mode == .melodyPlay ? "melody" : "rhythm"
-                                let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
-                                Text("When hearing the \(lname) you can adjust the metronome to play faster or slower").padding()
-                                PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
-                                                  score: score,
-                                                  metronome: metronome,
-                                                  onDone: {rhythmHeard = true})
+                                PracticeToolView(text: "You can adjust the metronome at the top of the page to hear the given melody at varying tempi.")
+                            }
+
+                            PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
+                                              score: score,
+                                              metronome: metronome,
+                                              onDone: {rhythmHeard = true})
+                            if mode == .melodyPlay {
+                                PracticeToolView(text: "Tap the picture of the metronome in the top left corner to practise along with the tick.")
                             }
                         }
 
                         VStack {
                             if answer.state != .recording {
-                                if rhythmHeard {
+                                //if rhythmHeard {
                                     Text(self.getInstruction(mode: self.mode))
                                         .lineLimit(nil)
-                                        .padding()
+                                        //.padding()
+                                //}
 
-                                    Button(action: {
-                                        answer.setState(.recording)
-                                        if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
-                                            self.isTapping = true
-                                            metronome.stopTicking()
-                                            tapRecorder.startRecording(metronomeLeadIn: false)
-                                        } else {
-                                            audioRecorder.startRecording(outputFileName: contentSection.name)
-                                        }
-                                    }) {
-                                        Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
-                                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius).padding()
-                                            .onAppear() {
-                                                tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
-                                            }
+                                Button(action: {
+                                    answer.setState(.recording)
+                                    metronome.stopTicking()
+                                    if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
+                                        self.isTapping = true
+                                        tapRecorder.startRecording(metronomeLeadIn: false)
+                                    } else {
+                                        audioRecorder.startRecording(outputFileName: contentSection.name)
                                     }
+                                }) {
+                                    Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
+                                        .foregroundColor(.white).padding().background(rhythmHeard || mode == .melodyPlay ? Color.blue : Color.gray).cornerRadius(UIGlobals.buttonCornerRadius).padding()
+                                        .onAppear() {
+                                            tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
+                                        }
                                 }
+                                .disabled(!rhythmHeard && mode != .melodyPlay)
                             }
-                            
+                                                        
                             if answer.state == .recording {
                                 Button(action: {
                                     answer.setState(.recorded)
@@ -242,11 +266,15 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 }) {
                                     Text("Stop Recording")
                                         .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
-                                }.padding()
+                                }//.padding()
                             }
   
                             if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
-                                tappingView.padding()
+                                VStack {
+                                    tappingView
+                                }
+                                //.border(Color .red)
+                                .padding()
                             }
 
                             if answer.state == .recorded {
@@ -279,14 +307,9 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 .padding()
                             }
                             Text("  ").padding()
+                            //Spacer()
                         }
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-//                        )
-//                        .background(UIGlobals.backgroundColor)
-//                        .padding()
-                        
-                        Text(audioRecorder.status).padding()
+                        //Text(audioRecorder.status).padding()
                         if logger.status.count > 0 {
                             Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
                         }
@@ -363,58 +386,57 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
 
     var body: AnyView {
         AnyView(
-            GeometryReader { geometry in
+            GeometryReader { geo in
                 VStack {
                     if UIDevice.current.userInterfaceIdiom != .phone {
-                        ToolsView(score: score)
-                    }
-                    VStack {
-                        ScoreView(score: score).padding()
-                        if let tappingScore = self.tappingScore {
-                            ScoreView(score: tappingScore).padding()
+                        if mode != .melodyPlay {
+                            ToolsView(score: score)
+                        }
+                        else {
+                            Text("") //Hack... oherwise score overwrite stop
+                                                Text(" ").padding() // the following VStack centers vertically without observance of the ScoreView and/or ToolsView
+                                                Text(" ").padding()
+                                                Text(" ").padding()
+
                         }
                     }
-
-                    HStack {
-                        VStack {
-                            PlayRecordingView(buttonLabel: "Hear The Given \(mode == .melodyPlay ? "Melody" : "Rhythm")",
-                                              score: score,
-                                              metronome: metronome)
-
-                            if mode == .melodyPlay {
-                                PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
-                                                  score: nil,
-                                                  metronome: metronome)
-                            }
-                            else {
-                                if let tappingScore = self.tappingScore {
-                                    PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
-                                                      score: tappingScore,
-                                                      metronome: metronome)
-                                }
-                            }
-                            
-                            //speechEnabledView.padding()
-                            
-                            Button(action: {
-                                if let refresh = self.onRefresh {
-                                    refresh()
-                                }
-                            }) {
-                                Text("Try Again").foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
-                            }
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                        )
-                        .background(UIGlobals.backgroundColor)
-                        .padding()
+                    ScoreView(score: score, parentGeometry: geo).padding()
+                    if let tappingScore = self.tappingScore {
+                        ScoreView(score: tappingScore, parentGeometry: geo).padding()
                     }
                     
-                    Text(audioRecorder.status).padding()
-                    if logger.status.count > 0 {
-                        Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
+
+                    VStack {
+                        PlayRecordingView(buttonLabel: "Hear The Given \(mode == .melodyPlay ? "Melody" : "Rhythm")",
+                                          score: score,
+                                          metronome: metronome)
+
+                        if mode == .melodyPlay {
+                            PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
+                                              score: nil,
+                                              metronome: metronome)
+                        }
+                        else {
+                            if let tappingScore = self.tappingScore {
+                                PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
+                                                  score: tappingScore,
+                                                  metronome: metronome)
+                            }
+                        }
+                        
+                        Button(action: {
+                            if let refresh = self.onRefresh {
+                                refresh()
+                            }
+                        }) {
+                            Text("Try Again").foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                        }
                     }
+
+                    //Text(audioRecorder.status).padding()
+//                    if logger.status.count > 0 {
+//                        Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
+//                    }
                 }
                 .onAppear() {
                     if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
@@ -428,7 +450,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
 //                    }
                 }
                 .onDisappear() {
-                    score.clearTages() //clear tags from any previous attempt
+                    score.clearTaggs() //clear tags from any previous attempt
                 }
             }
         )

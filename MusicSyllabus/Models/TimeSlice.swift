@@ -33,7 +33,7 @@ class TimeSlice : ScoreEntry, ObservableObject {
     }
     
     func addChord(c:Chord) {
-        for n in c.notes {
+        for n in c.getNotes() {
             self.notes.append(n)
         }
         if let score = score {

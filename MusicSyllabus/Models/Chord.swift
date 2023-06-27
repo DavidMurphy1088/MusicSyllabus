@@ -1,5 +1,5 @@
 class Chord : Identifiable {
-    var notes:[Note] = []
+    private var notes:[Note] = []
     
     enum ChordType {
         case major
@@ -24,6 +24,23 @@ class Chord : Identifiable {
         else {
             notes.append(Note(num: root+7))
         }
+    }
+    
+    func addNote(note:Note) {
+        self.notes.append(note)
+        self.notes.sort()
+        //check for adjoing 2nds which have to be displayed twisted
+        for n in 0..<self.notes.count-1 {
+            let note = self.notes[n]
+            let above = self.notes[n+1]
+            if above.midiNumber - note.midiNumber <= 3 {
+                note.rotated = true
+            }
+        }
+    }
+    
+    func getNotes() -> [Note] {
+        return self.notes
     }
     
     /// Make a 4 note triad for SATB

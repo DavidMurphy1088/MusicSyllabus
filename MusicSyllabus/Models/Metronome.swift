@@ -17,8 +17,8 @@ class Metronome: ObservableObject {
     //must be instance of Metronome lifetime
     let midiNoteEngine = AVAudioEngine()
 
-    let tempoMinimumSetting = 60
-    let tempoMaximumSetting = 120
+    let tempoMinimumSetting = 50
+    let tempoMaximumSetting = 250
     var setCtr = 0
 
     private var clapCnt = 0
@@ -348,6 +348,7 @@ class Metronome: ObservableObject {
         //https://www.rockhoppertech.com/blog/the-great-avaudiounitsampler-workout/#soundfont
         //https://sites.google.com/site/soundfonts4u/
         var soundFontNames = [("Piano", "Nice-Steinway-v3.8"), ("Guitar", "GuitarAcoustic")]
+        //var soundFontNames = [("Piano", "Dore Mark's (SF) Fazioli-v2.5.sf2"), ("Guitar", "GuitarAcoustic")]
         var samplerFileName = soundFontNames[0].1
         
         AppDelegate.startAVAudioSession(category: .playback)
@@ -357,9 +358,10 @@ class Metronome: ObservableObject {
         //18May23 -For some unknown reason and after hours of investiagtion this loadSoundbank must oocur before every play, not jut at init time
         
         if let url = Bundle.main.url(forResource:samplerFileName, withExtension:"sf2") {
-            for i in 0..<256 {
+            for instrumentProgramNumber in 0..<256 {
                 do {
-                    try midiSampler.loadSoundBankInstrument(at: url, program: UInt8(i), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+                    try midiSampler.loadSoundBankInstrument(at: url, program: UInt8(instrumentProgramNumber), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+                    //print(midiSampler.)
                     break
                 }
                 catch {

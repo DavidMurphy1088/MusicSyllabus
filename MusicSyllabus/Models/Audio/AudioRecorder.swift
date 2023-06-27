@@ -13,38 +13,19 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     @Published var status:String = ""
     
     func setStatus(_ msg:String) {
+        print("AudioRecorder::status", msg)
         DispatchQueue.main.async {
             self.status = "AudioRecorder::"+msg
         }
     }
     
     func startRecording(outputFileName:String)  {
-        let documentsDirectory = URL.documentsDirectory
-
-        // Compare to this
-        let documentsDirectory1 = try? FileManager.default.url(
-            for: .documentDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: false)
-        print(documentsDirectory)
-        UserDefaults.standard.set("Hello, World!", forKey: "Greeting")
-        UserDefaults.standard.set("data \(documentsDirectory)", forKey: "data")
-
         recordingSession = AVAudioSession.sharedInstance()
         audioFilename = getDocumentsDirectory().appendingPathComponent("\(outputFileName).wav")
+        print("RECORDING TO file:", audioFilename ?? "")
 
-        print(audioFilename)
         AppDelegate.startAVAudioSession(category: .record)
         
-//        let settings = [ //.m4a format
-//            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-//            AVSampleRateKey: 12000,
-//            AVNumberOfChannelsKey: 1,
-//            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-//            //USe kAudioFormatLinearPCM to generate .WAV, default is .m4a foramt
-//        ]
-        // .wav format
         let settings: [String: Any] = [
             AVFormatIDKey: kAudioFormatLinearPCM,
             AVSampleRateKey: 44100.0,
@@ -53,7 +34,6 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             AVLinearPCMIsBigEndianKey: false,
             AVLinearPCMIsFloatKey: false
         ]
-
         
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename!, settings: settings)
@@ -62,6 +42,14 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             }
             audioRecorder.delegate = self
             audioRecorder.record()
+            
+//            var resourceValues = URLResourceValues()
+//            resourceValues.isExcludedFromBackup = false
+//            resourceValues.isHidden = false
+//            resourceValues.mayShareFileContent = true
+//            resourceValues[.isExtensionHidden] = false
+//            resourceValues[.posixPermissions] = 0o644 // Adjust the permissions as needed
+//            try destinationURL.setResourceValues(resourceValues)
 
             if audioRecorder.isRecording {
                 setStatus("Recording started, status:\(audioRecorder.isRecording ? "OK" : "Error")")
@@ -76,7 +64,7 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        setStatus("Playback stopped, status:\(flag ? "OK" : "Error")")
+        setStatus("Recording stopped, status:\(flag ? "OK" : "Error")")
     }
 
     func stopRecording() {
@@ -100,35 +88,37 @@ class AudioRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, 
             return
         }
         let fileManager = FileManager.default
+        print("PLAYING FROM:", audioFilename)
         if !fileManager.fileExists(atPath: url.path) {
             Logger.logger.reportError(self, "At playback, file does not exist \(url.path)")
             return
         }
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: audioFilename!)
-            if audioPlayer == nil {
+            self.audioPlayer = try AVAudioPlayer(contentsOf: audioFilename!)
+            if self.audioPlayer == nil {
                 Logger.logger.reportError(self, "At playback, cannot create audio player for \(url.path)")
                 return
             }
             //var msg = "playback started, still recording? \(audioRecorder.isRecording)"
             //setStatus(msg)
             //Logger.logger.log(self, msg)
-            audioPlayer.delegate = self
-            audioPlayer.play()
-            setStatus("Playback started, status:\(audioPlayer.isPlaying ? "OK" : "Error")")
+            self.audioPlayer.delegate = self
+            self.audioPlayer.play()
+            setStatus("Playback started, status:\(self.audioPlayer.isPlaying ? "OK" : "Error")")
         } catch let error {
             Logger.logger.reportError(self, "At Playback, start playing error", error)
         }
     }
-
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         setStatus("Playback stopped, status:\(flag ? "OK" : "Error")")
     }
     
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        //let paths = FileManager.default.urls(for: .sharedPublicDirectory, in: .userDomainMask)
+        
         for p in paths {
-            print(p)
+            print("getDocumentsDirectory", p)
         }
         return paths[0]
     }

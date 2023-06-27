@@ -14,11 +14,11 @@ class ExampleData {
         
         var instr = "In the exam you will be asked to clap a written 4-bar rhythm in 3/4 time or 4/4 time."
         instr += "\n\nThe note values that could be included are:"
-        instr += "\n\n\u{2022} Pair of Quavers/ Eighth Notes (picture)"
-        instr += "\n\u{2022} Crotchet / Quarter Note (picture)"
-        instr += "\n\u{2022} Minim / Half Note (picture)"
-        instr += "\n\u{2022} Dotted Minim / 3/4 Note (picture)"
-        instr += "\n\u{2022} Semibreve / Whole Note (picture)"
+        instr += "\n\n\u{2022} Pair of Quavers / Eighth Notes"
+        instr += "\n\u{2022} Crotchet / Quarter Note"
+        instr += "\n\u{2022} Minim / Half Note"
+        instr += "\n\u{2022} Dotted Minim / Thre Quarter Note"
+        instr += "\n\u{2022} Semibreve / Whole Note"
         
         data["Grade 1.Clapping.Instructions"] = instr
         data["Grade 1.Clapping.Hints"] = "Hints - Good luck!"

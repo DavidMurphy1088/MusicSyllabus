@@ -47,7 +47,7 @@ class Note : Hashable, Comparable, ObservableObject {
     var isOnlyRhythmNote = false
 
     var sequence:Int = 0 //the note's sequence position 
-
+    var rotated:Bool = false //true if note must be displaued vertically rotated due to closeness to a neighbor.
     var beamType:QuaverBeamType = .none
     //the note where the quaver beam for this note ends
     var beamEndNote:Note? = nil

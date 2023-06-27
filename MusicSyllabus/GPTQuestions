@@ -40,3 +40,11 @@ Choose a fraction of the note duration as the segment length. For example, you c
 Adjust the segment length based on the characteristics of your audio data and the desired level of precision. If you find that the segments are too short and capturing too much noise, you can increase the segment length. Conversely, if the segments are too long and missing rapid note transitions, you can decrease the segment length.
 
 ===========================
+Using swift I have an AVAudioFile of 10 seconds of a simple piano melody with 10 notes. The sampling rate is 44100 per second for the input frame buffer which is a AVAudioPCMBuffer. I need to analyse the input frame values in the audio file to detect note onsets. I smooth the input buffer to reduce noise by segmenting the input buffer into fixed length segments. What is the best appraoch to detect note onsets in the array of segments
+
+-Normalization: Normalize the audio samples to ensure consistent signal levels across different segments. This can involve scaling the amplitude of the samples to a desired range, such as -1.0 to 1.0. Normalization helps mitigate variations in loudness and facilitates accurate analysis.
+Filtering: Apply filters to remove unwanted noise or emphasize specific frequency ranges relevant to the piano notes. Some common filtering techniques include:
+
+Low-pass filter: Removes high-frequency components, retaining only the lower frequencies relevant to the piano notes.
+High-pass filter: Removes low-frequency components, keeping only the higher frequencies.
+Band-pass filter: Passes a specific range of frequencies and attenuates others. You can use a band-pass filter to focus on the frequency range of the piano notes.

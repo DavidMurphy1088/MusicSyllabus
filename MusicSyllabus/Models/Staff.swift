@@ -7,7 +7,6 @@ import AVFoundation
 //used to record view positions of notes as they are drawn by a view so that a 2nd drwing pass can draw quaver beams to the right points
 class NoteLayoutPositions: ObservableObject {
     @Published var positions:[Note: CGRect] = [:]
-    //@Published var updated = 0
     var id:Int
     static var nextId = 0
     
@@ -76,9 +75,8 @@ class NoteOffsetsInStaffByKey {
 
 class Staff : ObservableObject {
     let id = UUID()
-    //@Published var noteLayoutPositions:NoteLayoutPositions = NoteLayoutPositions.getShared()
     @Published var publishUpdate = 0
-    @Published var noteLayoutPositions = NoteLayoutPositions.getShared()
+    @Published var noteLayoutPositions:NoteLayoutPositions //.getShared()
 
     let score:Score
     var type:StaffType
@@ -98,7 +96,8 @@ class Staff : ObservableObject {
         lowestNoteValue = 20 //MIDI C0
         highestNoteValue = 107 //MIDI B7
         middleNoteValue = type == StaffType.treble ? 71 : Note.MIDDLE_C - Note.OCTAVE + 2
-
+        noteLayoutPositions = NoteLayoutPositions(id: 0)
+        
         //Determine the staff placement for each note pitch
         var noteOffsets:[Int] = []
         for line in NoteOffsetsInStaffByKey().noteOffsetByKey {
