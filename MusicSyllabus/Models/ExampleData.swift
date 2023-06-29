@@ -17,7 +17,7 @@ class ExampleData {
         instr += "\n\n\u{2022} Pair of Quavers / Eighth Notes"
         instr += "\n\u{2022} Crotchet / Quarter Note"
         instr += "\n\u{2022} Minim / Half Note"
-        instr += "\n\u{2022} Dotted Minim / Thre Quarter Note"
+        instr += "\n\u{2022} Dotted Minim / Three Quarter Note"
         instr += "\n\u{2022} Semibreve / Whole Note"
         
         data["Grade 1.Clapping.Instructions"] = instr

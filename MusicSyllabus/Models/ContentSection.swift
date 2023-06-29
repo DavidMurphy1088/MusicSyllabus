@@ -92,6 +92,22 @@ class ContentSection: Identifiable {
         return path
     }
     
+    func getPathTitle() -> String {
+        var path = ""
+        var section = self
+        while true {
+            path = section.title + path
+            if let parent = section.parent {
+                section = parent
+                path = "." + path
+            }
+            else {
+                break
+            }
+        }
+        return path
+    }
+
     //Add an example number if the data for it exists
     func addExample(exampleNum:Int) {
         let exampleName = "Example \(exampleNum)"

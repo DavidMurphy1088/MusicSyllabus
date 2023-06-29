@@ -212,11 +212,11 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
                 HStack {
                     if answer.correct {
                         Image(systemName: "checkmark.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.green)
-                        Text("Correct - Good job")
+                        Text("Correct - Good Job")
                     }
                     else {
                         Image(systemName: "staroflife.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.red)
-                        Text("Sorry, not correct - ")
+                        Text("Sorry - not correct")
                     }
                 }
                 .padding()

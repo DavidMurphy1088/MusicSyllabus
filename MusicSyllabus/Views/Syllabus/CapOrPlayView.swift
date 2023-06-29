@@ -24,7 +24,8 @@ struct PracticeToolView: View {
         .overlay(
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
-        .background(UIGlobals.backgroundColorDarker)
+        .background(UIGlobals.backgroundColorLighter)
+        .padding()
     }
 }
 
@@ -111,7 +112,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         return ClapOrPlayPresentView(contentSection: contentSection, score:score, answer: answer, mode: mode, refresh: onRefresh)
     }
     
-    //in(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode, refresh:(() -> Void)?)
     init(contentSection:ContentSection, score:Score, answer:Answer, mode:QuestionMode, refresh:(() -> Void)? = nil) {
         self.answer = answer
         self.score = score
@@ -138,10 +138,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     note.staffNum = 0
                     note.setIsOnlyRhythm(way: mode == .rhythmVisualClap || mode == .rhythmEchoClap ? true : false)
                     timeSlice.addNote(n: note)
-//                    ctr += 1
-//                    if ctr > 3 {
-//                        break
-//                    }
                 }
                 if entry is BarLine {
                     score.addBarLine()
@@ -164,19 +160,21 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     }
 
     func getInstruction(mode:QuestionMode) -> String {
-        var result = "Press Start Recording then "
+        var result = ""
         switch mode {
             
         case .rhythmVisualClap, .rhythmEchoClap:
             //result += "you will be counted in for one full bar. Then tap your rhythm on the drum."
-            result += "tap the given rhythm on the drum below."
+            result += "Listen to the given rhythm then press Start Recording. Tap your rhythm on the drum below."
             result += "\n\nFor a clear result, you should tap and then immediately release your finger (like a staccato motion), rather than holding it down on the device."
             result += "\n\nWhen you have finished, stop the recording."
-            result += " If you tap the rhythm incorrectly, you will be able to hear your rhythm and the given rhythm at crotchet = 90 on the next page."
+            result += "\n\nIf you tap the rhythm incorrectly, you will be able to hear your rhythm and the given rhythm at crotchet = 90 on the next page."
 
         case .melodyPlay:
+            result += "Press Start Recording then "
             result += "play the melody and the final chord."
-            result += "\n\nWhen you have finished, stop the recording."
+            //result += "\n\nWhen you have finished, stop the recording."
+            result += " When you have finished, stop the recording."
 
 //        case :
 //            result += "tap your rhythm on the drum. Remember to tap rather than hold your finger firmly down."
@@ -192,6 +190,15 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         return rhythmAnalysis
     }
     
+    func helpMetronome() -> String {
+        let lname = mode == .melodyPlay ? "melody" : "rhythm"
+        var practiceText = "You can adjust the metronome to hear the given \(lname) at varying tempi."
+        if mode == .melodyPlay {
+            practiceText += " You can also tap tap the picture of the metronome to practise along with the tick."
+        }
+        return practiceText
+    }
+    
     var body: AnyView {
         AnyView(
             //GeometryReader { geo in
@@ -199,7 +206,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     VStack {
                         if UIDevice.current.userInterfaceIdiom != .phone {
                             if mode == .melodyPlay || mode == .rhythmEchoClap {
-                                ToolsView(score: score)
+                                ToolsView(score: score, helpMetronome: helpMetronome())
                             }
                         }
 
@@ -210,29 +217,26 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                         }
                         
                         if answer.state != .recording {
-                            let lname = mode == .melodyPlay ? "melody" : "rhythm"
                             let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
-                            
-                            if mode == .melodyPlay || mode == .rhythmEchoClap {
-                                PracticeToolView(text: "You can adjust the metronome at the top of the page to hear the given \(lname) at varying tempi.")
-                            }
-
                             PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
                                               score: score,
                                               metronome: metronome,
                                               onDone: {rhythmHeard = true})
-                            if mode == .melodyPlay {
-                                PracticeToolView(text: "Tap the picture of the metronome in the top left corner to practise along with the tick.")
-                            }
+                            
                         }
 
                         VStack {
                             if answer.state != .recording {
-                                //if rhythmHeard {
+                                VStack {
                                     Text(self.getInstruction(mode: self.mode))
                                         .lineLimit(nil)
-                                        //.padding()
-                                //}
+                                        .padding()
+                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                                )
+                                .background(UIGlobals.backgroundColorLighter)
+
 
                                 Button(action: {
                                     answer.setState(.recording)
@@ -308,6 +312,7 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                                 .padding()
                             }
                         }
+                        Spacer()
                         //Text(audioRecorder.status).padding()
                         if logger.status.count > 0 {
                             Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
@@ -325,7 +330,6 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
                     }
                 }
                 .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
-                //.navigationBarTitle("Visual Interval", displayMode: .inline).font(.subheadline)
             //}
         )
     }
@@ -357,7 +361,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         self.answer = answer
         self.score = score
         self.mode = mode
-        self.metronome = Metronome.getMetronomeWithCurrentSettings(ctx:"ClapPlay Answer mode")
+        self.metronome = Metronome.getMetronomeWithCurrentSettings(ctx:"ClapOrPlayAnswerView")
         metronome.speechEnabled = self.speechEnabled
         self.onRefresh = refresh
     }
@@ -370,17 +374,27 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
             let errorsExist = score.markupStudentScore(questionTempo: self.questionTempo, scoreToCompare: tappingScore, allowTempoVariation: mode != .rhythmEchoClap)
             self.answerWasCorrect = !errorsExist
             if errorsExist {
-                self.metronome.setTempo(tempo: self.questionTempo, context: "Analyse Student - failed")
+                //self.metronome.setTempo(tempo: self.questionTempo, context: "Analyse Student - failed")
                 self.metronome.setAllowTempoChange(allow: false)
             }
             else {
-                if let recordedTempo = rhythmAnalysis.recordedTempo {
-                    self.metronome.setTempo(tempo: recordedTempo, context: "Analyse Student - passed")
-                }
+                //if let recordedTempo = rhythmAnalysis.recordedTempo {
+                    //self.metronome.setTempo(tempo: recordedTempo, context: "Analyse Student - passed")
+                //}
                 self.metronome.setAllowTempoChange(allow: true)
             }
+            self.metronome.setTempo(tempo: self.questionTempo, context: "ClapOrPlayAnswerView")
             tappingScore.label = "Your Rhythm"
         }
+    }
+    
+    func helpMetronome() -> String {
+        let lname = mode == .melodyPlay ? "melody" : "rhythm"
+        var practiceText = "You can adjust the metronome to hear the given \(lname) at varying tempi."
+        //if mode == .melodyPlay {
+            practiceText += " You can also tap the picture of the metronome to practise along with the tick."
+        //}
+        return practiceText
     }
 
     var body: AnyView {
@@ -388,10 +402,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
             VStack {
                 if UIDevice.current.userInterfaceIdiom != .phone {
                     if mode != .melodyPlay {
-                        ToolsView(score: score)
+                        ToolsView(score: score, helpMetronome: helpMetronome())
                     }
                 }
-                //ScoreView(score: score).padding(.horizontal)
                 ScoreView(score: score).padding()
                 if let tappingScore = self.tappingScore {
                     Text(" ")
@@ -434,6 +447,9 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
             .onAppear() {
                 if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
                     analyseStudentRhythm()
+                }
+                else {
+                    metronome.setTempo(tempo: questionTempo, context: "AnswerMode::OnAppear")
                 }
     //                    if mode == .melodyPlay {
     //                        if let timeSlice = score.getLastTimeSlice() {

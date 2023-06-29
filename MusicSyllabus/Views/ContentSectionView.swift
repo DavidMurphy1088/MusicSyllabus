@@ -42,7 +42,7 @@ struct ContentSectionHeaderView: View {
                     isHelpPresented.toggle()
                 }) {
                     HStack {
-                        Text("Hints")
+                        Text("Tips and Tricks")
                         Image(systemName: "questionmark.circle")
                             .font(.largeTitle)
                     }
@@ -142,6 +142,9 @@ struct ContentSectionView: View {
                 }
              }
         }
-        .navigationBarTitle(contentSection.getPathName(), displayMode: .inline)//.font(.title)
+        .navigationBarTitle(contentSection.level > 1 ? contentSection.getPathTitle() : "", displayMode: .inline)//.font(.title)
+        //.navigationBarTitle(contentSection.level > 1 ? contentSection.getPathName() : "", displayMode: .inline)//.font(.title)
     }
 }
+
+

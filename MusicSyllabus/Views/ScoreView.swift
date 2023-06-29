@@ -20,7 +20,7 @@ struct FeedbackView: View {
                         .padding()
                 }
                 if let index = studentFeedback.indexInError {
-                        Text("Wrong rhythm here at note: \(index)").padding()
+                        Text("Wrong rhythm here")// at note: \(index)").padding()
                 }
             }
         }

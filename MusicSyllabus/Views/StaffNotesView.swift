@@ -22,8 +22,9 @@ struct TimeSliceLabelView: View {
                 if let tag = timeSlice.tagLow {
                     VStack {
                         Spacer()
-                        Text(" ")
+                        //Text(" ")
                         Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
+                            .padding(.bottom, 8)
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
                 }

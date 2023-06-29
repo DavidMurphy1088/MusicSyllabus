@@ -3,7 +3,9 @@ import CoreData
 
 struct MetronomeView: View {
     let score:Score
+    let helpText:String
     var frameHeight:Double
+    @State var isPopupPresented:Bool = false
     @ObservedObject var metronome = Metronome.getMetronomeWithCurrentSettings(ctx: "MetronomeView")
     
     var body: some View {
@@ -50,6 +52,34 @@ struct MetronomeView: View {
                     ), in: Double(metronome.tempoMinimumSetting)...Double(metronome.tempoMaximumSetting), step: 1)
                     .padding()
                 }
+                
+                Button(action: {
+                    isPopupPresented.toggle()
+                }) {
+                    VStack {
+                        //VStack {
+                            Text("Practice Tool")
+                            //Text("Tool")
+                        //}
+                        Image(systemName: "questionmark.circle")
+                            .font(.largeTitle)
+                    }
+                }
+                .padding()
+                .popover(isPresented: $isPopupPresented) { //, arrowEdge: .bottom) {
+                    VStack {
+                        Text(helpText)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding()
+                    }
+                    .padding()
+                    .background(
+                        Rectangle()
+                            .stroke(Color.blue, lineWidth: 1)
+                            .padding()
+                        )
+                    .padding()
+                }
             }
         }
         .frame(height: frameHeight)
@@ -57,7 +87,7 @@ struct MetronomeView: View {
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
         .background(UIGlobals.backgroundColor)
-        
+
     }
 }
 

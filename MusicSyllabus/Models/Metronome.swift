@@ -17,8 +17,8 @@ class Metronome: ObservableObject {
     //must be instance of Metronome lifetime
     let midiNoteEngine = AVAudioEngine()
 
-    let tempoMinimumSetting = 50
-    let tempoMaximumSetting = 250
+    let tempoMinimumSetting = 60
+    let tempoMaximumSetting = 120
     var setCtr = 0
 
     private var clapCnt = 0
@@ -78,17 +78,24 @@ class Metronome: ObservableObject {
         }
     }
 
-    func setTempo(tempo: Int, context:String) {
+    func setTempo(tempo: Int, context:String, allowBeyondLimits:Bool = false) {
         //https://theonlinemetronome.com/blogs/12/tempo-markings-defined
         //print("------> SET Metronome START, SET TEMPO ctr:", self.setCtr, "ctx:[\(context)]",  "\tcurrent:", self.tempo, "\trequested:", tempo)
 
         var tempoToSet:Int
-        if tempo < self.tempoMinimumSetting {
-            tempoToSet = self.tempoMinimumSetting
+        var maxTempo = self.tempoMaximumSetting
+        var minTempo = self.tempoMinimumSetting
+        
+        if allowBeyondLimits {
+            maxTempo = 250
+            minTempo = 50
+        }
+        if tempo < minTempo {
+            tempoToSet = minTempo
         }
         else {
-            if tempo > self.tempoMaximumSetting {
-                tempoToSet = self.tempoMaximumSetting
+            if tempo > maxTempo {
+                tempoToSet = maxTempo
             }
             else {
                 tempoToSet = tempo
