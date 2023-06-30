@@ -122,8 +122,9 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
         score.setStaff(num: 0, staff: staff)
         if mode == .melodyPlay {
             let bstaff = Staff(score: score, type: .bass, staffNum: 1, linesInStaff: mode == .rhythmVisualClap ? 1 : 5)
+            bstaff.isHidden = true
             score.setStaff(num: 1, staff: bstaff)
-            score.hiddenStaffNo = 1
+            //score.hiddenStaffNo = 1
         }
         let exampleData = exampleData.get(contentSection: contentSection) //(contentSection.parent!.name, contentSection.name)
         score.setStaff(num: 0, staff: staff)
@@ -201,136 +202,135 @@ struct ClapOrPlayPresentView: View, QuestionPartProtocol {
     
     var body: AnyView {
         AnyView(
-            //GeometryReader { geo in
+            VStack  {
                 VStack {
-                    VStack {
-                        if UIDevice.current.userInterfaceIdiom != .phone {
-                            if mode == .melodyPlay || mode == .rhythmEchoClap {
-                                ToolsView(score: score, helpMetronome: helpMetronome())
-                            }
-                        }
-
-                        if mode == .rhythmVisualClap || mode == .melodyPlay {
-                            ScoreView(score: score)
-                                //.padding(.horizontal)
-                                .padding()
-                        }
-                        
-                        if answer.state != .recording {
-                            let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
-                            PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
-                                              score: score,
-                                              metronome: metronome,
-                                              onDone: {rhythmHeard = true})
-                            
-                        }
-
-                        VStack {
-                            if answer.state != .recording {
-                                VStack {
-                                    Text(self.getInstruction(mode: self.mode))
-                                        .lineLimit(nil)
-                                        .padding()
-                                }
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
-                                )
-                                .background(UIGlobals.backgroundColorLighter)
-
-
-                                Button(action: {
-                                    answer.setState(.recording)
-                                    metronome.stopTicking()
-                                    if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
-                                        self.isTapping = true
-                                        tapRecorder.startRecording(metronomeLeadIn: false)
-                                    } else {
-                                        audioRecorder.startRecording(outputFileName: contentSection.name)
-                                    }
-                                }) {
-                                    Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
-                                        .foregroundColor(.white).padding().background(rhythmHeard || mode == .melodyPlay ? Color.blue : Color.gray).cornerRadius(UIGlobals.buttonCornerRadius).padding()
-                                        .onAppear() {
-                                            tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
-                                        }
-                                }
-                                .disabled(!rhythmHeard && mode != .melodyPlay)
-                            }
-                                                        
-                            if answer.state == .recording {
-                                Button(action: {
-                                    answer.setState(.recorded)
-                                    if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
-                                        self.isTapping = false
-                                        self.tapRecorder.stopRecording()
-                                        isTapping = false
-                                    }
-                                    else {
-                                        audioRecorder.stopRecording()
-                                    }
-                                }) {
-                                    Text("Stop Recording")
-                                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
-                                }//.padding()
-                            }
-  
-                            if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
-                                VStack {
-                                    tappingView
-                                }
-                                //.border(Color .red)
-                                .padding()
-                            }
-
-                            if answer.state == .recorded {
-                                PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
-                                                  score: mode == .melodyPlay ? nil : getStudentScoreWithTempo(),
-                                                  metronome: self.metronome,
-                                                  onStart: ({
-                                                        if mode != .melodyPlay {
-                                                            if let recordedTempo = getStudentScoreWithTempo().recordedTempo {
-                                                                metronome.setTempo(tempo: recordedTempo, context:"start hear student")
-                                                            }
-                                                        }
-                                                    }),
-                                                  onDone: ({
-                                                        //recording was played at the student's tempo and now reset metronome
-                                                        metronome.setTempo(tempo: self.questionTempo, context: "end hear student")
-                                                    })
-                                                  )
-
-                                Button(action: {
-                                    answer.setState(.submittedAnswer)
-                                    score.setHiddenStaff(num: nil)
-                                    //self.showBaseCleff = true
-                                    
-                                }) {
-                                    //Stop the UI jumping around when answer.state changes state
-                                    Text(answer.state == .recorded ? "Check Your Answer" : "")
-                                        .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
-                                }
-                                .padding()
-                            }
-                        }
-                        Spacer()
-                        //Text(audioRecorder.status).padding()
-                        if logger.status.count > 0 {
-                            Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
-                        }
-                    }
-                    .onAppear() {
-                        score.setHiddenStaff(num: 1)
-                        metronome.setTempo(tempo: 90, context: "View init")
-                        if mode == .rhythmEchoClap || mode == .melodyPlay {
-                            metronome.setAllowTempoChange(allow: true)
+                    if UIDevice.current.userInterfaceIdiom != .phone {
+                        if mode == .melodyPlay || mode == .rhythmEchoClap {
+                            ToolsView(score: score, helpMetronome: helpMetronome())
                         }
                         else {
-                            metronome.setAllowTempoChange(allow: false)
+                            Text(" ")
                         }
                     }
+
+                    if mode == .rhythmVisualClap || mode == .melodyPlay {
+                        ScoreSpacerView()
+                        ScoreView(score: score)
+                            .padding()
+                        ScoreSpacerView()
+                    }
+                    
+                    if answer.state != .recording {
+                        let uname = mode == .melodyPlay ? "Melody" : "Rhythm"
+                        PlayRecordingView(buttonLabel: "Hear The Given \(uname)",
+                                          score: score,
+                                          metronome: metronome,
+                                          onDone: {rhythmHeard = true})
+                        
+                    }
+
+                    VStack {
+                        if answer.state != .recording {
+                            VStack {
+                                Text(self.getInstruction(mode: self.mode))
+                                    .lineLimit(nil)
+                                    .padding()
+                            }
+                            .overlay(
+                                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
+                            )
+                            .background(UIGlobals.backgroundColorLighter)
+
+
+                            Button(action: {
+                                answer.setState(.recording)
+                                metronome.stopTicking()
+                                if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
+                                    self.isTapping = true
+                                    tapRecorder.startRecording(metronomeLeadIn: false)
+                                } else {
+                                    audioRecorder.startRecording(outputFileName: contentSection.name)
+                                }
+                            }) {
+                                Text(answer.state == .notEverAnswered ? "Start Recording" : "Redo Recording")
+                                    .foregroundColor(.white).padding().background(rhythmHeard || mode == .melodyPlay ? Color.blue : Color.gray).cornerRadius(UIGlobals.buttonCornerRadius).padding()
+                                    .onAppear() {
+                                        tappingView = TappingView(isRecording: $isTapping, tapRecorder: tapRecorder)
+                                    }
+                            }
+                            .disabled(!rhythmHeard && mode != .melodyPlay)
+                        }
+                                                    
+                        if answer.state == .recording {
+                            Button(action: {
+                                answer.setState(.recorded)
+                                if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
+                                    self.isTapping = false
+                                    self.tapRecorder.stopRecording()
+                                    isTapping = false
+                                }
+                                else {
+                                    audioRecorder.stopRecording()
+                                }
+                            }) {
+                                Text("Stop Recording")
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
+                            }//.padding()
+                        }
+
+                        if mode == .rhythmVisualClap || mode == .rhythmEchoClap {
+                            VStack {
+                                tappingView
+                            }
+                            .padding()
+                        }
+
+                        if answer.state == .recorded {
+                            PlayRecordingView(buttonLabel: "Hear Your \(mode == .melodyPlay ? "Melody" : "Rhythm")",
+                                              score: mode == .melodyPlay ? nil : getStudentScoreWithTempo(),
+                                              metronome: self.metronome,
+                                              onStart: ({
+                                                    if mode != .melodyPlay {
+                                                        if let recordedTempo = getStudentScoreWithTempo().recordedTempo {
+                                                            metronome.setTempo(tempo: recordedTempo, context:"start hear student")
+                                                        }
+                                                    }
+                                                }),
+                                              onDone: ({
+                                                    //recording was played at the student's tempo and now reset metronome
+                                                    metronome.setTempo(tempo: self.questionTempo, context: "end hear student")
+                                                })
+                                              )
+
+                            Button(action: {
+                                answer.setState(.submittedAnswer)
+                                score.setHiddenStaff(num: 1, isHidden: false)
+                            }) {
+                                //Stop the UI jumping around when answer.state changes state
+                                Text(answer.state == .recorded ? "Check Your Answer" : "")
+                                    .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.buttonCornerRadius)
+                            }
+                            .padding()
+                        }
+                    }
+                    Spacer() //Keep - required to align the page from the top
+                    //Text(audioRecorder.status).padding()
+                    if logger.status.count > 0 {
+                        Text(logger.status).font(logger.isError ? .title3 : .body).foregroundColor(logger.isError ? .red : .gray)
+                    }
                 }
-                .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
-            //}
+                .onAppear() {
+                    score.setHiddenStaff(num: 1, isHidden: true)
+                    metronome.setTempo(tempo: 90, context: "View init")
+                    if mode == .rhythmEchoClap || mode == .melodyPlay {
+                        metronome.setAllowTempoChange(allow: true)
+                    }
+                    else {
+                        metronome.setAllowTempoChange(allow: false)
+                    }
+                }
+            }
+            .font(.system(size: UIDevice.current.userInterfaceIdiom == .phone ? UIFont.systemFontSize : UIFont.systemFontSize * 1.6))
         )
     }
 }
@@ -365,7 +365,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
         metronome.speechEnabled = self.speechEnabled
         self.onRefresh = refresh
     }
-        
+    
     func analyseStudentRhythm() {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         self.tappingScore = rhythmAnalysis
@@ -403,12 +403,24 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                     if mode != .melodyPlay {
                         ToolsView(score: score, helpMetronome: helpMetronome())
                     }
+                    else {
+                        Text(" ")
+                    }
+                }
+                ScoreSpacerView()
+                if mode == .melodyPlay {
+                    ScoreSpacerView()
                 }
                 ScoreView(score: score).padding()
+                ScoreSpacerView()
+                if mode == .melodyPlay {
+                    ScoreSpacerView()
+                }
                 if let tappingScore = self.tappingScore {
                     Text(" ")
-                    //ScoreView(score: tappingScore).padding(.horizontal)
+                    ScoreSpacerView()
                     ScoreView(score: tappingScore).padding()
+                    ScoreSpacerView()
                 }
                 
                 VStack {
@@ -434,8 +446,10 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                             refresh()
                         }
                     }) {
-                        Text("Try Again").foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
+                        Text("Try Again")
+                            .foregroundColor(.white).padding().background(Color.blue).cornerRadius(UIGlobals.cornerRadius).padding()
                     }
+                    Spacer() //Keep - required to align the page from the top
                 }
 
                 //Text(audioRecorder.status).padding()
@@ -450,12 +464,7 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
                 else {
                     metronome.setTempo(tempo: questionTempo, context: "AnswerMode::OnAppear")
                 }
-    //                    if mode == .melodyPlay {
-    //                        if let timeSlice = score.getLastTimeSlice() {
-    //                            timeSlice.addTonicChord()
-    //                            timeSlice.setTags(high: score.key.keySig.accidentalCount > 0 ? "G" : "C", low: "I")
-    //                        }
-    //                    }
+                score.setHiddenStaff(num: 1, isHidden: false)
             }
             .onDisappear() {
                 score.clearTaggs() //clear tags from any previous attempt

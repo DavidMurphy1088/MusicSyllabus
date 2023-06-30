@@ -5,17 +5,17 @@ import MessageUI
 struct BarLineView: View {
     var entry:ScoreEntry
     var staff:Staff
-    var lineSpacing:LineSpacing
+    var staffLayoutSize:StaffLayoutSize
 
     var body: some View {
         GeometryReader { geometry in
             Rectangle()
                 .fill(Color.black)
-                .frame(width: 1.0, height: 4.0 * Double(lineSpacing.value))
+                .frame(width: 1.0, height: 4.0 * Double(staffLayoutSize.lineSpacing))
                 .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                //.border(Color.green)
+                
         }
-        .frame(maxWidth: Double(lineSpacing.value)  * 1.0)
+        .frame(maxWidth: Double(staffLayoutSize.lineSpacing)  * 1.0)
         //.border(Color.red)
     }
 }

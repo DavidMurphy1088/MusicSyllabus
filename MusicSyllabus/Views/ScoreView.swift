@@ -43,71 +43,80 @@ struct FeedbackView: View {
 
 struct ScoreView: View {
     @ObservedObject var score:Score
-    @ObservedObject var lineSpacing:LineSpacing
+    @ObservedObject var staffLayoutSize:StaffLayoutSize
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     init(score:Score) {
         self.score = score
-        self.lineSpacing = LineSpacing(value: UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0)
-        //self.setOrientationLayout()
+        self.staffLayoutSize = StaffLayoutSize(lineSpacing: UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0)
+        setOrientationLineSize(ctx: "ScoreView::init")
         //print("SCORE VIEW INIT", "width::", UIScreen.main.bounds.width, "line spacing", lineSpacing.value)
     }
     
     func getFrameHeight() -> Double {
-        var staffHeight:Double = self.staffHeight() //Double(score.staffLineCount) * Double(self.lineSpacing.value)
-//        if score.staffs.count > 1 {
-//            staffHeight = 2 * staffHeight + staffHeight / 2.0
-//        }
-        return staffHeight
+        //Score tells the staff how high to make itself. Child views of staff (all paths, moves, linesto sec) do not have
+        //inherent sizes that they can pass back up the parent staff view. So Score sets the sizes itself
+        
+        var height = 0.0
+        var lastStaff:Staff? = nil
+        for staff in score.staffs {
+            if !staff.isHidden {
+                if lastStaff != nil {
+                    //height += 1 //getStaffHeight() / 2.0 //Let user views specify padding around a Score view (rather than specifying padding here)
+                }
+                height += staffLayoutSize.lineSpacing
+            }
+            lastStaff = staff
+        }
+        return height
     }
     
-    func staffHeight() -> Double {
-        return Double(score.getTotalStaffLineCount() + 1) * lineSpacing.value
-    }
-                
-    func setChangeOrientationLayout() {
+    func setOrientationLineSize(ctx:String) {
         //Absolutley no idea - the width reported here decreases in landscape mode so use height (which increases)
         //https://www.hackingwithswift.com/quick-start/swiftui/how-to-detect-device-rotation
-        let ls = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.height / 64.0
-        print("SET ORIENTATION", "width::", UIScreen.main.bounds.width, "heght:", UIScreen.main.bounds.height, "line spacing", ls)
-        self.lineSpacing.setValue(ls)
+
+        let ls = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0
+        print("\nSET ORIENTATION", ctx, terminator: "")
+        if UIDevice.current.orientation.isLandscape {
+            print("\tLandscape", UIScreen.main.bounds, UIDevice.current.orientation.isFlat)
+        }
+        else {
+            print("\tPortrait", UIScreen.main.bounds, UIDevice.current.orientation.isFlat)
+        }
+        print("  \twidth::", UIScreen.main.bounds.width, "height:", UIScreen.main.bounds.height, "\tline spacing", ls)
+        self.staffLayoutSize.setLineSpacing(ls)
     }
     
     var body: some View {
         VStack {
-            
             FeedbackView(score: score)
             
             ForEach(score.getStaff(), id: \.self.type) { staff in
-                if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
-                    StaffView(score: score, staff: staff, staffHeight: staffHeight(), lineSpacing: lineSpacing)
-                        //.frame(height: staffHeight())  //fixed size of height for all staff lines + ledger lines
+                if !staff.isHidden {
+                    StaffView(score: score, staff: staff, staffLayoutSize: staffLayoutSize)
+                        .frame(height: staffLayoutSize.getStaffHeight(score: score))
                 }
             }
         }
         .onAppear {
-            self.lineSpacing.value = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0
-            //setOrientationLayout()
+            //self.lineSpacing.lineSpacing = UIDevice.current.userInterfaceIdiom == .phone ? 10.0 : UIScreen.main.bounds.width / 64.0
+            self.setOrientationLineSize(ctx: "onAppear")
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { orientation in
-            if UIDevice.current.orientation.isLandscape {
-                print("--->Landscape", UIScreen.main.bounds)
-            }
-            else {
-                print("--->Portrait", UIScreen.main.bounds)
-            }
-            setChangeOrientationLayout()
+            setOrientationLineSize(ctx: "orientationDidChangeNotification")
          }
         .onDisappear {
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
+
         .coordinateSpace(name: "Score1")
         .overlay(
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
         .background(UIGlobals.backgroundColor)
-        //.frame(height: getFrameHeight())
-        .border(Color .green, width: 3)
+        //.border(Color .red, width: 4)
+        .frame(height: getFrameHeight())
     }
 
 }

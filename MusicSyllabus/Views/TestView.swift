@@ -15,22 +15,18 @@ struct TestView: View {
         self.staff = staff
     }
     
-//    func tagText() -> String {
-//        return "count:\(ts.notesLength) \(ts.tag1 ?? "None")"
-//    }
-//
     var body: some View {
         VStack {
             Text("test")
             //ToolsView(score: score)
             //ScoreView(score: score).padding()
             
-            StaffView(score: score, staff: staff, staffHeight: 200.0, lineSpacing: LineSpacing(value:20)).padding().border(Color.blue)
+            StaffView(score: score, staff: staff, staffLayoutSize: StaffLayoutSize(lineSpacing:20)).padding().border(Color.blue)
             
             //Text("Ts:: \(tagText())")
             
-            StaffNotesView(score: score, staff: staff, staffHeight: 200, lineSpacing: LineSpacing(value: 20))
-                .border(Color.indigo)
+            StaffNotesView(score: score, staff: staff, lineSpacing: StaffLayoutSize(lineSpacing: 20))
+                //.border(Color.indigo)
                 .frame(width: 5 * Double(ts.notesLength ?? 0) + 200)
             
             Button(action: {

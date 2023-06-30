@@ -1,5 +1,15 @@
 import SwiftUI
 
+struct ScoreSpacerView: View {
+    var body: some View {
+        VStack {
+            Text(" ")
+            Text(" ")
+            Text(" ")
+        }
+    }
+}
+
 struct IntervalPresentView: View, QuestionPartProtocol {
     @ObservedObject var answer:Answer
     var score:Score
@@ -115,7 +125,9 @@ struct IntervalPresentView: View, QuestionPartProtocol {
         AnyView(
             VStack {
                 if mode == .intervalVisual {
+                    ScoreSpacerView()
                     ScoreView(score: score).padding()
+                    ScoreSpacerView()
                 }
                 
                 HStack {
@@ -174,7 +186,7 @@ struct IntervalPresentView: View, QuestionPartProtocol {
                 )
                 .background(UIGlobals.backgroundColor)
                 .padding()
-                
+                Spacer()
                 if logger.status.count > 0 {
                     Text(logger.status).foregroundColor(logger.isError ? .red : .gray)
                 }
@@ -207,8 +219,10 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
     var body: AnyView {
         AnyView(
             VStack {
+                ScoreSpacerView()
                 ScoreView(score: score).padding()
-
+                ScoreSpacerView()
+                
                 HStack {
                     if answer.correct {
                         Image(systemName: "checkmark.circle").resizable().frame(width: imageSize, height: imageSize).foregroundColor(.green)
@@ -235,6 +249,8 @@ struct IntervalAnswerView: View, QuestionPartProtocol {
                     }
                     .padding()
                 }
+                
+                Spacer()
             }
 //            .overlay(
 //                RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)

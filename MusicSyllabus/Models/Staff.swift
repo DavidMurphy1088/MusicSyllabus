@@ -7,6 +7,7 @@ import AVFoundation
 //used to record view positions of notes as they are drawn by a view so that a 2nd drwing pass can draw quaver beams to the right points
 class NoteLayoutPositions: ObservableObject {
     @Published var positions:[Note: CGRect] = [:]
+
     var id:Int
     static var nextId = 0
     
@@ -75,6 +76,7 @@ class Staff : ObservableObject {
     let id = UUID()
     @Published var publishUpdate = 0
     @Published var noteLayoutPositions:NoteLayoutPositions //.getShared()
+    @Published var isHidden:Bool = false
 
     let score:Score
     var type:StaffType

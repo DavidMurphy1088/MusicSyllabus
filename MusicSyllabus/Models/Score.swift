@@ -33,18 +33,30 @@ class StudentFeedback { //}: ObservableObject {
     var tempo:Int? = nil
 }
 
-class LineSpacing: ObservableObject {
-    @Published var value:Double
-    init (value:Double) {
-        self.value = value
+class StaffLayoutSize: ObservableObject {
+    @Published var lineSpacing:Double
+    static var lastHeight = 0.0
+    init (lineSpacing:Double) {
+        self.lineSpacing = lineSpacing
     }
     
-    func setValue(_ v:Double) {
+    func setLineSpacing(_ v:Double) {
         DispatchQueue.main.async {
-            self.value = v
+            self.lineSpacing = v
             //print("===============LineSpacing::SETVALUE======", v)
         }
     }
+    
+    func getStaffHeight(score:Score) -> Double {
+        //leave enough space above and below the staff for the Timeslice view to show its tags
+        let height = Double(score.getTotalStaffLineCount() + 2) * self.lineSpacing
+        if height != StaffLayoutSize.lastHeight {
+            print("ScoreView::staffHeight", height)
+            StaffLayoutSize.lastHeight = height
+        }
+        return height
+    }
+
 }
 
 class Score : ObservableObject {
@@ -55,7 +67,6 @@ class Score : ObservableObject {
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
     @Published var showFootnotes = false
-    @Published var hiddenStaffNo:Int?
     @Published var studentFeedback:StudentFeedback? = nil
     
     var staffs:[Staff] = []
@@ -143,11 +154,14 @@ class Score : ObservableObject {
         return result
     }
     
-    func setHiddenStaff(num:Int?) {
+    func setHiddenStaff(num:Int, isHidden:Bool) {
         DispatchQueue.main.async {
-            self.hiddenStaffNo = num
-            for staff in self.staffs {
-                staff.update()
+            if self.staffs.count > num {
+                //self.hiddenStaffNo = num
+                self.staffs[num].isHidden = isHidden
+                for staff in self.staffs {
+                    staff.update()
+                }
             }
         }
     }

@@ -5,35 +5,31 @@ struct TimeSliceLabelView: View {
     var score:Score
     var staff:Staff
     @ObservedObject var timeSlice:TimeSlice
-    @State var staffHeight:Double
-    var lineSpacing:LineSpacing
+    //@State var staffHeight:Double
+    //var staffLayoutSize:StaffLayoutSize
     
     var body: some View {
         ZStack {
             if staff.staffNum == 0 {
                 if let tag = timeSlice.tagHigh {
                     VStack {
-                        Text(" ")
+                        //Text(" ")
                         Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
+                            //.padding(.top, 0) //lineSpacing.value / 2.0)
                         Spacer()
                     }
-                    .frame(maxHeight: .infinity, alignment: .top)
-                    
                 }
                 if let tag = timeSlice.tagLow {
                     VStack {
                         Spacer()
-                        //Text(" ")
                         Text(tag).font(.custom("TimesNewRomanPS-BoldMT", size: 24))
-                            .padding(.bottom, 8)
+                            //.padding(.bottom, 0)//lineSpacing.value / 2.0)
                     }
-                    .frame(maxHeight: .infinity, alignment: .top)
                 }
             }
         }
-        //.frame(width: 4.0 * CGFloat(lineSpacing.value), height: 14.0 * CGFloat(lineSpacing.value))
-        .frame(width: 4.0 * CGFloat(lineSpacing.value), height: staffHeight)
-        .border(.red)
+        //.frame(width: 4.0 * CGFloat(lineSpacing.value), height: staffHeight)
+        //.frame(height: staffHeight)
     }
 }
 
@@ -43,7 +39,7 @@ struct StemView: View {
     @State var notePositionLayout: NoteLayoutPositions
     @State var note: Note
     @State var offsetFromStaffMiddle: Int
-    @ObservedObject var lineSpacing:LineSpacing
+    @ObservedObject var lineSpacing:StaffLayoutSize
     //@State var noteWidth:Double
     
     func stemDirection(note:Note) -> Double {
@@ -56,19 +52,19 @@ struct StemView: View {
     }
     func getStemLength() -> Double {
         //print("      StemView:: spacing", lineSpacing.value)
-        return lineSpacing.value * 3.5
+        return lineSpacing.lineSpacing * 3.5
     }
     
     func getNoteWidth() -> Double {
         //print("      StemView:: spacing", lineSpacing.value)
-        return lineSpacing.value * 1.2
+        return lineSpacing.lineSpacing * 1.2
     }
 
     var body: some View {
         GeometryReader { geo in
             VStack {
                 let startNote = note.getBeamStartNote(score: score, np: notePositionLayout)
-                let inErrorAjdust = note.noteTag == .inError ? lineSpacing.value/2.0 : 0
+                let inErrorAjdust = note.noteTag == .inError ? lineSpacing.lineSpacing/2.0 : 0
                 if startNote.getValue() != Note.VALUE_WHOLE {
                     //Note this code eventually has to go adjust the stem length for notes under a quaver beam
                     //3.5 lines is a full length stem
@@ -76,7 +72,7 @@ struct StemView: View {
                     //let midX = geo.size.width / 2.0 + (stemDirection * -1.0 * noteWidth / 2.0)
                     let midX = (geo.size.width + (stemDirection * -1.0 * getNoteWidth())) / 2.0
                     let midY = geo.size.height / 2.0
-                    let offsetY = Double(offsetFromStaffMiddle) * 0.5 * lineSpacing.value + inErrorAjdust
+                    let offsetY = Double(offsetFromStaffMiddle) * 0.5 * lineSpacing.lineSpacing + inErrorAjdust
                     Path { path in
                         path.move(to: CGPoint(x: midX, y: midY - offsetY))
                         path.addLine(to: CGPoint(x: midX, y: midY - offsetY + (stemDirection * (getStemLength() - inErrorAjdust))))
@@ -92,16 +88,15 @@ struct StaffNotesView: View {
     @ObservedObject var noteLayoutPositions:NoteLayoutPositions
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
-    @State var staffHeight:Double
-    @ObservedObject var lineSpacing1:LineSpacing
+    @ObservedObject var staffLayoutSize:StaffLayoutSize
     static var viewNum:Int = 0
     let viewNum:Int
     
-    init(score:Score, staff:Staff, staffHeight:Double, lineSpacing:LineSpacing) {
+    init(score:Score, staff:Staff, lineSpacing:StaffLayoutSize) {
         self.score = score
         self.staff = staff
-        self.staffHeight = staffHeight
-        self.lineSpacing1 = lineSpacing
+        //self.staffHeight = staffHeight
+        self.staffLayoutSize = lineSpacing
         self.noteLayoutPositions = staff.noteLayoutPositions
         StaffNotesView.viewNum += 1
         self.viewNum = StaffNotesView.viewNum
@@ -201,7 +196,7 @@ struct StaffNotesView: View {
     
     func getLineSpacing() -> Double {
         //print("    StaffNotesView body::lineSpace", viewNum, lineSpacing1.value)
-        return self.lineSpacing1.value
+        return self.staffLayoutSize.lineSpacing
     }
 
     var body: some View {
@@ -218,7 +213,7 @@ struct StaffNotesView: View {
                                     GeometryReader { geo in
                                         ZStack {
                                             NoteView(staff: staff, note: note,
-                                                     noteWidth: noteWidth, lineSpacing: lineSpacing1.value,
+                                                     noteWidth: noteWidth, lineSpacing: staffLayoutSize.lineSpacing,
                                                      offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note))
                                             .background(GeometryReader { geometry in
                                                 Color.clear
@@ -227,7 +222,7 @@ struct StaffNotesView: View {
                                                             noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
                                                     }
-                                                    .onChange(of: lineSpacing1.value) { newValue in
+                                                    .onChange(of: staffLayoutSize.lineSpacing) { newValue in
                                                          if staff.staffNum == 0 {
                                                             noteLayoutPositions.storePosition(note: note,rect: geometry.frame(in: .named("HStack")), cord: "HStack")
                                                         }
@@ -238,15 +233,18 @@ struct StaffNotesView: View {
                                                      notePositionLayout: noteLayoutPositions,
                                                      note: note,
                                                      offsetFromStaffMiddle: noteOffsetFromMiddle(staff: staff, note: note),
-                                                     lineSpacing: lineSpacing1)
+                                                     lineSpacing: staffLayoutSize)
                                         }
                                     }
                                 }
-                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, staffHeight: staffHeight, lineSpacing: lineSpacing1)
+                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice)
+                                    .frame(height: staffLayoutSize.getStaffHeight(score: score))
                             }
                         }
                         if entry is BarLine {
-                            BarLineView(entry: entry, staff: staff, lineSpacing: lineSpacing1)
+                            BarLineView(entry: entry, staff: staff, staffLayoutSize: staffLayoutSize)
+                                .frame(height: staffLayoutSize.getStaffHeight(score: score))
+                                //.border(Color.green)
                         }
                     }
                     .coordinateSpace(name: "VStack")
@@ -270,7 +268,7 @@ struct StaffNotesView: View {
                                 endNote, endNotePos in
                                 if endNote.beamType == .end {
                                     let startNote = endNote.getBeamStartNote(score: score, np:noteLayoutPositions)
-                                    if let line = getBeamLine(endNote: endNote, noteWidth: noteWidth, startNote: startNote, stemLength: self.lineSpacing1.value * 3.5) {
+                                    if let line = getBeamLine(endNote: endNote, noteWidth: noteWidth, startNote: startNote, stemLength: self.staffLayoutSize.lineSpacing * 3.5) {
                                         Path { path in
                                             path.move(to: CGPoint(x: line.0.x, y: line.0.y))
                                             path.addLine(to: CGPoint(x: line.1.x, y: line.1.y))
