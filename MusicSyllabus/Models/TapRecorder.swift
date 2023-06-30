@@ -83,7 +83,7 @@ class TapRecorder : NSObject, AVAudioPlayerDelegate, AVAudioRecorderDelegate, Ob
     
     //make a score of notes and barlines from the tap intervals
     func makeScore(questionScore:Score, questionTempo:Int) -> Score {
-        let outputScore = Score(timeSignature: questionScore.timeSignature, lines: 1)
+        let outputScore = Score(timeSignature: questionScore.timeSignature, linesPerStaff: 1)
         let staff = Staff(score: outputScore, type: .treble, staffNum: 0, linesInStaff: 1)
         outputScore.setStaff(num: 0, staff: staff)
         var ctr = 0

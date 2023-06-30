@@ -130,10 +130,11 @@ struct KeySignatureView: View {
 }
 
 struct StaffView: View {
-    let id = UUID()
+    //let id = UUID()
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
-    @ObservedObject var lineSpacing:LineSpacing
+    var staffHeight:Double
+    @ObservedObject var lineSpacing:LineSpacing = LineSpacing(value: 0)
     //@ObservedObject var noteLayoutPositions:NoteLayoutPositions
 
     @State private var rotationId: UUID = UUID()
@@ -142,9 +143,10 @@ struct StaffView: View {
     var entryPositions:[Double] = []
     var totalDuration = 0.0
 
-    init (score:Score, staff:Staff, lineSpacing:LineSpacing) {
+    init (score:Score, staff:Staff, staffHeight:Double, lineSpacing:LineSpacing) {
         self.score = score
         self.staff = staff
+        self.staffHeight = staffHeight
         self.lineSpacing = lineSpacing
         //print("  StaffView init::lineSpace", lineSpacing)
     }
@@ -164,14 +166,10 @@ struct StaffView: View {
         }
     }
     
-    func xPos(note:Note) -> CGFloat {
-        return CGFloat(self.entryPositions[note.sequence])
-    }
-    
-    func getLineSpacing() -> Double {
-        //print("  StaffView body::lineSpace", lineSpacing)
-        return lineSpacing.value
-    }
+//    func getLineSpacing() -> Double {
+//        //print("  StaffView body::lineSpace", lineSpacing)
+//        return lineSpacing.value
+//    }
 
     var body: some View {
         ZStack { // The staff lines view and everything else on the staff share the same space
@@ -189,10 +187,13 @@ struct StaffView: View {
                 TimeSignatureView(staff: staff, timeSignature: score.timeSignature, lineSpacing: lineSpacing.value, clefWidth: clefWidth()/1.0)
                 //    .border(Color.red)
                 
-                StaffNotesView(score: score, staff: staff, lineSpacing: lineSpacing)
+                StaffNotesView(score: score, staff: staff, staffHeight: staffHeight, lineSpacing: lineSpacing)
                 Text("      ")
             }
         }
+        let low level set these hieghts
+        //.frame(height: staffHeight)
+        //.border(Color .blue)
     }
 }
 

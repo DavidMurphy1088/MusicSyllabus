@@ -53,13 +53,17 @@ struct ScoreView: View {
     }
     
     func getFrameHeight() -> Double {
-        var h:Double = Double(score.staffLineCount) * Double(self.lineSpacing.value)
-        if score.staffs.count > 1 {
-            h = 2 * h + h / 2.0
-        }
-        return h
+        var staffHeight:Double = self.staffHeight() //Double(score.staffLineCount) * Double(self.lineSpacing.value)
+//        if score.staffs.count > 1 {
+//            staffHeight = 2 * staffHeight + staffHeight / 2.0
+//        }
+        return staffHeight
     }
     
+    func staffHeight() -> Double {
+        return Double(score.getTotalStaffLineCount() + 1) * lineSpacing.value
+    }
+                
     func setChangeOrientationLayout() {
         //Absolutley no idea - the width reported here decreases in landscape mode so use height (which increases)
         //https://www.hackingwithswift.com/quick-start/swiftui/how-to-detect-device-rotation
@@ -75,8 +79,8 @@ struct ScoreView: View {
             
             ForEach(score.getStaff(), id: \.self.type) { staff in
                 if staff.score.hiddenStaffNo == nil || staff.score.hiddenStaffNo != staff.staffNum {
-                    StaffView(score: score, staff: staff, lineSpacing: lineSpacing)
-                        .frame(height: CGFloat(Double(score.staffLineCount) * lineSpacing.value))  //fixed size of height for all staff lines + ledger lines
+                    StaffView(score: score, staff: staff, staffHeight: staffHeight(), lineSpacing: lineSpacing)
+                        //.frame(height: staffHeight())  //fixed size of height for all staff lines + ledger lines
                 }
             }
         }
@@ -102,8 +106,8 @@ struct ScoreView: View {
             RoundedRectangle(cornerRadius: UIGlobals.cornerRadius).stroke(Color(UIGlobals.borderColor), lineWidth: UIGlobals.borderLineWidth)
         )
         .background(UIGlobals.backgroundColor)
-        .frame(height: getFrameHeight())
-        
+        //.frame(height: getFrameHeight())
+        .border(Color .green, width: 3)
     }
 
 }

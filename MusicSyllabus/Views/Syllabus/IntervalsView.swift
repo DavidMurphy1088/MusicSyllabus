@@ -250,7 +250,7 @@ struct IntervalView: View {
     @State var refresh:Bool = false
     var contentSection:ContentSection
     //WARNING - Making Score a @STATE makes instance #1 of this struct pass its Score to instance #2
-    var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), lines: 5)
+    var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), linesPerStaff: 5)
     @ObservedObject var answer: Answer = Answer()
     var presentQuestionView:IntervalPresentView?
     var answerQuestionView:IntervalAnswerView?

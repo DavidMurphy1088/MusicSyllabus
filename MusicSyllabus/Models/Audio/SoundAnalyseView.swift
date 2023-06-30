@@ -4,8 +4,8 @@ import AVFoundation
 import Accelerate
 
 struct SoundAnalyseView: View {
-    var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
-    var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), lines: 1)
+    var score1:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), linesPerStaff: 1)
+    var score2:Score = Score(timeSignature: TimeSignature(top: 3,bottom: 4), linesPerStaff: 1)
     let metronome = Metronome.getMetronomeWithSettings(initialTempo: 40, allowChangeTempo: false, ctx:"SoundAnalyseView")
     let ap = AudioPlayerTest()
     let test = Test()

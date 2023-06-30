@@ -369,21 +369,20 @@ struct ClapOrPlayAnswerView: View, QuestionPartProtocol {
     func analyseStudentRhythm() {
         let rhythmAnalysis = tapRecorder.analyseRhythm(timeSignatue: score.timeSignature, questionScore: score)
         self.tappingScore = rhythmAnalysis
-        //let recordedTempo = rhythmAnalysis.recordedTempo
         if let tappingScore = tappingScore {
             let errorsExist = score.markupStudentScore(questionTempo: self.questionTempo, scoreToCompare: tappingScore, allowTempoVariation: mode != .rhythmEchoClap)
             self.answerWasCorrect = !errorsExist
             if errorsExist {
                 //self.metronome.setTempo(tempo: self.questionTempo, context: "Analyse Student - failed")
                 self.metronome.setAllowTempoChange(allow: false)
+                self.metronome.setTempo(tempo: self.questionTempo, context: "ClapOrPlayAnswerView")
             }
             else {
-                //if let recordedTempo = rhythmAnalysis.recordedTempo {
-                    //self.metronome.setTempo(tempo: recordedTempo, context: "Analyse Student - passed")
-                //}
+                if let recordedTempo = rhythmAnalysis.recordedTempo {
+                    self.metronome.setTempo(tempo: recordedTempo, context: "Analyse Student - passed", allowBeyondLimits: true)
+                }
                 self.metronome.setAllowTempoChange(allow: true)
             }
-            self.metronome.setTempo(tempo: self.questionTempo, context: "ClapOrPlayAnswerView")
             tappingScore.label = "Your Rhythm"
         }
     }
@@ -470,7 +469,7 @@ struct ClapOrPlayView: View {
     var contentSection:ContentSection
     @State var refresh:Bool = false
     //WARNING - Making Score a @STATE makes instance #1 of this struct pass its Score to instance #2
-    var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), lines: 5)
+    var score:Score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), linesPerStaff: 5)
     @ObservedObject var answer: Answer = Answer()
     var presentQuestionView:ClapOrPlayPresentView?
     var answerQuestionView:ClapOrPlayAnswerView?

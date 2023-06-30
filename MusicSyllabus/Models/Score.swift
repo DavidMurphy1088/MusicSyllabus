@@ -50,7 +50,7 @@ class LineSpacing: ObservableObject {
 class Score : ObservableObject {
     let id = UUID()
     var timeSignature:TimeSignature
-    let ledgerLineCount = 3//4 is required to represent low E
+    let ledgerLineCount =  2 //3//4 is required to represent low E
     
     @Published var key:Key = Key(type: Key.KeyType.major, keySig: KeySignature(type: AccidentalType.sharp, count: 0))
     @Published var showNotes = true
@@ -67,16 +67,20 @@ class Score : ObservableObject {
     static let midTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 2.0
     static let slowTempo:Float = Score.minTempo + (Score.maxTempo - Score.minTempo) / 4.0
     
-    var staffLineCount:Int = 0
+    private var totalStaffLineCount:Int = 0
     static var accSharp = "\u{266f}"
     static var accNatural = "\u{266e}"
     static var accFlat = "\u{266d}"
     var scoreEntries:[ScoreEntry] = []
     var label:String? = nil
     
-    init(timeSignature:TimeSignature, lines:Int) {
+    init(timeSignature:TimeSignature, linesPerStaff:Int) {
         self.timeSignature = timeSignature
-        staffLineCount = lines + (2*ledgerLineCount)
+        totalStaffLineCount = linesPerStaff + (2*ledgerLineCount)
+    }
+    
+    func getTotalStaffLineCount() -> Int {
+        return self.totalStaffLineCount
     }
     
     func getAllTimeSlices() -> [TimeSlice] {

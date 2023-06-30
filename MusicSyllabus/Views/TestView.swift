@@ -6,7 +6,7 @@ struct TestView: View {
     @ObservedObject var ts:TimeSlice
     
     init() {
-        score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), lines: 5)
+        score = Score(timeSignature: TimeSignature(top: 4, bottom: 4), linesPerStaff: 5)
         let staff = Staff(score: score, type: .treble, staffNum: 0, linesInStaff: 5)
         self.score.setStaff(num: 0, staff: staff)
         let ts = score.addTimeSlice()
@@ -25,11 +25,11 @@ struct TestView: View {
             //ToolsView(score: score)
             //ScoreView(score: score).padding()
             
-            StaffView(score: score, staff: staff, lineSpacing: LineSpacing(value:20)).padding().border(Color.blue)
+            StaffView(score: score, staff: staff, staffHeight: 200.0, lineSpacing: LineSpacing(value:20)).padding().border(Color.blue)
             
             //Text("Ts:: \(tagText())")
             
-            StaffNotesView(score: score, staff: staff, lineSpacing: LineSpacing(value: 20))
+            StaffNotesView(score: score, staff: staff, staffHeight: 200, lineSpacing: LineSpacing(value: 20))
                 .border(Color.indigo)
                 .frame(width: 5 * Double(ts.notesLength ?? 0) + 200)
             

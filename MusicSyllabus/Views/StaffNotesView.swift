@@ -5,6 +5,7 @@ struct TimeSliceLabelView: View {
     var score:Score
     var staff:Staff
     @ObservedObject var timeSlice:TimeSlice
+    @State var staffHeight:Double
     var lineSpacing:LineSpacing
     
     var body: some View {
@@ -30,8 +31,9 @@ struct TimeSliceLabelView: View {
                 }
             }
         }
-        .frame(width: 4.0 * CGFloat(lineSpacing.value), height: 12.0 * CGFloat(lineSpacing.value))
-        //.border(.red)
+        //.frame(width: 4.0 * CGFloat(lineSpacing.value), height: 14.0 * CGFloat(lineSpacing.value))
+        .frame(width: 4.0 * CGFloat(lineSpacing.value), height: staffHeight)
+        .border(.red)
     }
 }
 
@@ -90,13 +92,15 @@ struct StaffNotesView: View {
     @ObservedObject var noteLayoutPositions:NoteLayoutPositions
     @ObservedObject var score:Score
     @ObservedObject var staff:Staff
+    @State var staffHeight:Double
     @ObservedObject var lineSpacing1:LineSpacing
     static var viewNum:Int = 0
     let viewNum:Int
     
-    init(score:Score, staff:Staff, lineSpacing:LineSpacing) {
+    init(score:Score, staff:Staff, staffHeight:Double, lineSpacing:LineSpacing) {
         self.score = score
         self.staff = staff
+        self.staffHeight = staffHeight
         self.lineSpacing1 = lineSpacing
         self.noteLayoutPositions = staff.noteLayoutPositions
         StaffNotesView.viewNum += 1
@@ -238,7 +242,7 @@ struct StaffNotesView: View {
                                         }
                                     }
                                 }
-                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, lineSpacing: lineSpacing1)
+                                TimeSliceLabelView(score:score, staff:staff, timeSlice: entry as! TimeSlice, staffHeight: staffHeight, lineSpacing: lineSpacing1)
                             }
                         }
                         if entry is BarLine {
